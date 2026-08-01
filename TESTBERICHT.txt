@@ -1,0 +1,32 @@
+# TESTBERICHT - DokuZen
+
+## Abstürze multipel
+- Stürzt ab bei Auswahl von PDF Werkstatt oder PDF Schwärzen und anderen Menüpunkten
+
+
+
+
+
+## Absturzbericht (ERLEDIGT)
+Traceback (most recent call last):
+  File "C:\Users\User\OneDrive\.SOFTWARE\SUITEN\DokuZen\gui\main_window.py", line 489, in _on_redaction
+    from gui.dialogs.redaction_dialog import RedactionDialog
+  File "C:\Program Files (x86)\Thonny\lib\site-packages\thonny\plugins\cpython_backend\cp_back.py", line 353, in _custom_import
+    module = self._original_import(*args, **kw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\OneDrive\.SOFTWARE\SUITEN\DokuZen\gui\dialogs\__init__.py", line 4, in <module>
+    from .convert_dialog import ConvertDialog
+  File "C:\Program Files (x86)\Thonny\lib\site-packages\thonny\plugins\cpython_backend\cp_back.py", line 353, in _custom_import
+    module = self._original_import(*args, **kw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\OneDrive\.SOFTWARE\SUITEN\DokuZen\gui\dialogs\convert_dialog.py", line 22, in <module>
+    from core.converter import FormatConverter, ConversionResult, OutputFormat
+  File "C:\Program Files (x86)\Thonny\lib\site-packages\thonny\plugins\cpython_backend\cp_back.py", line 353, in _custom_import
+    module = self._original_import(*args, **kw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\OneDrive\.SOFTWARE\SUITEN\DokuZen\core\converter\__init__.py", line 4, in <module>
+    from .converter import DocumentConverter, ConversionResult
+  File "C:\Program Files (x86)\Thonny\lib\site-packages\thonny\plugins\cpython_backend\cp_back.py", line 353, in _custom_import
+    module = self._original_import(*args, **kw)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'core.converter.converter'

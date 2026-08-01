@@ -1,0 +1,15 @@
+{
+  "app_name": "DokuZen Pro",
+  "publisher": "CN=52596601-BAB4-4F3F-B182-E8F3F273B202",
+  "publisher_display": "Geiger",
+  "identity_name": "Geiger.DokuZenPro",
+  "version": "1.0.0.0",
+  "description": "Lokale Dokumenten-Werkstatt für PDF-Bearbeitung, OCR, Schwärzung, Konvertierung und Dateiverwaltung.",
+  "executable": "DokuZen-Pro-1.0.0-win64.exe",
+  "capabilities": "runFullTrust",
+  "category": "Productivity",
+  "age_rating": "3+",
+  "privacy_url": "https://github.com/doc-bricks/DokuZen/blob/main/PRIVACY_POLICY.md",
+  "support_url": "https://github.com/doc-bricks/DokuZen/blob/main/SUPPORT.md",
+  "license": "AGPL-3.0-or-later"
+}

@@ -1,0 +1,58 @@
+DokuZen Pro - Third-Party License Inventory
+===========================================
+
+Status: direct runtime dependency inventory
+Checked: 2026-07-12 via PyPI JSON metadata for the direct packages in
+`requirements.txt`.
+
+Scope
+-----
+
+This file lists DokuZen Pro's direct Python runtime dependencies from
+`requirements.txt`. It is intentionally not a frozen transitive SBOM and does
+not claim to enumerate every wheel pulled by pip at install time.
+
+DokuZen Pro itself is licensed under AGPL-3.0-or-later. Because the runtime stack includes
+AGPL/GPL components, a Microsoft Store or binary release must keep source-code
+availability, notices, and corresponding-license obligations aligned. A
+proprietary binary release would require separate commercial licensing for the
+copyleft components where available, especially PyMuPDF/Artifex.
+
+Direct Python Dependencies
+--------------------------
+
+| Package | Requirement | License metadata checked on 2026-07-12 | Notes |
+|---|---|---|---|
+| PySide6 | `PySide6>=6.5.0` | `LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only` | Qt for Python bindings. Runtime wheels such as `PySide6_Addons`, `PySide6_Essentials`, and `shiboken6` follow the same Qt for Python licensing family. |
+| PyQt6-WebEngine | `PyQt6-WebEngine>=6.4.0` | `GPL-3.0-only` | Optional extended preview path. Bundling this wheel is GPL-only and must remain compatible with the app's AGPL distribution path. |
+| PyMuPDF | `PyMuPDF>=1.23.0` | GNU Affero GPL 3.0 or Artifex commercial license | Core PDF rendering/manipulation dependency and the main release-license blocker for any proprietary distribution. |
+| pikepdf | `pikepdf>=8.0.0` | MPL-2.0 | PDF repair/unlock fallback, powered by qpdf. |
+| reportlab | `reportlab>=4.0.0` | BSD license | PDF creation. |
+| pytesseract | `pytesseract>=0.3.10` | Apache-2.0 | Python wrapper for the external Tesseract OCR binary. |
+| Pillow | `Pillow>=10.0.0` | MIT-CMU | Image processing. |
+| python-docx | `python-docx>=1.0.0` | MIT | Word document support. |
+| openpyxl | `openpyxl>=3.1.0` | MIT | Excel document support. |
+| chardet | `chardet>=5.0.0` | 0BSD | Character encoding detection. |
+| rapidfuzz | `rapidfuzz>=3.0.0` | MIT | Fuzzy matching for redaction/search helpers. |
+| pyperclip | `pyperclip>=1.8.0` | BSD | Clipboard access. |
+| pystray | `pystray>=0.19.0` | LGPLv3 | System tray integration. |
+| keyboard | `keyboard>=0.13.0` | MIT | Global hotkeys on Windows/Linux. |
+| watchdog | `watchdog>=3.0.0` | Apache-2.0 | File-system monitoring. |
+| appdirs | `appdirs>=1.4.0` | MIT | Platform-specific app directories. |
+
+External System Dependencies
+----------------------------
+
+| Component | License note | Bundling status |
+|---|---|---|
+| Tesseract OCR | Apache-2.0 project; install separately or document bundled binary notices before release. | Not bundled in this source tree. |
+| Windows / Microsoft Store runtime components | Covered by platform terms, not redistributed as project dependencies. | Not bundled in this source tree. |
+
+Release Checklist Impact
+------------------------
+
+- Keep this inventory synchronized when `requirements.txt` changes.
+- Before a public binary or Store release, generate a real frozen SBOM from the
+  exact build environment and compare it with this direct inventory.
+- Do not mark a proprietary release path ready while PyMuPDF is used under AGPL
+  without a commercial Artifex license.

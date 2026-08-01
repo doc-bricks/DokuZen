@@ -1,0 +1,43 @@
+# DokuZen Pro - Dependencies
+# ================================
+# Installation: pip install -r requirements.txt
+
+# === GUI Framework ===
+PySide6>=6.5.0
+PyQt6-WebEngine>=6.4.0  # Für erweiterte Vorschau
+
+# === PDF Processing ===
+PyMuPDF>=1.23.0  # PDF lesen, rendern, bearbeiten
+pikepdf>=8.0.0   # PDF unlock Fallback
+reportlab>=4.0.0 # PDF erstellen
+
+# === OCR ===
+pytesseract>=0.3.10  # Tesseract-Wrapper
+Pillow>=10.0.0       # Bildverarbeitung
+
+# === Office-Dokumente ===
+python-docx>=1.0.0   # Word-Dateien
+openpyxl>=3.1.0      # Excel-Dateien (optional)
+
+# === Text Processing ===
+chardet>=5.0.0       # Encoding-Erkennung
+rapidfuzz>=3.0.0     # Fuzzy-Matching für Schwärzung
+
+# === Spawner/Tray ===
+pyperclip>=1.8.0     # Clipboard-Zugriff
+pystray>=0.19.0      # System-Tray
+keyboard>=0.13.0     # Globale Hotkeys (Windows/Linux)
+
+# === Utilities ===
+watchdog>=3.0.0      # Dateisystem-Überwachung (optional)
+appdirs>=1.4.0       # Plattformspezifische Verzeichnisse
+
+# === Development (optional) ===
+# pytest>=7.0.0
+# black>=23.0.0
+# mypy>=1.0.0
+
+# ================================
+# System-Abhängigkeiten (manuell installieren):
+# - Tesseract OCR: https://github.com/tesseract-ocr/tesseract
+# ================================

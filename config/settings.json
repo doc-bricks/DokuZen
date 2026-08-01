@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "app": {
+    "theme": "light",
+    "language": "de",
+    "last_directory": "",
+    "window_state": {
+      "geometry": [100, 100, 1400, 900],
+      "maximized": false,
+      "panel_sizes": [200, 600, 400]
+    },
+    "recent_files": [],
+    "max_recent_files": 10
+  },
+  "library": {
+    "state_file": "~/.dokuzen_state.json",
+    "auto_save": true,
+    "auto_save_interval_sec": 60,
+    "duplicate_check": true,
+    "default_theme": "Allgemein"
+  },
+  "spawner": {
+    "enabled": false,
+    "format": "TXT",
+    "design_mode": false,
+    "hotkey": "ctrl+shift+v",
+    "registry_enabled": false,
+    "output_directory": ""
+  },
+  "pdf": {
+    "default_encryption": "AES-256",
+    "compression": true,
+    "ocr_language": "deu+eng",
+    "tesseract_path": ""
+  },
+  "redaction": {
+    "default_blacklist": "config/wordlists/blacklist_default.txt",
+    "default_whitelist": "config/wordlists/whitelist_default.txt",
+    "fuzzy_threshold": 80,
+    "master_password": null,
+    "auto_backup": true
+  },
+  "converter": {
+    "image_quality": 90,
+    "pdf_dpi": 150,
+    "default_encoding": "utf-8"
+  },
+  "background_services": {
+    "privacy_guard": {
+      "enabled": false,
+      "show_tray": true,
+      "auto_clear_on_red": false
+    },
+    "sync_engine": {
+      "enabled": false,
+      "interval_minutes": 15,
+      "show_tray": true
+    },
+    "media_brain": {
+      "enabled": false,
+      "auto_index": false
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "max_size_mb": 2,
+    "backup_count": 4,
+    "file": "logs/dokuzen.log",
+    "console": true
+  },
+  "shortcuts": {
+    "open_file": "Ctrl+O",
+    "save": "Ctrl+S",
+    "search": "Ctrl+F",
+    "new_theme": "Ctrl+N",
+    "refresh": "F5",
+    "toggle_preview": "Ctrl+P",
+    "settings": "Ctrl+,"
+  }
+}
