@@ -264,6 +264,11 @@ class MainWindow(QMainWindow, LoggerMixin):
         # Suchfeld
         self._search_box = QLineEdit()
         self._search_box.setPlaceholderText("Suchen...")
+        self._search_box.setToolTip("Dokumente in der Bibliothek durchsuchen (Ctrl+F)")
+        self._search_box.setAccessibleName("Dokumente durchsuchen")
+        self._search_box.setAccessibleDescription(
+            "Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren."
+        )
         self._search_box.setMaximumWidth(250)
         self._search_box.setClearButtonEnabled(True)
         self._search_box.textChanged.connect(self._on_search_changed)

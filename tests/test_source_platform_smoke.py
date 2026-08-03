@@ -86,6 +86,16 @@ class SourcePlatformSmokeTest(unittest.TestCase):
             "Öffnet einen Dialog zum Anlegen eines neuen Bibliotheksthemas.",
         )
 
+    def test_search_box_exposes_accessible_context(self):
+        search_box = self.window._search_box
+
+        self.assertEqual(search_box.toolTip(), "Dokumente in der Bibliothek durchsuchen (Ctrl+F)")
+        self.assertEqual(search_box.accessibleName(), "Dokumente durchsuchen")
+        self.assertEqual(
+            search_box.accessibleDescription(),
+            "Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren.",
+        )
+
     def test_macos_external_open_uses_open(self):
         with mock.patch.object(main_window_module.sys, "platform", "darwin"):
             with mock.patch("subprocess.run") as subprocess_run:

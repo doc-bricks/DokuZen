@@ -5,6 +5,13 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed (2026-08-03)
+- **Dokumentensuche:** Das kompakte Suchfeld im Hauptfenster hat jetzt Tooltip,
+  Accessible Name und Description. Screenreader erhalten damit Funktion und
+  Tastaturweg (`Ctrl+F`), ohne das Drei-Panel-Layout zu verändern.
+- **Tests:** `tests/test_source_platform_smoke.py` prüft den Assistive-Kontext
+  des Suchfelds offscreen.
+
 ### Behoben / Fixed (2026-07-25)
 - **Bildkonvertierung (ImageConverter PDF/Transparenz):** `ImageConverter.convert()` schlug bisher beim Konvertieren von Bildern mit Transparenz (RGBA/LA/PA sowie P-Palette mit Transparenz) nach PDF mit `KeyError: 'JPEG2000'` / `cannot save mode RGBA as PDF` fehl, da PDF keine Transparenzkanäle unterstützt und format='PDF' gefehlt hat. `ImageConverter` konvertiert Transparenzen bei PDF nun korrekt auf weißen Hintergrund und übergibt format='PDF' an Pillow.
 - **Tests:** `tests/test_image_converter_pdf_transparency.py` (3 Tests) prüft die Konvertierung von RGBA-PNG und P-Palette nach PDF sowie RGBA nach JPEG/BMP.
