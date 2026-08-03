@@ -12,6 +12,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ### Behoben / Fixed (2026-07-23)
 - **PDF-Schwärzung (P0, Privacy/PII-Leak):** `RedactionApplier.redact_pdf()` meldete bisher unbedingt "Erfolg", auch wenn einzelne Treffer im PDF nicht wiedergefunden und daher NICHT geschwärzt wurden (z.B. IBANs mit internen Leerzeichen oder mehrzeilige Namen, da `page.search_for()` den Treffertext erneut sucht statt die ursprüngliche Fundstelle zu nutzen). Der Schwärzungs-Dialog zeigt jetzt bei unvollständiger Schwärzung eine deutliche Warnung statt einer falschen Erfolgsmeldung; `RedactionApplier` stellt dafür `last_redaction_stats` (total/redacted/missed) bereit und loggt eine Warnung mit Beispielen. Der eigentliche Architektur-Fix (Schwärzung per Span/Rect statt erneuter Textsuche) bleibt als separate, sicherheitskritische Aufgabe in `AUFGABEN.txt` offen.
 - **Tests:** `tests/test_redaction_applier_partial_match.py` (3 Tests) sichert die neue Statistik gegen teilweisen Fund, vollständigen Fund und Zustandsreset zwischen Aufrufen ab.
+- **Nachtrag (2026-08-02):** Der im ursprünglichen Eintrag noch als offen
+  bezeichnete Span-/Rect-Architekturpfad ist im aktuellen Clone umgesetzt:
+  `Match.rects` werden in `RedactionApplier.redact_pdf()` bevorzugt verwendet.
+  `tests/test_redaction_span_rects.py` deckt den Pfad einschließlich einer
+  mehrzeiligen IBAN ab. Dafür wurde kein neuer offener Task angelegt.
 
 ### Behoben / Fixed (2026-07-22)
 - **PDF-Marker-Beschnittrand:** Das kompakte Zahlenfeld für den Beschnittrand hat jetzt deutschen Tooltip sowie Accessible Name und Description. Screenreader erhalten damit Kontext und Einheit, ohne das sichtbare Layout zu verändern.

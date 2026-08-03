@@ -90,7 +90,8 @@ DOCX, text recognition
 
 ## Offene Punkte (vor Store-Einreichung)
 
-- [ ] GitHub-Repository `doc-bricks/DokuZen` erstellen und URLs bestätigen
+- [x] GitHub-Repository `doc-bricks/DokuZen` erstellt und URL-Referenzen in
+  `store_package.json` bestätigt (2026-08-02)
 - [ ] Screenshots erstellen (siehe `screenshots/store/README.md`)
 - [ ] MSIX-Paket erzeugen und WACK-Test bestehen
 - [x] THIRD_PARTY_LICENSES.txt als direkte Runtime-Inventur aus `requirements.txt` angelegt

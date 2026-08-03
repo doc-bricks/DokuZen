@@ -33,9 +33,10 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 
 ### GitHub-Repository
 
-- [ ] Repository `doc-bricks/DokuZen` erstellen
-- [ ] Privacy-URL und Support-URL in `store_package.json` verifizieren
-      (aktuell provisorisch: `doc-bricks/DokuZen`)
+- [x] Repository `doc-bricks/DokuZen` erstellt und `origin` auf
+      `https://github.com/doc-bricks/DokuZen.git` verifiziert (2026-08-02)
+- [x] Privacy-URL und Support-URL in `store_package.json` auf das bestehende
+      Repository verifiziert (2026-08-02)
 
 ### Paketierung
 
@@ -81,3 +82,15 @@ Productivity — entspricht dem Funktionsprofil (PDF-Bearbeitung, OCR, Konvertie
 - `screenshots/store/README.md` — Screenshot-Inventar
 - `build_exe.bat` — Build-Skript Windows
 - `tools/preflight.py` — Pflicht-/Optional-/OCR-/Build-Preflight
+
+## TASKWRITER-FORMALISIERUNG (2026-08-02)
+
+Die noch offenen Store-Schritte sind im TASKPLAN-Projekt
+`C:\_Local_DEV\repos\DokuZen` erfasst:
+
+- Task 1859 — Store-Screenshot-Paket erstellen (`effort=medium`, `scope=local`)
+- Task 1860 — Windows-Build und strikten Store-Preflight nachweisen (`effort=medium`, `scope=local`)
+- Task 1861 — MSIX-/WACK-Freigabe als Store-Entscheidung vorbereiten (`effort=special`, `scope=local`)
+
+Die externe Store-Hochladung ist durch Task 1861 nicht autorisiert; dafür bleibt
+eine ausgefüllte Nutzerentscheidung erforderlich.
