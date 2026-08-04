@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DokuZen"
+version = "1.0.0"
+description = "Dokumenten- und Dateiverwaltungssuite (22 Text-, PDF- und Datei-Tools in PySide6)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "AGPL-3.0-or-later"}
+authors = [
+    {name = "open-bricks / doc-bricks"}
+]
+keywords = [
+    "document-management",
+    "pdf-tools",
+    "ocr",
+    "pyside6",
+    "pdf-merger",
+    "pdf-redaction",
+    "doc-bricks",
+    "open-bricks"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business",
+    "Topic :: Utilities"
+]
+dependencies = [
+    "PySide6>=6.5.0",
+    "PyMuPDF>=1.23.0",
+    "pillow>=10.0.0",
+    "pikepdf>=8.0.0",
+    "pytesseract>=0.3.10"
+]
+
+[project.urls]
+Homepage = "https://github.com/doc-bricks/DokuZen"
+Repository = "https://github.com/doc-bricks/DokuZen.git"
+Documentation = "https://github.com/doc-bricks/DokuZen#readme"
+"Bug Tracker" = "https://github.com/doc-bricks/DokuZen/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]

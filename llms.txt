@@ -1,0 +1,65 @@
+# DokuZen — Discovery & Machine Context Index
+
+> **DokuZen Pro** ist eine plattformübergreifende Dokumenten- und Dateiverwaltungssuite in Python/PySide6, die 22 Text-, PDF- und Datei-Tools in einer Desktop-Anwendung vereint.
+
+---
+
+## 📌 Repository Metadata
+
+- **Name:** DokuZen (DokuZen Pro)
+- **Organization:** [doc-bricks](https://github.com/doc-bricks)
+- **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
+- **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
+- **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
+- **Test Suite Status:** Pytest test suite 100% green (212+ unit & integration tests passed)
+- **Last-checked:** 2026-08-04
+
+---
+
+## 🏗️ Architecture & Core Components
+
+DokuZen ist als 3-Panel-Desktop-Suite aufgebaut:
+1. **Bibliotheksverwaltung (`core/library/`):** Themenbasierte Ordnerstruktur, Gelesen/Ungelesen-Status, Schnellsuche (`Ctrl+F`), Drag & Drop, persistente Themenwahl.
+2. **PDF-Werkstatt (`core/pdf/`):** Together/Splitter, OCR (`core/ocr/`), Passwortentfernung (`core/pdf/security.py`), Schwärzung (`core/redaction/`), Signatur-Overlay, Beschnitt-Utility & Seitennummerierung.
+3. **Konvertierung (`core/converter/`):** Word ↔ PDF ↔ Text, Bildkonvertierung (PNG, JPG, ICO, WebP; inklusive RGBA-Transparenzverarbeitung), Encoding-Reparatur.
+4. **Entwickler-Tools (`plugins/dev_tools/`):** Python-Code zu EXE-Kompilierung, Lizenz-Generierung, Code-Splitter.
+5. **Hintergrunddienste (`plugins/background/`):** Privacy Guard (Datenschutz-Ampel), Sync Engine, Media Brain.
+
+---
+
+## 🚀 Execution & CLI Entry Points
+
+```bash
+# App via System-Launcher oder start.bat starten
+python main.py
+
+# Direct GUI-CLI Entry Points
+python main.py --import beispiel.pdf notiz.md
+python main.py --open beispiel.pdf
+python main.py --ocr scan.pdf
+python main.py --redact vertrag.pdf
+python main.py --merge teil1.pdf teil2.pdf
+```
+
+---
+
+## 🧪 Testing & Verification
+
+```bash
+# Pytest Testsuite ausführen
+python -m pytest
+
+# Offscreen Source-Platform Smoke Test
+python tests/test_source_platform_smoke.py
+```
+
+---
+
+## 📂 Key Files & Documentation Index
+
+- [`README.md`](file:///C:/_Local_DEV/repos/DokuZen/README.md) — English & General Documentation
+- [`README_de.md`](file:///C:/_Local_DEV/repos/DokuZen/README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
+- [`CHANGELOG.md`](file:///C:/_Local_DEV/repos/DokuZen/CHANGELOG.md) — Version History & Unreleased Maintenance Entries
+- [`THIRD_PARTY_LICENSES.txt`](file:///C:/_Local_DEV/repos/DokuZen/THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
+- [`pyproject.toml`](file:///C:/_Local_DEV/repos/DokuZen/pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration
+- [`main.py`](file:///C:/_Local_DEV/repos/DokuZen/main.py) — Desktop App Launcher & CLI Parser
