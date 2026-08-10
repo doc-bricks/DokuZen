@@ -1,6 +1,6 @@
 # Windows Store — Vorbereitung DokuZen Pro
 
-Stand: 2026-07-12
+Stand: 2026-08-10
 
 ---
 
@@ -29,7 +29,8 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 - [x] `SUPPORT.md` erstellt (2026-06-07)
 - [x] `THIRD_PARTY_LICENSES.txt` als direkte Runtime-Inventur aus
       `requirements.txt` erstellt (2026-07-12; kein transitive SBOM)
-- [ ] Screenshots erstellt (siehe `screenshots/store/README.md`)
+- [x] Screenshots erstellt (2026-08-10; sechs 1920×1080-PNG, siehe
+      `screenshots/store/README.md`)
 
 ### GitHub-Repository
 
@@ -40,9 +41,12 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 
 ### Paketierung
 
-- [ ] `build_exe.bat` ausführen → `releases/v1.0.0/DokuZen-Pro-1.0.0-win64.exe`
-- [ ] `python tools\preflight.py --strict-build` ausführen; bei OCR-Pflicht
-      zusätzlich `python tools\preflight.py --strict-build --require-ocr`
+- [x] `build_exe.bat` ausgeführt (2026-08-10) →
+      `releases/v1.0.0/DokuZen-Pro-1.0.0-win64.exe`
+- [x] `python tools\preflight.py --strict-build` ausgeführt (Exit 0; OCR
+      optional/degradiert)
+- [ ] `python tools\preflight.py --strict-build --require-ocr` (Exit 1:
+      Tesseract-Binärdatei fehlt; keine OCR-Pflichtentscheidung autorisiert)
 - [ ] MSIX-Paket erzeugen (MakeAppx / Windows Application Packaging Project)
 - [ ] WACK-Test (Windows App Certification Kit) bestehen
 - [ ] Paket im Microsoft Partner Center hochladen
