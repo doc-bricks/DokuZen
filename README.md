@@ -10,13 +10,13 @@
 [![Umbrella open-bricks](https://img.shields.io/badge/umbrella-open--bricks-blueviolet.svg)](https://github.com/open-bricks)
 
 > [!NOTE]
-> **AI / LLM Integration Index:** Machine-readable repository context and system boundaries are indexed in [`llms.txt`](file:///C:/_Local_DEV/repos/DokuZen/llms.txt).
+> **AI / LLM Integration Index:** Machine-readable repository context and system boundaries are indexed in [`llms.txt`](llms.txt).
 
 **Dokumenten- und Dateiverwaltungssuite** - Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.
 
 ## Screenshot
 
-![DokuZen Hauptfenster](README/screenshots/main.png)
+![DokuZen Hauptfenster](screenshots/main.png)
 
 ## Features
 

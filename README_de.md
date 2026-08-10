@@ -9,7 +9,7 @@
 [![Umbrella open-bricks](https://img.shields.io/badge/umbrella-open--bricks-blueviolet.svg)](https://github.com/open-bricks)
 
 > [!NOTE]
-> **KI / LLM Integrations-Index:** Maschinenlesbarer Repository-Kontext und Systemgrenzen sind in [`llms.txt`](file:///C:/_Local_DEV/repos/DokuZen/llms.txt) indexiert.
+> **KI / LLM Integrations-Index:** Maschinenlesbarer Repository-Kontext und Systemgrenzen sind in [`llms.txt`](llms.txt) indexiert.
 
 **Dokumenten- und Dateiverwaltungssuite** - Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.
 
@@ -17,7 +17,7 @@
 
 ## Screenshot
 
-![DokuZen Hauptfenster](README/screenshots/main.png)
+![DokuZen Hauptfenster](screenshots/main.png)
 
 ---
 
@@ -115,4 +115,4 @@ python main.py --merge teil1.pdf teil2.pdf
 ## Lizenz & Drittanbieter
 
 **AGPL-3.0-or-later** — GNU Affero General Public License v3.0 or later.
-Siehe [`THIRD_PARTY_LICENSES.txt`](file:///C:/_Local_DEV/repos/DokuZen/THIRD_PARTY_LICENSES.txt) für das vollständige Runtime-Abhängigkeiten-Inventar.
+Siehe [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) für das vollständige Runtime-Abhängigkeiten-Inventar.
