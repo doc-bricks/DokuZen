@@ -12,7 +12,7 @@
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
 - **Test Suite Status:** Pytest test suite 100% green (212+ unit & integration tests passed)
-- **Last-checked:** 2026-08-04
+- **Last-checked:** 2026-08-11
 
 ---
 
@@ -40,6 +40,13 @@ python main.py --ocr scan.pdf
 python main.py --redact vertrag.pdf
 python main.py --merge teil1.pdf teil2.pdf
 ```
+
+**Automation boundary (readback 2026-08-11):** The evidenced use case is a
+local desktop document/PDF workstation. These are GUI startup actions only;
+no concrete remote or agent automation use case is evidenced. Do not claim or
+add a headless batch CLI or REST API until a concrete use case and an approved
+security model (authentication, input/output boundaries, and resource limits)
+exist; any later implementation requires isolated tests.
 
 ---
 

@@ -97,6 +97,17 @@ python main.py --redact vertrag.pdf
 python main.py --merge teil1.pdf teil2.pdf
 ```
 
+### Automationsgrenze (Readback 2026-08-11)
+
+Der belegte Usecase ist eine lokale Desktop-Dokumenten- und PDF-Werkstatt.
+Die fünf Optionen oben sind GUI-Startaktionen und kein headless Batch- oder
+Remote-Vertrag. Es wurde kein konkreter Remote-, Agenten- oder anderer
+Automationsbedarf nachgewiesen; deshalb werden derzeit weder eine
+Headless-Batch-CLI noch eine REST-API als Produktbestandteil behauptet oder
+als Template ergänzt. Ein späterer Ausbau braucht zuerst einen belegten
+Usecase und ein freigegebenes Sicherheitsmodell für Authentifizierung,
+Eingaben, Ausgaben und Ressourcenlimits sowie isolierte Tests.
+
 ---
 
 ## Tastenkürzel

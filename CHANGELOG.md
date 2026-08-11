@@ -5,6 +5,14 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Dokumentation / Documentation (2026-08-11)
+- **GUI-CLI-Automationsgrenze:** Der lokale Desktop-Usecase und die fünf
+  vorhandenen GUI-Startoptionen sind gegen README, Portierungsplan und
+  Aufgabenregister readback-geprüft. Ohne belegten Remote-/Agenten-Usecase
+  bleiben Headless-Batch-CLI und REST-API ausdrücklich Nicht-Bestandteile;
+  ein späterer Ausbau setzt ein freigegebenes Sicherheitsmodell und isolierte
+  Tests voraus.
+
 ### Geändert / Changed (2026-08-04)
 - **Technische Hygiene & Maintenance:** `llms.txt` Discovery Index neu angelegt (Last-checked: 2026-08-04, 212 passed), `pyproject.toml` PEP 621 Metadata & Pytest Configuration erstellt, `README_de.md` angelegt und Shields.io Badges (`doc-bricks`, `open-bricks`, Pytest 212 passed, AGPL-3.0) & GFM Callout Box in `README.md` und `README_de.md` eingebunden.
 

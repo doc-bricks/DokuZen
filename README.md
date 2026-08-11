@@ -97,6 +97,17 @@ Die Optionen öffnen weiterhin die Desktop-App und springen direkt in den
 gewählten Dialog oder laden die Datei in Vorschau/Bibliothek vor.
 Eine projektlokale REST-API ist im aktuellen Stand nicht implementiert.
 
+### Automationsgrenze (Readback 2026-08-11)
+
+Der belegte Usecase ist eine lokale Desktop-Dokumenten- und PDF-Werkstatt.
+Die fünf Optionen oben sind GUI-Startaktionen und kein headless Batch- oder
+Remote-Vertrag. Es wurde kein konkreter Remote-, Agenten- oder anderer
+Automationsbedarf nachgewiesen; deshalb werden derzeit weder eine
+Headless-Batch-CLI noch eine REST-API als Produktbestandteil behauptet oder
+als Template ergänzt. Ein späterer Ausbau braucht zuerst einen belegten
+Usecase und ein freigegebenes Sicherheitsmodell für Authentifizierung,
+Eingaben, Ausgaben und Ressourcenlimits sowie isolierte Tests.
+
 ## Projektstruktur
 
 ```
@@ -194,6 +205,16 @@ python main.py
 - `python main.py --merge a.pdf b.pdf`
 
 The current project does not ship a project-local REST API yet.
+
+### Automation boundary (readback 2026-08-11)
+
+The evidenced use case is a local desktop document and PDF workstation. The
+five options above are GUI startup actions, not a headless batch or remote
+contract. No concrete remote, agent, or other automation need was evidenced;
+therefore the product currently claims neither a headless batch CLI nor a
+REST API, and does not add an API template. A future expansion requires a
+concrete use case, an approved security model for authentication, inputs,
+outputs, and resource limits, plus isolated tests.
 
 ### Development smoke tests
 
