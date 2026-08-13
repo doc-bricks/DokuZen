@@ -1,4 +1,4 @@
-# Support — DokuZen Pro
+# Support — DokuZen
 
 ## Deutsch
 

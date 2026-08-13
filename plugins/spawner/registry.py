@@ -352,7 +352,7 @@ class DokuZenRegistry(LoggerMixin):
         results["pdf_menu"] = (
             self._manager.register_cascading_menu(
                 "DokuZen_PDF",
-                "DokuZen Pro",
+                "DokuZen",
                 pdf_items,
                 extensions=[".pdf"],
             )

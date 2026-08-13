@@ -1,4 +1,4 @@
-DokuZen Pro - Third-Party License Inventory
+DokuZen - Third-Party License Inventory
 ===========================================
 
 Status: direct runtime dependency inventory
@@ -8,11 +8,11 @@ Checked: 2026-07-12 via PyPI JSON metadata for the direct packages in
 Scope
 -----
 
-This file lists DokuZen Pro's direct Python runtime dependencies from
+This file lists DokuZen's direct Python runtime dependencies from
 `requirements.txt`. It is intentionally not a frozen transitive SBOM and does
 not claim to enumerate every wheel pulled by pip at install time.
 
-DokuZen Pro itself is licensed under AGPL-3.0-or-later. Because the runtime stack includes
+DokuZen itself is licensed under AGPL-3.0-or-later. Because the runtime stack includes
 AGPL/GPL components, a Microsoft Store or binary release must keep source-code
 availability, notices, and corresponding-license obligations aligned. A
 proprietary binary release would require separate commercial licensing for the

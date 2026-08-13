@@ -1,4 +1,4 @@
-# 🏗️ INTEGRATIONSPLAN: DokuZen Pro
+# 🏗️ INTEGRATIONSPLAN: DokuZen
 
 > **Version:** 1.1.0  
 > **Erstellt:** 2025-01-02  
@@ -43,7 +43,7 @@ Gesamt: ~81 Dateien | ~18.500 Zeilen Code | 21/21 Workflows (100%)
 ## 1. PROJEKTÜBERSICHT
 
 ### 1.1 Ziel
-Vereinigung von **11 Text- und PDF-Tools** zu einer einheitlichen Suite namens **DokuZen Pro**.
+Vereinigung von **11 Text- und PDF-Tools** zu einer einheitlichen Suite namens **DokuZen**.
 
 ### 1.2 Quellentools
 

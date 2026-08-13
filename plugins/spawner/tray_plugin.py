@@ -49,7 +49,7 @@ class TrayPlugin(LoggerMixin):
     - Clipboard → Datei Schnellzugriff
     """
     
-    APP_NAME = "DokuZen Pro"
+    APP_NAME = "DokuZen"
     
     def __init__(self, on_show_main: Callable = None,
                  on_spawn_text: Callable = None,

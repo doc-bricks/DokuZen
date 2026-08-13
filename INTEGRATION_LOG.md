@@ -1,6 +1,6 @@
-# 📝 INTEGRATION LOG - DokuZen Pro
+# 📝 INTEGRATION LOG - DokuZen
 
-> **Projekt:** DokuZen Pro  
+> **Projekt:** DokuZen  
 > **Plan-Datei:** `INTEGRATIONSPLAN_DOKUZEN.md`  
 > **Erstellt:** 2025-01-02  
 > **Letzte Aktualisierung:** 2026-01-02

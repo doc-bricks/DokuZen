@@ -1,12 +1,12 @@
 # DokuZen — Discovery & Machine Context Index
 
-> **DokuZen Pro** ist eine plattformübergreifende Dokumenten- und Dateiverwaltungssuite in Python/PySide6, die 22 Text-, PDF- und Datei-Tools in einer Desktop-Anwendung vereint.
+> **DokuZen** ist eine plattformübergreifende Dokumenten- und Dateiverwaltungssuite in Python/PySide6, die 22 Text-, PDF- und Datei-Tools in einer Desktop-Anwendung vereint.
 
 ---
 
 ## 📌 Repository Metadata
 
-- **Name:** DokuZen (DokuZen Pro)
+- **Name:** DokuZen
 - **Organization:** [doc-bricks](https://github.com/doc-bricks)
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)

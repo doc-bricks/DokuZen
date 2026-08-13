@@ -1,4 +1,4 @@
-# DokuZen Pro
+# DokuZen
 
 **Deutsch** | [English](README.md)
 
