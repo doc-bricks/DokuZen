@@ -11,8 +11,9 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (212+ unit & integration tests passed)
-- **Last-checked:** 2026-08-04
+- **Test Suite Status:** Pytest test suite 100% green (276 unit & integration tests passed)
+- **Last-checked:** 2026-08-14
+
 
 ---
 

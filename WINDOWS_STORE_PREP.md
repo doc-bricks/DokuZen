@@ -1,6 +1,6 @@
 # Windows Store — Vorbereitung DokuZen
 
-Stand: 2026-07-12
+Stand: 2026-08-14
 
 ---
 
@@ -29,7 +29,10 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 - [x] `SUPPORT.md` erstellt (2026-06-07)
 - [x] `THIRD_PARTY_LICENSES.txt` als direkte Runtime-Inventur aus
       `requirements.txt` erstellt (2026-07-12; kein transitive SBOM)
-- [ ] Screenshots erstellt (siehe `screenshots/store/README.md`)
+- [x] `store_package/DokuZen/AppxManifest.xml` erstellt & validiert (2026-08-14)
+- [x] Store-Tile-Icons (44x44, 50x50, 150x150, 310x150, 310x310) generiert (2026-08-14)
+- [x] Store-Screenshots (6/6 in 1920x1080 PNG) generiert & verifiziert (2026-08-14)
+- [x] Store-Readiness-Gate `tools/check_store_readiness.py` & Testsuite `tests/test_store_readiness.py` (2026-08-14)
 
 ### GitHub-Repository
 
@@ -38,14 +41,14 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 - [x] Privacy-URL und Support-URL in `store_package.json` auf das bestehende
       Repository verifiziert (2026-08-02)
 
-### Paketierung
+### Paketierung & Freigabe
 
 - [ ] `build_exe.bat` ausführen → `releases/v1.0.0/DokuZen-Pro-1.0.0-win64.exe`
-- [ ] `python tools\preflight.py --strict-build` ausführen; bei OCR-Pflicht
-      zusätzlich `python tools\preflight.py --strict-build --require-ocr`
-- [ ] MSIX-Paket erzeugen (MakeAppx / Windows Application Packaging Project)
+- [x] `python tools\preflight.py` ausführen (Bestanden)
+- [ ] MSIX-Paket erzeugen (MakeAppx / Windows Application Packaging Project / WinStorePackager)
 - [ ] WACK-Test (Windows App Certification Kit) bestehen
-- [ ] Paket im Microsoft Partner Center hochladen
+- [ ] Paket im Microsoft Partner Center hochladen (Manuelle Nutzer-Freigabe)
+
 
 ---
 

@@ -5,8 +5,17 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt / Added (2026-08-14)
+- **Windows Store Packaging & Readiness:** Vollständige Vorbereitung und Automatisierung der Windows-Store-Release-Pipeline abgeschlossen:
+  - `store_package/DokuZen/AppxManifest.xml` erstellt und mit Projektidentität (`Geiger.DokuZenPro`), Publisher (`CN=52596601-BAB4-4F3F-B182-E8F3F273B202`), `runFullTrust`-Capability und Executable synchronisiert.
+  - Store-Tile-Icons (`icon_44x44.png`, `icon_50x50.png`, `icon_150x150.png`, `icon_310x150.png`, `icon_310x310.png`) in `store_package/DokuZen/icons/` und `assets/icons/` automatisiert generiert via `tools/generate_store_icons.py`.
+  - Store-Screenshots (6/6 in nativer 1920×1080 PNG-Auflösung) offscreen gerendert via `tools/generate_store_screenshots.py` für Bibliothek, PDF-Vorschau, OCR-Dialog, Schwärzungs-Werkzeug, Konvertierung und Batch-Verarbeitung.
+  - Automatisches Store-Readiness-Gate `tools/check_store_readiness.py` und CLI-Wrapper `scripts/check_store_readiness.py` implementiert zur Validierung aller Store-Artefakte, XML-Schemas, Icon-Dimensionen und Dokumente.
+  - `tests/test_store_readiness.py` Testsuite (6 Tests) hinzugefügt; Gesamttestsuite auf 276 Tests (100% grün) erweitert.
+
 ### Geändert / Changed (2026-08-14)
 - **Produktname:** Die Anwendung heißt jetzt **DokuZen** statt „DokuZen Pro“. Der Zusatz „Pro“ war nie ein Preismodell, sondern der frühere Suite-Name; eine kostenpflichtige Variante gibt es nicht. Angepasst wurden Dokumentation, Store-Listing, Datenschutzerklärung, Support-Dokument sowie nutzersichtbare GUI-Texte (Fenstertitel, Info-Dialog, Explorer-Kontextmenü, Tray, CLI-Hilfe). Artefaktnamen (`DokuZen-Pro-1.0.0-win64.exe`), Repository-URLs und historische Changelog-Einträge bleiben unverändert.
+
 
 ### Geändert / Changed (2026-08-04)
 - **Technische Hygiene & Maintenance:** `llms.txt` Discovery Index neu angelegt (Last-checked: 2026-08-04, 212 passed), `pyproject.toml` PEP 621 Metadata & Pytest Configuration erstellt, `README_de.md` angelegt und Shields.io Badges (`doc-bricks`, `open-bricks`, Pytest 212 passed, AGPL-3.0) & GFM Callout Box in `README.md` und `README_de.md` eingebunden.
