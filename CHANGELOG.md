@@ -5,6 +5,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Geändert / Changed (2026-08-16)
+- **Discoverability, README-Design, Badges & Metadata Parity Check (Pfad B):**
+  - Badges in `README.md` & `README_de.md` um Testsuite (275 Passed, 100% grün), Version (1.0.0), `doc-bricks` Ecosystem, `open-bricks` Umbrella und `llms.txt` Discovery synchronisiert.
+  - Interaktive zweisprachige Mermaid Systemarchitektur-Diagramme (3-Panel GUI -> Core Engines -> Plugins & Background Services) integriert.
+  - Geschwisterwerkzeuge-Matrix innerhalb der `doc-bricks`- und `open-bricks`-Ökosysteme (`PDFtoPDFocr`, `MediaBrain`, `TextBrain`, `DevCenter`, `CodeBox`) in beiden Sprachfassungen verlinkt.
+  - Automatisierte Metadaten- & Manifest-Paritätstestsuite in `tests/test_metadata.py` implementiert (5/5 passed).
+  - `pyproject.toml` um `[tool.ruff]` und `[tool.ruff.lint]` (py310, line-length 120, ruff check 100% sauber) sowie Changelog URL erweitert.
+  - Whitespace- & Mojibake-Hygiene in `core/converter/formats.py`, `gui/panels/library_panel.py` und `plugins/special_text/encoding_fixer.py` bereinigt.
+  - `llms.txt` Last-checked Timestamp auf `2026-08-16` und Teststand (275 passed) synchronisiert.
+
 ### Geändert / Changed (2026-08-14)
 - **Produktname:** Die Anwendung heißt jetzt **DokuZen** statt „DokuZen Pro“. Der Zusatz „Pro“ war nie ein Preismodell, sondern der frühere Suite-Name; eine kostenpflichtige Variante gibt es nicht. Angepasst wurden Dokumentation, Store-Listing, Datenschutzerklärung, Support-Dokument sowie nutzersichtbare GUI-Texte (Fenstertitel, Info-Dialog, Explorer-Kontextmenü, Tray, CLI-Hilfe). Artefaktnamen (`DokuZen-Pro-1.0.0-win64.exe`), Repository-URLs und historische Changelog-Einträge bleiben unverändert.
 

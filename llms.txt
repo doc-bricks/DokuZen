@@ -1,6 +1,6 @@
 # DokuZen — Discovery & Machine Context Index
 
-> **DokuZen** ist eine plattformübergreifende Dokumenten- und Dateiverwaltungssuite in Python/PySide6, die 22 Text-, PDF- und Datei-Tools in einer Desktop-Anwendung vereint.
+> **DokuZen** ist eine plattformübergreifende Dokumenten- und Dateiverwaltungssuite in Python/PySide6, die 22 Text-, PDF- und Datei-Tools in einer lokalen Desktop-Anwendung vereint.
 
 ---
 
@@ -11,19 +11,35 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (212+ unit & integration tests passed)
-- **Last-checked:** 2026-08-11
+- **Test Suite Status:** Pytest test suite 100% green (275+ unit & integration tests passed)
+- **Last-checked:** 2026-08-16
 
 ---
 
 ## 🏗️ Architecture & Core Components
 
-DokuZen ist als 3-Panel-Desktop-Suite aufgebaut:
+DokuZen ist als modulares 3-Panel-Desktop-System aufgebaut:
 1. **Bibliotheksverwaltung (`core/library/`):** Themenbasierte Ordnerstruktur, Gelesen/Ungelesen-Status, Schnellsuche (`Ctrl+F`), Drag & Drop, persistente Themenwahl.
-2. **PDF-Werkstatt (`core/pdf/`):** Together/Splitter, OCR (`core/ocr/`), Passwortentfernung (`core/pdf/security.py`), Schwärzung (`core/redaction/`), Signatur-Overlay, Beschnitt-Utility & Seitennummerierung.
+2. **PDF-Werkstatt (`core/pdf/`):** Merger/Splitter, OCR (`core/ocr/`), Passwortentfernung (`core/pdf/security.py`), Schwärzung (`core/redaction/`), Signatur-Overlay, Beschnitt-Utility & Seitennummerierung.
 3. **Konvertierung (`core/converter/`):** Word ↔ PDF ↔ Text, Bildkonvertierung (PNG, JPG, ICO, WebP; inklusive RGBA-Transparenzverarbeitung), Encoding-Reparatur.
 4. **Entwickler-Tools (`plugins/dev_tools/`):** Python-Code zu EXE-Kompilierung, Lizenz-Generierung, Code-Splitter.
 5. **Hintergrunddienste (`plugins/background/`):** Privacy Guard (Datenschutz-Ampel), Sync Engine, Media Brain.
+
+---
+
+## 🌐 Ecosystem & Sibling Tools
+
+DokuZen ist eingebettet in die `doc-bricks` Suite unter dem Dach von `open-bricks`:
+
+| Repository | Rolle | Status |
+|---|---|---|
+| [doc-bricks/DokuZen](https://github.com/doc-bricks/DokuZen) | All-in-One Dokumenten- & PDF-Verwaltungssuite | Aktiv / 1.0.0 |
+| [doc-bricks/PDFtoPDFocr](https://github.com/doc-bricks/PDFtoPDFocr) | OCR-Konvertierung & Searchable-PDF Engine | Aktiv / 1.1.3 |
+| [doc-bricks/MediaBrain](https://github.com/doc-bricks/MediaBrain) | Lokale Medien- & OCR-Extraktions-Pipeline | Aktiv / 0.1.0 |
+| [doc-bricks/TextBrain](https://github.com/doc-bricks/TextBrain) | KI-gestützte Text- & Markdown-Verarbeitung | Aktiv / 0.1.0 |
+| [dev-bricks/DevCenter](https://github.com/dev-bricks/DevCenter) | Lokales Entwickler- und Dashboard-Zentrum | Aktiv / 1.0.0 |
+| [dev-bricks/CodeBox](https://github.com/dev-bricks/CodeBox) | Sichere lokale Code-Ausführungsumgebung | Aktiv / 0.1.2 |
+| [open-bricks/.github](https://github.com/open-bricks/.github) | Dachorganisation aller Bricks-Werkzeuge | Aktiv |
 
 ---
 
@@ -64,7 +80,7 @@ python tests/test_source_platform_smoke.py
 
 ## 📂 Key Files & Documentation Index
 
-- [`README.md`](README.md) — English & General Documentation
+- [`README.md`](README.md) — English Documentation & Overview
 - [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Unreleased Maintenance Entries
 - [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
