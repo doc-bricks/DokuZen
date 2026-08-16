@@ -5,7 +5,7 @@
 **Deutsch** | [English](README.md)
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Pytest Status](https://img.shields.io/badge/pytest-275%20passed-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-281%20passed-brightgreen.svg)](https://docs.pytest.org/)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](pyproject.toml)
 [![License AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Ecosystem doc-bricks](https://img.shields.io/badge/ecosystem-doc--bricks-orange.svg)](https://github.com/doc-bricks)
@@ -86,10 +86,11 @@ graph TD
 - **Lizenz-Generator:** Standardisierte Erstellung gängiger Open-Source-Lizenzen.
 - **Code-Splitter:** Saubere Aufteilung mehrteiliger Python-Quelldateien in modulare Strukturen.
 
-### 🔒 Hintergrunddienste
+### 🔒 Hintergrunddienste & Store-Integration
 - **Privacy Guard:** Optische Datenschutz-Ampel zur Erkennung exponierter sensibler Daten.
 - **Sync Engine:** Lokale Synchronisationsunterstützung.
 - **Media Brain:** Integrierte Medien- und Metadaten-Extraktion.
+- **Windows Store Bridge:** MSIX Packaging Manifest & automatisierter Readiness Preflight Gatekeeper.
 
 ---
 
@@ -176,6 +177,9 @@ python -m pytest
 
 # Offscreen Plattform-Smoke-Test
 python tests/test_source_platform_smoke.py
+
+# Windows Store Readiness Gatekeeper
+python tools/check_store_readiness.py
 ```
 
 ---

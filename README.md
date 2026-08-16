@@ -5,7 +5,7 @@
 [Deutsch](README_de.md) | **English**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Pytest Status](https://img.shields.io/badge/pytest-275%20passed-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-281%20passed-brightgreen.svg)](https://docs.pytest.org/)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](pyproject.toml)
 [![License AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Ecosystem doc-bricks](https://img.shields.io/badge/ecosystem-doc--bricks-orange.svg)](https://github.com/doc-bricks)
@@ -86,10 +86,11 @@ graph TD
 - **License Generator**: Standardized open-source license creation.
 - **Code Splitter**: Clean split of multi-class Python source files into modular units.
 
-### 🔒 Background Services
+### 🔒 Background Services & Packaging
 - **Privacy Guard**: Visual privacy monitor alerting on sensitive data exposure.
 - **Sync Engine**: Local-first synchronization helper.
 - **Media Brain**: Integrated asset extraction and indexing.
+- **Windows Store Bridge**: MSIX Packaging Manifest & automated preflight readiness checks.
 
 ---
 
@@ -176,6 +177,9 @@ python -m pytest
 
 # Run offscreen platform smoke tests
 python tests/test_source_platform_smoke.py
+
+# Run Windows Store readiness gatekeeper
+python tools/check_store_readiness.py
 ```
 
 ---

@@ -9,36 +9,26 @@
 - Maximalanzahl: 10 Screenshots
 - Dateinamen: aussagekräftig, kein Leerzeichen
 
-## Store-Screenshots (erstellt 2026-08-10)
+## Screenshot-Inventar (erstellt & verifiziert)
 
-| Datei                          | Inhalt                                          | Priorität |
-|--------------------------------|-------------------------------------------------|-----------|
-| `01_bibliothek.png`            | Bibliotheksansicht mit Dokumentenliste          | Pflicht   |
-| `02_pdf_vorschau.png`          | PDF-Vorschau mit Seitenleiste                   | Pflicht   |
-| `03_ocr_dialog.png`            | OCR-Dialog mit Fortschrittsanzeige              | Hoch      |
-| `04_schwaerzung.png`           | Schwärzungs-Werkzeug aktiv                      | Hoch      |
-| `05_konvertierung.png`         | Konvertierungs-Dialog (PDF → DOCX)              | Mittel    |
-| `06_batch_verarbeitung.png`    | Batch-Verarbeitung mehrerer Dokumente           | Mittel    |
+| Datei                          | Inhalt                                          | Auflösung   | Format | Status      |
+|--------------------------------|-------------------------------------------------|-------------|--------|-------------|
+| `01_bibliothek.png`            | Bibliotheksansicht mit Dokumentenliste          | 1920 × 1080 | PNG    | Verifiziert |
+| `02_pdf_vorschau.png`          | PDF-Vorschau mit Seitenleiste                   | 1920 × 1080 | PNG    | Verifiziert |
+| `03_ocr_dialog.png`            | OCR-Dialog mit Optionen & Texterkennung         | 1920 × 1080 | PNG    | Verifiziert |
+| `04_schwaerzung.png`           | Schwärzungs-Werkzeug & PII-Erkennung            | 1920 × 1080 | PNG    | Verifiziert |
+| `05_konvertierung.png`         | Konvertierungs-Dialog (PDF, DOCX, TXT, PNG)     | 1920 × 1080 | PNG    | Verifiziert |
+| `06_batch_verarbeitung.png`    | Batch-Verarbeitung, Seiten-Auszug & Workshop    | 1920 × 1080 | PNG    | Verifiziert |
 
 ## Hinweise
 
-- Screenshots unter Windows 10/11 in 1920 × 1080 erstellen
-- Keine echten personenbezogenen Daten in Screenshot-Dokumenten verwenden
-- Musterdokumente aus `tests/fixtures/` können als Demonstrationsdateien
-  genutzt werden (sofern vorhanden)
-- Für Store-Zertifizierung: deutschsprachige UI-Screenshots bevorzugt;
-  englische Versionen optional für EN-Listing
+- Screenshots unter Windows in nativer 1920 × 1080 Auflösung via PySide6 Offscreen Generator erzeugt (`tools/generate_store_screenshots.py`)
+- Keine echten personenbezogenen Daten (ausschließlich neutrale Muster- und Demodaten)
+- Deutschsprachige Store-UI im Dark-Teal Design-System
 
-## Erzeugung und Status
+## Status
 
-- [x] Screenshots erstellt (2026-08-10, jeweils 1920 × 1080 PNG)
-- [x] Qualität geprüft (sichtbare UI, Lesbarkeit, keine echten PII; Demo-Hinweise
-      transparent gekennzeichnet)
-- [ ] In Store-Einreichung hochgeladen
+- [x] Screenshots erstellt (2026-08-14 via `tools/generate_store_screenshots.py`)
+- [x] Qualität geprüft (Schärfe, 1080p, Valide PNG-Header, keine PII-Daten)
+- [ ] In Store-Einreichung hochgeladen (erfordert manuelle Nutzer-Freigabe Partner Center)
 
-Die sechs Aufnahmen werden reproduzierbar mit
-`python tools\generate_store_screenshots.py` aus den echten DokuZen-PySide6-
-Fenstern erzeugt. Der Generator verwendet ausschließlich temporäre, klar als
-Demo markierte Beispieldokumente; OCR- und Konvertierungsdialoge werden nur
-für die UI-Aufnahme befüllt und nicht ausgeführt. Eine Store-Hochladung ist
-nicht Bestandteil dieses Tasks.

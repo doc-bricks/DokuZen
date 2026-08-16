@@ -11,7 +11,7 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (275+ unit & integration tests passed)
+- **Test Suite Status:** Pytest test suite 100% green (281 unit & integration tests passed)
 - **Last-checked:** 2026-08-16
 
 ---
@@ -24,6 +24,7 @@ DokuZen ist als modulares 3-Panel-Desktop-System aufgebaut:
 3. **Konvertierung (`core/converter/`):** Word ↔ PDF ↔ Text, Bildkonvertierung (PNG, JPG, ICO, WebP; inklusive RGBA-Transparenzverarbeitung), Encoding-Reparatur.
 4. **Entwickler-Tools (`plugins/dev_tools/`):** Python-Code zu EXE-Kompilierung, Lizenz-Generierung, Code-Splitter.
 5. **Hintergrunddienste (`plugins/background/`):** Privacy Guard (Datenschutz-Ampel), Sync Engine, Media Brain.
+6. **Windows Store Bridge (`store_package/` & `tools/`):** MSIX Packaging Manifest, Store Assets & Automatisierter Preflight Gatekeeper.
 
 ---
 
@@ -74,6 +75,9 @@ python -m pytest
 
 # Offscreen Source-Platform Smoke Test
 python tests/test_source_platform_smoke.py
+
+# Windows Store Readiness Gatekeeper
+python tools/check_store_readiness.py
 ```
 
 ---
@@ -84,5 +88,6 @@ python tests/test_source_platform_smoke.py
 - [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Unreleased Maintenance Entries
 - [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
+- [`WINDOWS_STORE_PREP.md`](WINDOWS_STORE_PREP.md) — Windows Store Packaging & Asset Inventory
 - [`pyproject.toml`](pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration
 - [`main.py`](main.py) — Desktop App Launcher & CLI Parser
