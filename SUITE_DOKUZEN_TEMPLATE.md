@@ -1,9 +1,9 @@
-# 📦 DokuZen Pro Suite – Final Documentation
+# 📦 DokuZen Suite – Final Documentation
 
 ## 1. Überblick
 
 **Kurzbeschreibung:**  
-DokuZen Pro ist eine umfassende Dokumenten- und Dateiverwaltungssuite, die 22 Text-, PDF- und Datei-Tools in einer einheitlichen Anwendung vereint.
+DokuZen ist eine umfassende Dokumenten- und Dateiverwaltungssuite, die 22 Text-, PDF- und Datei-Tools in einer einheitlichen Anwendung vereint.
 
 | Feld | Wert |
 |------|------|
@@ -77,7 +77,7 @@ Die Suite vereint Bibliotheksverwaltung, PDF-Werkstatt, OCR, Schwärzung, Konver
 
 ### 3.2 Feature-Matrix
 
-| Feature | Einzeltools | DokuZen Pro |
+| Feature | Einzeltools | DokuZen |
 |---------|:-----------:|:---------------:|
 | Bibliotheksverwaltung | 1 Tool | ✅ Integriert |
 | PDF-Operationen | 5 Tools | ✅ PDF-Werkstatt |
@@ -543,4 +543,4 @@ python -m pytest tests/ -v
 
 ---
 
-*Generiert: 2026-01-09 | DokuZen Pro Suite | ~18.500 Zeilen / 81 Dateien*
+*Generiert: 2026-01-09 | DokuZen Suite | ~18.500 Zeilen / 81 Dateien*

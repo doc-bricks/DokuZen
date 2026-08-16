@@ -1,4 +1,4 @@
-# Windows Store — Vorbereitung DokuZen Pro
+# Windows Store — Vorbereitung DokuZen
 
 Stand: 2026-08-10
 

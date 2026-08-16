@@ -5,6 +5,9 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Geändert / Changed (2026-08-14)
+- **Produktname:** Die Anwendung heißt jetzt **DokuZen** statt „DokuZen Pro“. Der Zusatz „Pro“ war nie ein Preismodell, sondern der frühere Suite-Name; eine kostenpflichtige Variante gibt es nicht. Angepasst wurden Dokumentation, Store-Listing, Datenschutzerklärung, Support-Dokument sowie nutzersichtbare GUI-Texte (Fenstertitel, Info-Dialog, Explorer-Kontextmenü, Tray, CLI-Hilfe). Artefaktnamen (`DokuZen-Pro-1.0.0-win64.exe`), Repository-URLs und historische Changelog-Einträge bleiben unverändert.
+
 ### Dokumentation / Documentation (2026-08-11)
 - **GUI-CLI-Automationsgrenze:** Der lokale Desktop-Usecase und die fünf
   vorhandenen GUI-Startoptionen sind gegen README, Portierungsplan und

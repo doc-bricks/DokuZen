@@ -79,7 +79,7 @@ class MainWindow(QMainWindow, LoggerMixin):
     
     def _setup_window(self):
         """Konfiguriert das Hauptfenster."""
-        self.setWindowTitle("DokuZen Pro")
+        self.setWindowTitle("DokuZen")
         self.setMinimumSize(1000, 600)
         self.resize(1400, 900)
         
@@ -236,7 +236,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         # === Hilfe-Menü ===
         help_menu = menubar.addMenu("&Hilfe")
         
-        self._action_about = QAction("Über DokuZen Pro", self)
+        self._action_about = QAction("Über DokuZen", self)
         self._action_about.triggered.connect(self._on_about)
         help_menu.addAction(self._action_about)
     
@@ -715,8 +715,8 @@ class MainWindow(QMainWindow, LoggerMixin):
         """Zeigt About-Dialog."""
         QMessageBox.about(
             self,
-            "Über DokuZen Pro",
-            "<h2>DokuZen Pro</h2>"
+            "Über DokuZen",
+            "<h2>DokuZen</h2>"
             "<p>Version 1.0.0</p>"
             "<p>Dokumenten- und Dateiverwaltungssuite</p>"
             "<p>Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.</p>"

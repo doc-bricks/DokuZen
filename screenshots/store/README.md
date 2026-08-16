@@ -1,4 +1,4 @@
-# Store-Screenshots — DokuZen Pro
+# Store-Screenshots — DokuZen
 
 ## Anforderungen (Microsoft Store)
 

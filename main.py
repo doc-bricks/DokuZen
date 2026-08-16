@@ -59,7 +59,7 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(
         description=(
-            "Startet DokuZen Pro optional direkt mit Import-, Öffnen-, OCR-, "
+            "Startet DokuZen optional direkt mit Import-, Öffnen-, OCR-, "
             "Schwärzungs- oder Merge-Aktion."
         )
     )
@@ -176,7 +176,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     # BUGSWEEP-34: nur den Programmnamen an Qt geben — die App-eigenen CLI-Argumente (--open etc.)
     # werden separat geparst; an Qt durchgereicht wuerde Qt sie als unbekannte Optionen behandeln.
     app = QApplication([sys.argv[0]])
-    app.setApplicationName("DokuZen Pro")
+    app.setApplicationName("DokuZen")
     app.setApplicationVersion("1.0.0")
     app.setOrganizationName("DokuZen")
     

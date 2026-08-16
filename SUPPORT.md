@@ -1,4 +1,4 @@
-# Support — DokuZen Pro
+# Support — DokuZen
 
 ## Deutsch
 
@@ -25,7 +25,8 @@ Einige passwortgeschützte oder DRM-gesicherte PDFs können nicht verarbeitet
 werden. Entfernen Sie den Schutz, sofern Sie dazu berechtigt sind.
 
 **Wo werden meine Einstellungen gespeichert?**
-`%APPDATA%\DokuZen Pro\` (Windows)
+Der Bibliotheks- und Sitzungszustand liegt in `%USERPROFILE%\.dokuzen_state.json` (Windows).
+Protokolldateien liegen im Unterordner `logs\` des Programmverzeichnisses.
 
 ### Versionsverlauf
 
@@ -57,7 +58,8 @@ Some password-protected or DRM-secured PDFs cannot be processed.
 Remove the protection if you are authorised to do so.
 
 **Where are my settings stored?**
-`%APPDATA%\DokuZen Pro\` (Windows)
+Library and session state is kept in `%USERPROFILE%\.dokuzen_state.json` (Windows).
+Log files are written to the `logs\` subfolder of the program directory.
 
 ### Version history
 

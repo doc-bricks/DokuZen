@@ -1,4 +1,4 @@
-# Datenschutzerklärung / Privacy Policy — DokuZen Pro
+# Datenschutzerklärung / Privacy Policy — DokuZen
 
 **Stand / Last updated:** 2026-06-07
 
@@ -14,7 +14,7 @@ Kontakt: lukasgeiger@googlemail.com
 
 ### 2. Grundsatz: Lokale Verarbeitung
 
-DokuZen Pro verarbeitet alle Dokumente und Daten **ausschließlich lokal auf
+DokuZen verarbeitet alle Dokumente und Daten **ausschließlich lokal auf
 Ihrem Gerät**. Die Anwendung:
 
 - stellt **keine Netzwerkverbindungen** her
@@ -24,7 +24,7 @@ Ihrem Gerät**. Die Anwendung:
 
 ### 3. Gespeicherte Daten
 
-DokuZen Pro speichert folgende Daten ausschließlich lokal:
+DokuZen speichert folgende Daten ausschließlich lokal:
 
 - **Anwendungseinstellungen** (z. B. Fenstergröße, zuletzt geöffnete Ordner) in
   einer lokalen Konfigurationsdatei im AppData-Verzeichnis
@@ -33,7 +33,7 @@ DokuZen Pro speichert folgende Daten ausschließlich lokal:
 
 ### 4. Drittanbieter-Bibliotheken
 
-DokuZen Pro nutzt Open-Source-Bibliotheken (u. a. PyMuPDF, Tesseract,
+DokuZen nutzt Open-Source-Bibliotheken (u. a. PyMuPDF, Tesseract,
 PySide6, pikepdf). Diese Bibliotheken stellen ebenfalls keine Netzwerkverbindungen
 her. Eine vollständige Liste der direkten Runtime-Abhängigkeiten findet sich in
 `THIRD_PARTY_LICENSES.txt` im Projektverzeichnis.
@@ -57,7 +57,7 @@ Contact: lukasgeiger@googlemail.com
 
 ### 2. Principle: Local processing only
 
-DokuZen Pro processes all documents and data **exclusively on your local
+DokuZen processes all documents and data **exclusively on your local
 device**. The application:
 
 - makes **no network connections**
@@ -67,7 +67,7 @@ device**. The application:
 
 ### 3. Stored data
 
-DokuZen Pro stores the following data exclusively locally:
+DokuZen stores the following data exclusively locally:
 
 - **Application settings** (e.g. window size, last opened folders) in a local
   configuration file in the AppData directory
@@ -76,7 +76,7 @@ DokuZen Pro stores the following data exclusively locally:
 
 ### 4. Third-party libraries
 
-DokuZen Pro uses open-source libraries (including PyMuPDF, Tesseract,
+DokuZen uses open-source libraries (including PyMuPDF, Tesseract,
 PySide6, pikepdf). These libraries also make no network connections.
 A complete list of direct runtime dependencies is available in
 `THIRD_PARTY_LICENSES.txt` in the project directory.

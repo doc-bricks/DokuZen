@@ -1,4 +1,6 @@
-# DokuZen Pro
+<img src="assets/banner.png" width="100%" alt="DokuZen Banner">
+
+# DokuZen
 
 **Deutsch** | [English](README.md)
 

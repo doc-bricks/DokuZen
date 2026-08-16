@@ -1,5 +1,6 @@
+<img src="assets/banner.png" width="100%" alt="DokuZen Banner">
 
-# DokuZen Pro
+# DokuZen
 
 [Deutsch](README_de.md) | **English**
 
@@ -173,7 +174,7 @@ Dieses Projekt verwendet PyMuPDF (AGPL-3.0). `THIRD_PARTY_LICENSES.txt` dokument
 
 ### Overview
 
-DokuZen Pro is a document and file management suite combining 22 text, PDF, and file tools in a single application.
+DokuZen is a document and file management suite combining 22 text, PDF, and file tools in a single application.
 
 ### Features
 

@@ -127,7 +127,7 @@ class TestRegistryManagerCascadingExtensions(unittest.TestCase):
 
         ok = manager.register_cascading_menu(
             "DokuZen_PDF",
-            "DokuZen Pro",
+            "DokuZen",
             [],
             extensions=[".pdf"],
         )

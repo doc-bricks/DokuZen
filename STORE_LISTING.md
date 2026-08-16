@@ -1,12 +1,12 @@
-# DokuZen Pro — Store-Listing
+# DokuZen — Store-Listing
 
 ## Deutsch
 
 **Kurztitel (≤ 30 Zeichen)**
-DokuZen Pro
+DokuZen
 
 **Beschreibung (≤ 10.000 Zeichen)**
-DokuZen Pro ist eine lokale Dokumenten-Werkstatt für den Windows-Desktop.
+DokuZen ist eine lokale Dokumenten-Werkstatt für den Windows-Desktop.
 Alle Verarbeitungsschritte laufen ausschließlich auf Ihrem Gerät — keine Cloud,
 keine Konten, keine Datenübertragung.
 
@@ -41,10 +41,10 @@ lokal, DOCX, Textererkennung
 ## English
 
 **Short title (≤ 30 chars)**
-DokuZen Pro
+DokuZen
 
 **Description (≤ 10,000 chars)**
-DokuZen Pro is a local document workstation for the Windows desktop.
+DokuZen is a local document workstation for the Windows desktop.
 All processing runs exclusively on your device — no cloud, no accounts, no
 data transmission.
 
