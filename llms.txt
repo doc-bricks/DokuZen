@@ -58,9 +58,9 @@ python tests/test_source_platform_smoke.py
 
 ## 📂 Key Files & Documentation Index
 
-- [`README.md`](file:///C:/_Local_DEV/repos/DokuZen/README.md) — English & General Documentation
-- [`README_de.md`](file:///C:/_Local_DEV/repos/DokuZen/README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
-- [`CHANGELOG.md`](file:///C:/_Local_DEV/repos/DokuZen/CHANGELOG.md) — Version History & Unreleased Maintenance Entries
-- [`THIRD_PARTY_LICENSES.txt`](file:///C:/_Local_DEV/repos/DokuZen/THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
-- [`pyproject.toml`](file:///C:/_Local_DEV/repos/DokuZen/pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration
-- [`main.py`](file:///C:/_Local_DEV/repos/DokuZen/main.py) — Desktop App Launcher & CLI Parser
+- [`README.md`](README.md) — English & General Documentation
+- [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
+- [`CHANGELOG.md`](CHANGELOG.md) — Version History & Unreleased Maintenance Entries
+- [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
+- [`pyproject.toml`](pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration
+- [`main.py`](main.py) — Desktop App Launcher & CLI Parser
