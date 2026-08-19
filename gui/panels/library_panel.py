@@ -187,7 +187,7 @@ class LibraryPanel(QWidget, LoggerMixin):
                 QMessageBox.warning(
                     self,
                     "Fehler",
-                    f"Konnte Thema nicht umbenennen."
+                    "Konnte Thema nicht umbenennen."
                 )
     
     def _delete_theme(self, name: str):

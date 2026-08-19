@@ -219,7 +219,7 @@ class FormatConverter(LoggerMixin):
             
             else:
                 return ConversionResult(False, output_path, ".docx", output_ext,
-                                       f"Konvertierung nicht unterstützt")
+                                       "Konvertierung nicht unterstützt")
                 
         except Exception as e:
             return ConversionResult(False, output_path, ".docx", output_ext, str(e))
