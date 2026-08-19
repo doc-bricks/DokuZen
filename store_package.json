@@ -1,9 +1,10 @@
 {
-  "app_name": "DokuZen Pro",
+  "app_name": "DokuZen",
   "publisher": "CN=52596601-BAB4-4F3F-B182-E8F3F273B202",
   "publisher_display": "Geiger",
-  "identity_name": "Geiger.DokuZenPro",
+  "identity_name": "Geiger.DokuZen",
   "version": "1.0.0.0",
+  "store_id": "9PBLDN4QJDHN",
   "description": "Lokale Dokumenten-Werkstatt für PDF-Bearbeitung, OCR, Schwärzung, Konvertierung und Dateiverwaltung.",
   "executable": "DokuZen-Pro-1.0.0-win64.exe",
   "capabilities": "runFullTrust",
