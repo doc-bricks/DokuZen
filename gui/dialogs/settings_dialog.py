@@ -22,6 +22,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QKeySequence
 
 from utils.logger import LoggerMixin
+from translator import TranslationSystem
 
 
 class SettingsDialog(QDialog, LoggerMixin):
@@ -154,7 +155,7 @@ class SettingsDialog(QDialog, LoggerMixin):
         lang_layout = QFormLayout(lang_group)
         
         self._language = QComboBox()
-        self._language.addItems(["Deutsch", "English"])
+        self._language.addItems(["Deutsch", "English", "Español", "中文", "日本語", "Русский"])
         lang_layout.addRow("Sprache:", self._language)
         
         layout.addWidget(lang_group)
@@ -503,7 +504,12 @@ class SettingsDialog(QDialog, LoggerMixin):
         
         # Sprache
         lang = s.get("language", "Deutsch")
-        idx = self._language.findText(lang)
+        idx = self._language.findText(str(lang))
+        if idx < 0:
+            from translator import TranslationSystem
+            code = TranslationSystem.normalize_language_code(str(lang))
+            name = TranslationSystem.LANGUAGE_NAMES.get(code, "Deutsch")
+            idx = self._language.findText(name)
         if idx >= 0:
             self._language.setCurrentIndex(idx)
         
@@ -550,6 +556,7 @@ class SettingsDialog(QDialog, LoggerMixin):
             
             # Sprache
             "language": self._language.currentText(),
+            "language_code": TranslationSystem.normalize_language_code(self._language.currentText()),
             
             # Verhalten
             "auto_save": self._auto_save.isChecked(),

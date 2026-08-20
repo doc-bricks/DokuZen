@@ -19,6 +19,7 @@ from PySide6.QtGui import QAction, QDrag, QColor
 
 from utils.logger import LoggerMixin
 from core.library.manager import FilterMode, SortMode
+from translator import tr
 
 
 class DocumentListPanel(QWidget, LoggerMixin):
@@ -33,8 +34,8 @@ class DocumentListPanel(QWidget, LoggerMixin):
     document_selected = Signal(str)
     document_double_clicked = Signal(str)
     
-    # Spalten-Definitionen
-    COLUMNS = ["Name", "Typ", "Größe", "Hinzugefügt", "Status"]
+    # Spalten-Definitionen (kanonische Keys)
+    COLUMN_KEYS = ["Name", "Typ", "Größe", "Hinzugefügt", "Status"]
     
     def __init__(self, library_manager, parent=None):
         super().__init__(parent)
@@ -55,27 +56,29 @@ class DocumentListPanel(QWidget, LoggerMixin):
         # Header mit Filter
         header_layout = QHBoxLayout()
         
-        header_label = QLabel("<b>Dokumente</b>")
-        header_layout.addWidget(header_label)
+        self._header_label = QLabel(f"<b>{tr('Dokumente')}</b>")
+        header_layout.addWidget(self._header_label)
         
         header_layout.addStretch()
         
         # Filter-Dropdown
-        header_layout.addWidget(QLabel("Filter:"))
+        self._filter_label = QLabel(f"{tr('Filter')}:")
+        header_layout.addWidget(self._filter_label)
         self._filter_combo = QComboBox()
-        self._filter_combo.addItem("Alle", FilterMode.ALL)
-        self._filter_combo.addItem("Ungelesen", FilterMode.UNREAD)
-        self._filter_combo.addItem("Gelesen", FilterMode.READ)
+        self._filter_combo.addItem(tr("Alle"), FilterMode.ALL)
+        self._filter_combo.addItem(tr("Ungelesen"), FilterMode.UNREAD)
+        self._filter_combo.addItem(tr("Gelesen"), FilterMode.READ)
         self._filter_combo.setFixedWidth(100)
         header_layout.addWidget(self._filter_combo)
         
         # Sortierung
-        header_layout.addWidget(QLabel("Sortierung:"))
+        self._sort_label = QLabel(f"{tr('Sortierung')}:")
+        header_layout.addWidget(self._sort_label)
         self._sort_combo = QComboBox()
-        self._sort_combo.addItem("Name", SortMode.NAME)
-        self._sort_combo.addItem("Datum", SortMode.DATE_ADDED)
-        self._sort_combo.addItem("Größe", SortMode.SIZE)
-        self._sort_combo.addItem("Typ", SortMode.TYPE)
+        self._sort_combo.addItem(tr("Name"), SortMode.NAME)
+        self._sort_combo.addItem(tr("Datum"), SortMode.DATE_ADDED)
+        self._sort_combo.addItem(tr("Größe"), SortMode.SIZE)
+        self._sort_combo.addItem(tr("Typ"), SortMode.TYPE)
         self._sort_combo.setFixedWidth(100)
         header_layout.addWidget(self._sort_combo)
         
@@ -83,8 +86,8 @@ class DocumentListPanel(QWidget, LoggerMixin):
         
         # Tabelle
         self._table = QTableWidget()
-        self._table.setColumnCount(len(self.COLUMNS))
-        self._table.setHorizontalHeaderLabels(self.COLUMNS)
+        self._table.setColumnCount(len(self.COLUMN_KEYS))
+        self._table.setHorizontalHeaderLabels([tr(col) for col in self.COLUMN_KEYS])
         self._table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self._table.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self._table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -110,7 +113,7 @@ class DocumentListPanel(QWidget, LoggerMixin):
         layout.addWidget(self._table)
         
         # Status-Label
-        self._status_label = QLabel("0 Dokumente")
+        self._status_label = QLabel(f"0 {tr('Dokumente')}")
         layout.addWidget(self._status_label)
     
     def _connect_signals(self):
@@ -163,7 +166,46 @@ class DocumentListPanel(QWidget, LoggerMixin):
             self._table.setItem(row, 4, status_item)
         
         # Status aktualisieren
-        self._status_label.setText(f"{len(documents)} Dokument(e)")
+        self._status_label.setText(f"{len(documents)} {tr('Dokument(e)')}")
+    
+    def retranslate_ui(self):
+        """Aktualisiert alle UI-Texte im DocumentListPanel dynamisch."""
+        if hasattr(self, "_header_label"):
+            self._header_label.setText(f"<b>{tr('Dokumente')}</b>")
+        if hasattr(self, "_filter_label"):
+            self._filter_label.setText(f"{tr('Filter')}:")
+        if hasattr(self, "_sort_label"):
+            self._sort_label.setText(f"{tr('Sortierung')}:")
+            
+        if hasattr(self, "_filter_combo"):
+            current_filter = self._filter_combo.currentData()
+            self._filter_combo.blockSignals(True)
+            self._filter_combo.clear()
+            self._filter_combo.addItem(tr("Alle"), FilterMode.ALL)
+            self._filter_combo.addItem(tr("Ungelesen"), FilterMode.UNREAD)
+            self._filter_combo.addItem(tr("Gelesen"), FilterMode.READ)
+            idx = self._filter_combo.findData(current_filter)
+            if idx >= 0:
+                self._filter_combo.setCurrentIndex(idx)
+            self._filter_combo.blockSignals(False)
+            
+        if hasattr(self, "_sort_combo"):
+            current_sort = self._sort_combo.currentData()
+            self._sort_combo.blockSignals(True)
+            self._sort_combo.clear()
+            self._sort_combo.addItem(tr("Name"), SortMode.NAME)
+            self._sort_combo.addItem(tr("Datum"), SortMode.DATE_ADDED)
+            self._sort_combo.addItem(tr("Größe"), SortMode.SIZE)
+            self._sort_combo.addItem(tr("Typ"), SortMode.TYPE)
+            idx = self._sort_combo.findData(current_sort)
+            if idx >= 0:
+                self._sort_combo.setCurrentIndex(idx)
+            self._sort_combo.blockSignals(False)
+            
+        if hasattr(self, "_table"):
+            self._table.setHorizontalHeaderLabels([tr(col) for col in self.COLUMN_KEYS])
+            
+        self.refresh()
     
     def _on_selection_changed(self):
         """Reagiert auf Auswahländerung."""
@@ -203,25 +245,25 @@ class DocumentListPanel(QWidget, LoggerMixin):
         # BUGSWEEP-32: QActions an `menu` (lokal, nach exec verworfen) parenten, nicht an `self` —
         # sonst akkumulieren bei jedem Rechtsklick QAction-Kinder am Panel (Speicher-Leak über Laufzeit).
         # Öffnen
-        action_open = QAction("Öffnen", menu)
+        action_open = QAction(tr("Öffnen"), menu)  # QAction("Öffnen", menu)
         action_open.triggered.connect(lambda: self.document_double_clicked.emit(paths[0]))
         menu.addAction(action_open)
 
         menu.addSeparator()
 
         # Gelesen/Ungelesen markieren
-        action_read = QAction("Als gelesen markieren", menu)
+        action_read = QAction(tr("Als gelesen markieren"), menu)
         action_read.triggered.connect(lambda: self._mark_as_read(paths, True))
         menu.addAction(action_read)
 
-        action_unread = QAction("Als ungelesen markieren", menu)
+        action_unread = QAction(tr("Als ungelesen markieren"), menu)
         action_unread.triggered.connect(lambda: self._mark_as_read(paths, False))
         menu.addAction(action_unread)
 
         menu.addSeparator()
 
         # Aus Bibliothek entfernen
-        action_remove = QAction("Aus Bibliothek entfernen", menu)
+        action_remove = QAction(tr("Aus Bibliothek entfernen"), menu)
         action_remove.triggered.connect(lambda: self._remove_documents(paths))
         menu.addAction(action_remove)
         
@@ -239,15 +281,15 @@ class DocumentListPanel(QWidget, LoggerMixin):
     def _remove_documents(self, paths: List[str]):
         """Entfernt Dokumente aus der Bibliothek."""
         if len(paths) == 1:
-            msg = f"'{Path(paths[0]).name}' aus der Bibliothek entfernen?"
+            msg = f"'{Path(paths[0]).name}' {tr('aus der Bibliothek entfernen?')}"
         else:
-            msg = f"{len(paths)} Dokumente aus der Bibliothek entfernen?"
+            msg = f"{len(paths)} {tr('Dokumente aus der Bibliothek entfernen?')}"
         
-        msg += "\n\nDie Dateien werden nicht gelöscht."
+        msg += f"\n\n{tr('Die Dateien werden nicht gelöscht.')}"
         
         result = QMessageBox.question(
             self,
-            "Entfernen bestätigen",
+            tr("Entfernen bestätigen"),
             msg,
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )

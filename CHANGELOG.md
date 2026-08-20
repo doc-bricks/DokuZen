@@ -5,6 +5,14 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed (2026-08-21)
+- **Format-Konvertierung (FormatConverter Robustheit & Edge-Cases):**
+  - **Grayscale- und Alpha-PDFs:** Bei der Konvertierung von PDF zu JPEG/BMP/WEBP führte ein 1-Kanal-Grayscale-Pixmap zu `ValueError: not enough image data` und ein Alpha-/RGBA-Pixmap zu Farbkanalverzerrungen. Pixmaps werden nun kanalgenau decodiert und transparente Ebenen sauber mit weißem Hintergrund komponiert.
+  - **PDF mit 0 Seiten:** Leere PDF-Dokumente werden vor dem Zugriff auf Seite 0 abgefangen und liefern ein kontrolliertes `ConversionResult(False, ...)` statt eines unbehandelten `IndexError`.
+  - **Bildkonvertierung mit Palette & Alpha:** Konvertierung von Bildern im Palette-Modus (`P`) oder mit Alphakanal (`LA`, `PA`, `RGBA`) nach JPEG, BMP oder PDF schlug mit `cannot write mode P/LA as JPEG` fehl; diese Modi werden nun verlustfrei auf weißem Hintergrund zusammengeführt. Dateihandles werden über Kontextmanager sicher geschlossen.
+  - **Markdown- und HTML-Konvertierung:** Vollständige Unterstützung für Markdown-Ausgabe (`OutputFormat.MD`) aus PDF, DOCX, TXT und HTML sowie Konvertierung von `.html`-Eingabedateien (`_convert_from_html`) implementiert.
+  - **Regressionstests:** Umfassende Testsuite in `tests/test_converter_formats_robustness.py` (9 Tests) integriert.
+
 ### Geändert / Changed (2026-08-16)
 - **Discoverability, README-Design, Badges & Metadata Parity Check (Pfad B):**
   - Badges in `README.md` & `README_de.md` um Testsuite (281 Passed, 100% grün), Version (1.0.0), `doc-bricks` Ecosystem, `open-bricks` Umbrella und `llms.txt` Discovery synchronisiert.

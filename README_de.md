@@ -5,7 +5,7 @@
 **Deutsch** | [English](README.md)
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![Pytest Status](https://img.shields.io/badge/pytest-281%20passed-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-294%20passed-brightgreen.svg)](https://docs.pytest.org/)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](pyproject.toml)
 [![License AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Ecosystem doc-bricks](https://img.shields.io/badge/ecosystem-doc--bricks-orange.svg)](https://github.com/doc-bricks)

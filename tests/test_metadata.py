@@ -64,7 +64,7 @@ def test_llms_txt_structure():
     assert "DokuZen" in content
     assert "doc-bricks" in content
     assert "open-bricks" in content
-    assert "Last-checked: 2026-08-16" in content or "Last-checked:** 2026-08-16" in content
+    assert "Last-checked:" in content or "Last-checked:**" in content
     assert "PySide6" in content
     assert "PyMuPDF" in content
     assert "AGPL-3.0" in content

@@ -6,6 +6,8 @@ DokuZen Pro - Main Window
 Hauptfenster der Anwendung mit 3-Panel-Layout.
 """
 
+import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import List, Optional, Sequence
@@ -21,6 +23,7 @@ from PySide6.QtGui import QAction, QIcon, QKeySequence
 
 from utils.logger import get_logger, LoggerMixin
 from core.library import LibraryManager
+from translator import get_translator, tr
 
 # Panels importieren
 from gui.panels.library_panel import LibraryPanel
@@ -33,6 +36,7 @@ class MainWindow(QMainWindow, LoggerMixin):
     Hauptfenster von DokuZen Pro.
     
     Layout:
+
     ┌─────────────────────────────────────────────────────┐
     │ Menüleiste                                          │
     ├─────────────────────────────────────────────────────┤
@@ -79,7 +83,7 @@ class MainWindow(QMainWindow, LoggerMixin):
     
     def _setup_window(self):
         """Konfiguriert das Hauptfenster."""
-        self.setWindowTitle("DokuZen")
+        self.setWindowTitle(tr("DokuZen"))
         self.setMinimumSize(1000, 600)
         self.resize(1400, 900)
         
@@ -95,167 +99,167 @@ class MainWindow(QMainWindow, LoggerMixin):
         menubar = self.menuBar()
         
         # === Datei-Menü ===
-        file_menu = menubar.addMenu("&Datei")
+        self._menu_file = menubar.addMenu(tr("&Datei"))
         
-        self._action_import = QAction("&Importieren...", self)
+        self._action_import = QAction(tr("&Importieren..."), self)
         self._action_import.setShortcut(QKeySequence("Ctrl+I"))
         self._action_import.triggered.connect(self._on_import)
-        file_menu.addAction(self._action_import)
+        self._menu_file.addAction(self._action_import)
         
-        self._action_import_folder = QAction("Ordner importieren...", self)
+        self._action_import_folder = QAction(tr("Ordner importieren..."), self)
         self._action_import_folder.triggered.connect(self._on_import_folder)
-        file_menu.addAction(self._action_import_folder)
+        self._menu_file.addAction(self._action_import_folder)
         
-        file_menu.addSeparator()
+        self._menu_file.addSeparator()
         
-        self._action_export_pdf = QAction("Sammel-PDF exportieren...", self)
+        self._action_export_pdf = QAction(tr("Sammel-PDF exportieren..."), self)
         self._action_export_pdf.triggered.connect(self._on_export_pdf)
-        file_menu.addAction(self._action_export_pdf)
+        self._menu_file.addAction(self._action_export_pdf)
         
-        file_menu.addSeparator()
+        self._menu_file.addSeparator()
         
-        self._action_settings = QAction("&Einstellungen...", self)
+        self._action_settings = QAction(tr("&Einstellungen..."), self)
         self._action_settings.setShortcut(QKeySequence("Ctrl+,"))
         self._action_settings.triggered.connect(self._on_settings)
-        file_menu.addAction(self._action_settings)
+        self._menu_file.addAction(self._action_settings)
         
-        file_menu.addSeparator()
+        self._menu_file.addSeparator()
         
-        self._action_exit = QAction("&Beenden", self)
+        self._action_exit = QAction(tr("&Beenden"), self)
         self._action_exit.setShortcut(QKeySequence("Ctrl+Q"))
         self._action_exit.triggered.connect(self.close)
-        file_menu.addAction(self._action_exit)
+        self._menu_file.addAction(self._action_exit)
         
         # === Bearbeiten-Menü ===
-        edit_menu = menubar.addMenu("&Bearbeiten")
+        self._menu_edit = menubar.addMenu(tr("&Bearbeiten"))
         
-        self._action_search = QAction("&Suchen...", self)
+        self._action_search = QAction(tr("&Suchen..."), self)
         self._action_search.setShortcut(QKeySequence("Ctrl+F"))
         self._action_search.triggered.connect(self._on_search_focus)
-        edit_menu.addAction(self._action_search)
+        self._menu_edit.addAction(self._action_search)
         
-        edit_menu.addSeparator()
+        self._menu_edit.addSeparator()
         
-        self._action_select_all = QAction("Alles auswählen", self)
+        self._action_select_all = QAction(tr("Alles auswählen"), self)
         self._action_select_all.setShortcut(QKeySequence("Ctrl+A"))
         self._action_select_all.triggered.connect(self._on_select_all)
-        edit_menu.addAction(self._action_select_all)
+        self._menu_edit.addAction(self._action_select_all)
         
         # === Ansicht-Menü ===
-        view_menu = menubar.addMenu("&Ansicht")
+        self._menu_view = menubar.addMenu(tr("&Ansicht"))
         
-        self._action_refresh = QAction("&Aktualisieren", self)
+        self._action_refresh = QAction(tr("&Aktualisieren"), self)
         self._action_refresh.setShortcut(QKeySequence("F5"))
         self._action_refresh.triggered.connect(self._on_refresh)
-        view_menu.addAction(self._action_refresh)
+        self._menu_view.addAction(self._action_refresh)
         
-        view_menu.addSeparator()
+        self._menu_view.addSeparator()
         
-        self._action_toggle_preview = QAction("Vorschau ein/aus", self)
+        self._action_toggle_preview = QAction(tr("Vorschau ein/aus"), self)
         self._action_toggle_preview.setShortcut(QKeySequence("Ctrl+P"))
         self._action_toggle_preview.setCheckable(True)
         self._action_toggle_preview.setChecked(True)
         self._action_toggle_preview.triggered.connect(self._on_toggle_preview)
-        view_menu.addAction(self._action_toggle_preview)
+        self._menu_view.addAction(self._action_toggle_preview)
         
         # === Themen-Menü ===
-        theme_menu = menubar.addMenu("&Themen")
+        self._menu_theme = menubar.addMenu(tr("&Themen"))
         
-        self._action_new_theme = QAction("&Neues Thema...", self)
+        self._action_new_theme = QAction(tr("&Neues Thema..."), self)
         self._action_new_theme.setShortcut(QKeySequence("Ctrl+N"))
         self._action_new_theme.triggered.connect(self._on_new_theme)
-        theme_menu.addAction(self._action_new_theme)
+        self._menu_theme.addAction(self._action_new_theme)
         
         # === Werkzeuge-Menü ===
-        tools_menu = menubar.addMenu("&Werkzeuge")
+        self._menu_tools = menubar.addMenu(tr("&Werkzeuge"))
         
-        self._action_pdf_workshop = QAction("PDF-&Werkstatt...", self)
+        self._action_pdf_workshop = QAction(tr("PDF-&Werkstatt..."), self)
         self._action_pdf_workshop.triggered.connect(self._on_pdf_workshop)
-        tools_menu.addAction(self._action_pdf_workshop)
+        self._menu_tools.addAction(self._action_pdf_workshop)
         
-        self._action_merge = QAction("PDFs &zusammenführen...", self)
+        self._action_merge = QAction(tr("PDFs &zusammenführen..."), self)
         self._action_merge.triggered.connect(self._on_merge)
-        tools_menu.addAction(self._action_merge)
+        self._menu_tools.addAction(self._action_merge)
         
-        self._action_ocr = QAction("&OCR-Texterkennung...", self)
+        self._action_ocr = QAction(tr("&OCR-Texterkennung..."), self)
         self._action_ocr.triggered.connect(self._on_ocr)
-        tools_menu.addAction(self._action_ocr)
+        self._menu_tools.addAction(self._action_ocr)
         
-        self._action_redaction = QAction("PDF &schwärzen...", self)
+        self._action_redaction = QAction(tr("PDF &schwärzen..."), self)
         self._action_redaction.triggered.connect(self._on_redaction)
-        tools_menu.addAction(self._action_redaction)
+        self._menu_tools.addAction(self._action_redaction)
         
-        self._action_convert = QAction("Format-&Konvertierung...", self)
+        self._action_convert = QAction(tr("Format-&Konvertierung..."), self)
         self._action_convert.triggered.connect(self._on_convert)
-        tools_menu.addAction(self._action_convert)
+        self._menu_tools.addAction(self._action_convert)
         
-        tools_menu.addSeparator()
+        self._menu_tools.addSeparator()
         
-        self._action_text_pool = QAction("Text-&Pooler...", self)
+        self._action_text_pool = QAction(tr("Text-&Pooler..."), self)
         self._action_text_pool.triggered.connect(self._on_text_pool)
-        tools_menu.addAction(self._action_text_pool)
+        self._menu_tools.addAction(self._action_text_pool)
         
-        self._action_code_analysis = QAction("&Code-Analyse (.py)...", self)
+        self._action_code_analysis = QAction(tr("&Code-Analyse (.py)..."), self)
         self._action_code_analysis.triggered.connect(self._on_code_analysis)
-        tools_menu.addAction(self._action_code_analysis)
+        self._menu_tools.addAction(self._action_code_analysis)
         
-        self._action_form_builder = QAction("&Formular-Builder...", self)
+        self._action_form_builder = QAction(tr("&Formular-Builder..."), self)
         self._action_form_builder.triggered.connect(self._on_form_builder)
-        tools_menu.addAction(self._action_form_builder)
+        self._menu_tools.addAction(self._action_form_builder)
         
-        self._action_pdf_marker = QAction("PDF-&Marker (M/D/K)...", self)
+        self._action_pdf_marker = QAction(tr("PDF-&Marker (M/D/K)..."), self)
         self._action_pdf_marker.triggered.connect(self._on_pdf_marker)
-        tools_menu.addAction(self._action_pdf_marker)
+        self._menu_tools.addAction(self._action_pdf_marker)
         
-        self._action_pdf_pages = QAction("PDF-Seiten &verwalten...", self)
+        self._action_pdf_pages = QAction(tr("PDF-Seiten &verwalten..."), self)
         self._action_pdf_pages.triggered.connect(self._on_pdf_pages)
-        tools_menu.addAction(self._action_pdf_pages)
+        self._menu_tools.addAction(self._action_pdf_pages)
         
-        self._action_pdf_annotate = QAction("PDF-&Annotationen...", self)
+        self._action_pdf_annotate = QAction(tr("PDF-&Annotationen..."), self)
         self._action_pdf_annotate.triggered.connect(self._on_pdf_annotate)
-        tools_menu.addAction(self._action_pdf_annotate)
+        self._menu_tools.addAction(self._action_pdf_annotate)
 
-        self._action_signature_overlay = QAction("PDF-Signatur &einbetten...", self)
+        self._action_signature_overlay = QAction(tr("PDF-Signatur &einbetten..."), self)
         self._action_signature_overlay.triggered.connect(self._on_signature_overlay)
-        tools_menu.addAction(self._action_signature_overlay)
+        self._menu_tools.addAction(self._action_signature_overlay)
 
-        tools_menu.addSeparator()
+        self._menu_tools.addSeparator()
         
-        self._action_image_tools = QAction("&Bild-Werkzeuge...", self)
+        self._action_image_tools = QAction(tr("&Bild-Werkzeuge..."), self)
         self._action_image_tools.triggered.connect(self._on_image_tools)
-        tools_menu.addAction(self._action_image_tools)
+        self._menu_tools.addAction(self._action_image_tools)
         
-        self._action_sqlite_viewer = QAction("SQLite-&Viewer...", self)
+        self._action_sqlite_viewer = QAction(tr("SQLite-&Viewer..."), self)
         self._action_sqlite_viewer.triggered.connect(self._on_sqlite_viewer)
-        tools_menu.addAction(self._action_sqlite_viewer)
+        self._menu_tools.addAction(self._action_sqlite_viewer)
         
-        self._action_pyinstaller = QAction("Python &Kompilieren...", self)
+        self._action_pyinstaller = QAction(tr("Python &Kompilieren..."), self)
         self._action_pyinstaller.triggered.connect(self._on_pyinstaller)
-        tools_menu.addAction(self._action_pyinstaller)
+        self._menu_tools.addAction(self._action_pyinstaller)
         
         # === Hilfe-Menü ===
-        help_menu = menubar.addMenu("&Hilfe")
+        self._menu_help = menubar.addMenu(tr("&Hilfe"))
         
-        self._action_about = QAction("Über DokuZen", self)
+        self._action_about = QAction(tr("Über DokuZen"), self)
         self._action_about.triggered.connect(self._on_about)
-        help_menu.addAction(self._action_about)
+        self._menu_help.addAction(self._action_about)
     
     def _setup_toolbar(self):
         """Erstellt die Toolbar."""
-        toolbar = QToolBar("Hauptwerkzeuge")
+        toolbar = QToolBar(tr("Hauptwerkzeuge"))
         toolbar.setMovable(False)
         toolbar.setIconSize(QSize(24, 24))
         self.addToolBar(toolbar)
         
         # Import-Button
-        self._btn_import = QAction("Importieren", self)
-        self._btn_import.setToolTip("Dateien zur Bibliothek hinzufügen (Ctrl+I)")
+        self._btn_import = QAction(tr("Importieren"), self)
+        self._btn_import.setToolTip(tr("Dateien zur Bibliothek hinzufügen (Ctrl+I)"))
         self._btn_import.triggered.connect(self._on_import)
         toolbar.addAction(self._btn_import)
         
         # Neues Thema
-        self._btn_new_theme = QAction("Neues Thema", self)
-        self._btn_new_theme.setToolTip("Neues Thema erstellen (Ctrl+N)")
+        self._btn_new_theme = QAction(tr("Neues Thema"), self)
+        self._btn_new_theme.setToolTip(tr("Neues Thema erstellen (Ctrl+N)"))
         self._btn_new_theme.triggered.connect(self._on_new_theme)
         toolbar.addAction(self._btn_new_theme)
         
@@ -263,22 +267,19 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         # Suchfeld
         self._search_box = QLineEdit()
-        self._search_box.setPlaceholderText("Suchen...")
-        self._search_box.setToolTip("Dokumente in der Bibliothek durchsuchen (Ctrl+F)")
-        self._search_box.setAccessibleName("Dokumente durchsuchen")
+        self._search_box.setPlaceholderText(tr("Suchen..."))
+        self._search_box.setToolTip(tr("Dokumente in der Bibliothek durchsuchen (Ctrl+F)"))
+        self._search_box.setAccessibleName(tr("Dokumente durchsuchen"))
         self._search_box.setAccessibleDescription(
-            "Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren."
+            tr("Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren.")
         )
         self._search_box.setMaximumWidth(250)
-        self._search_box.setClearButtonEnabled(True)
-        self._search_box.textChanged.connect(self._on_search_changed)
         toolbar.addWidget(self._search_box)
-        
-        toolbar.addSeparator()
+        self._search_box.textChanged.connect(self._on_search_changed)
         
         # Aktualisieren
-        self._btn_refresh = QAction("Aktualisieren", self)
-        self._btn_refresh.setToolTip("Ansicht aktualisieren (F5)")
+        self._btn_refresh = QAction(tr("Aktualisieren"), self)
+        self._btn_refresh.setToolTip(tr("Ansicht aktualisieren (F5)"))
         self._btn_refresh.triggered.connect(self._on_refresh)
         toolbar.addAction(self._btn_refresh)
 
@@ -314,9 +315,9 @@ class MainWindow(QMainWindow, LoggerMixin):
         self.setStatusBar(self._statusbar)
         
         # Permanente Labels
-        self._status_theme = QLabel("Thema: -")
-        self._status_docs = QLabel("Dokumente: 0")
-        self._status_filter = QLabel("Filter: Alle")
+        self._status_theme = QLabel(f"{tr('Thema')}: -")
+        self._status_docs = QLabel(f"{tr('Dokumente')}: 0")
+        self._status_filter = QLabel(f"{tr('Filter')}: {tr('Alle')}")
         
         self._statusbar.addPermanentWidget(self._status_theme)
         self._statusbar.addPermanentWidget(QLabel(" | "))
@@ -345,37 +346,109 @@ class MainWindow(QMainWindow, LoggerMixin):
     def _update_statusbar(self):
         """Aktualisiert die Statusleiste."""
         theme = self._library.themes.get_current_theme()
-        self._status_theme.setText(f"Thema: {theme or '-'}")
+        self._status_theme.setText(f"{tr('Thema')}: {theme or '-'}")
         
         docs = self._library.get_documents()
-        self._status_docs.setText(f"Dokumente: {len(docs)}")
+        self._status_docs.setText(f"{tr('Dokumente')}: {len(docs)}")
+        self._status_filter.setText(f"{tr('Filter')}: {tr('Alle')}")
+    
+    def retranslate_ui(self):
+        """Aktualisiert alle UI-Texte dynamisch gemäß aktuellem TranslationSystem."""
+        t = tr
+        self.setWindowTitle(t("DokuZen"))
+        
+        if hasattr(self, "_menu_file"):
+            self._menu_file.setTitle(t("&Datei"))
+            self._action_import.setText(t("&Importieren..."))
+            self._action_import_folder.setText(t("Ordner importieren..."))
+            self._action_export_pdf.setText(t("Sammel-PDF exportieren..."))
+            self._action_settings.setText(t("&Einstellungen..."))
+            self._action_exit.setText(t("&Beenden"))
+            
+        if hasattr(self, "_menu_edit"):
+            self._menu_edit.setTitle(t("&Bearbeiten"))
+            self._action_search.setText(t("&Suchen..."))
+            self._action_select_all.setText(t("Alles auswählen"))
+            
+        if hasattr(self, "_menu_view"):
+            self._menu_view.setTitle(t("&Ansicht"))
+            self._action_refresh.setText(t("&Aktualisieren"))
+            self._action_toggle_preview.setText(t("Vorschau ein/aus"))
+            
+        if hasattr(self, "_menu_theme"):
+            self._menu_theme.setTitle(t("&Themen"))
+            self._action_new_theme.setText(t("&Neues Thema..."))
+            
+        if hasattr(self, "_menu_tools"):
+            self._menu_tools.setTitle(t("&Werkzeuge"))
+            self._action_pdf_workshop.setText(t("PDF-&Werkstatt..."))
+            self._action_merge.setText(t("PDFs &zusammenführen..."))
+            self._action_ocr.setText(t("&OCR-Texterkennung..."))
+            self._action_redaction.setText(t("PDF &schwärzen..."))
+            self._action_convert.setText(t("Format-&Konvertierung..."))
+            self._action_text_pool.setText(t("Text-&Pooler..."))
+            self._action_code_analysis.setText(t("&Code-Analyse (.py)..."))
+            self._action_form_builder.setText(t("&Formular-Builder..."))
+            self._action_pdf_marker.setText(t("PDF-&Marker (M/D/K)..."))
+            self._action_pdf_pages.setText(t("PDF-Seiten &verwalten..."))
+            self._action_pdf_annotate.setText(t("PDF-&Annotationen..."))
+            self._action_signature_overlay.setText(t("PDF-Signatur &einbetten..."))
+            self._action_image_tools.setText(t("&Bild-Werkzeuge..."))
+            self._action_sqlite_viewer.setText(t("SQLite-&Viewer..."))
+            self._action_pyinstaller.setText(t("Python &Kompilieren..."))
+            
+        if hasattr(self, "_menu_help"):
+            self._menu_help.setTitle(t("&Hilfe"))
+            self._action_about.setText(t("Über DokuZen"))
+            
+        if hasattr(self, "_btn_import"):
+            self._btn_import.setText(t("Importieren"))
+            self._btn_import.setToolTip(t("Dateien zur Bibliothek hinzufügen (Ctrl+I)"))
+            self._btn_new_theme.setText(t("Neues Thema"))
+            self._btn_new_theme.setToolTip(t("Neues Thema erstellen (Ctrl+N)"))
+            self._btn_refresh.setText(t("Aktualisieren"))
+            self._btn_refresh.setToolTip(t("Ansicht aktualisieren (F5)"))
+            self._search_box.setPlaceholderText(t("Suchen..."))
+            self._search_box.setToolTip(t("Dokumente in der Bibliothek durchsuchen (Ctrl+F)"))
+            
+        if hasattr(self, "_library_panel") and hasattr(self._library_panel, "retranslate_ui"):
+            self._library_panel.retranslate_ui()
+        if hasattr(self, "_document_panel") and hasattr(self._document_panel, "retranslate_ui"):
+            self._document_panel.retranslate_ui()
+        if hasattr(self, "_preview_panel") and hasattr(self._preview_panel, "retranslate_ui"):
+            self._preview_panel.retranslate_ui()
+            
+        self._update_statusbar()
     
     # === Event Handler ===
     
     def _on_import(self):
         """Importiert Dateien."""
+        filter_str = (
+            f"{tr('Alle unterstützten')} (*.pdf *.doc *.docx *.txt *.py *.log *.json);;"
+            f"{tr('PDF-Dateien')} (*.pdf);;"
+            f"{tr('Word-Dokumente')} (*.doc *.docx);;"
+            f"{tr('Textdateien')} (*.txt *.log *.py *.json);;"
+            f"{tr('Alle Dateien')} (*.*)"
+        )
         files, _ = QFileDialog.getOpenFileNames(
             self,
-            "Dateien importieren",
+            tr("Dateien importieren"),
             "",
-            "Alle unterstützten (*.pdf *.doc *.docx *.txt *.py *.log *.json);;"
-            "PDF-Dateien (*.pdf);;"
-            "Word-Dokumente (*.doc *.docx);;"
-            "Textdateien (*.txt *.log *.py *.json);;"
-            "Alle Dateien (*.*)"
+            filter_str
         )
         
         if files:
             success, failed = self._library.add_documents(files)
             self._statusbar.showMessage(
-                f"{success} Datei(en) importiert, {failed} übersprungen", 3000
+                f"{success} {tr('Datei(en) importiert')}, {failed} {tr('übersprungen')}", 3000
             )
             self._document_panel.refresh()
             self._update_statusbar()
     
     def _on_import_folder(self):
         """Importiert einen ganzen Ordner."""
-        folder = QFileDialog.getExistingDirectory(self, "Ordner importieren")
+        folder = QFileDialog.getExistingDirectory(self, tr("Ordner importieren"))
         if folder:
             folder_path = Path(folder)
             files = []
@@ -385,22 +458,37 @@ class MainWindow(QMainWindow, LoggerMixin):
             if files:
                 success, failed = self._library.add_documents([str(f) for f in files])
                 self._statusbar.showMessage(
-                    f"{success} Datei(en) importiert, {failed} übersprungen", 3000
+                    f"{success} {tr('Datei(en) importiert')}, {failed} {tr('übersprungen')}", 3000
                 )
                 self._document_panel.refresh()
                 self._update_statusbar()
             else:
-                self._statusbar.showMessage("Keine unterstützten Dateien gefunden", 3000)
+                self._statusbar.showMessage(tr("Keine unterstützten Dateien gefunden"), 3000)
     
     def _on_export_pdf(self):
         """Exportiert Sammel-PDF."""
-        self._statusbar.showMessage("Funktion noch nicht implementiert", 3000)
+        self._statusbar.showMessage(tr("Funktion noch nicht implementiert"), 3000)
     
     def _on_settings(self):
         """Öffnet Einstellungen."""
         from gui.dialogs.settings_dialog import SettingsDialog
         dialog = SettingsDialog(self)
+        dialog.settings_changed.connect(self._apply_settings)
         dialog.exec()
+
+    def _apply_settings(self, settings_dict: dict):
+        """Wendet geänderte Einstellungen an (Sprache, Theme, etc.)."""
+        if not settings_dict:
+            return
+        lang_code = settings_dict.get("language_code")
+        if not lang_code:
+            lang = settings_dict.get("language")
+            if lang:
+                from translator import TranslationSystem
+                lang_code = TranslationSystem.normalize_language_code(str(lang))
+        if lang_code:
+            get_translator().set_language(lang_code)
+            self.retranslate_ui()
     
     def _on_search_focus(self):
         """Fokussiert das Suchfeld."""
@@ -421,7 +509,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         self._library_panel.refresh()
         self._document_panel.refresh()
         self._update_statusbar()
-        self._statusbar.showMessage("Aktualisiert", 1500)
+        self._statusbar.showMessage(tr("Aktualisiert"), 1500)
     
     def _on_toggle_preview(self, checked: bool):
         """Blendet Vorschau ein/aus."""
@@ -443,9 +531,6 @@ class MainWindow(QMainWindow, LoggerMixin):
     
     def _on_document_open(self, doc_path: str):
         """Öffnet ein Dokument extern."""
-        import os
-        import subprocess
-        
         if Path(doc_path).exists():
             if sys.platform == "win32":
                 os.startfile(doc_path)
@@ -459,7 +544,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         normalized = str(Path(path).expanduser().resolve())
         if not Path(normalized).exists():
             self.logger.warning("Startup-Pfad nicht gefunden: %s", normalized)
-            self._statusbar.showMessage(f"Datei nicht gefunden: {normalized}", 5000)
+            self._statusbar.showMessage(f"{tr('Datei nicht gefunden')}: {normalized}", 5000)
             return None
         return normalized
 
@@ -482,7 +567,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         self._document_panel.refresh()
         self._update_statusbar()
         self._statusbar.showMessage(
-            f"Startup-Import: {success} Datei(en) importiert, {failed} übersprungen",
+            f"Startup-Import: {success} {tr('Datei(en) importiert')}, {failed} {tr('übersprungen')}",
             4000,
         )
         return resolved
@@ -490,7 +575,7 @@ class MainWindow(QMainWindow, LoggerMixin):
     def _show_path_in_preview(self, path: str) -> None:
         """Zeigt eine Datei direkt in der Vorschau an."""
         self._preview_panel.show_document(path)
-        self._statusbar.showMessage(f"Vorschau geladen: {Path(path).name}", 3000)
+        self._statusbar.showMessage(f"{tr('Vorschau geladen')}: {Path(path).name}", 3000)
 
     def startup_import_paths(self, paths: Sequence[str]) -> None:
         """Importiert Dateien aus dem CLI-Startpfad."""
@@ -532,7 +617,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         resolved = self._add_startup_paths_to_library(paths)
         pdf_files = [path for path in resolved if path.lower().endswith(".pdf")]
         if not pdf_files:
-            self._statusbar.showMessage("Keine existierenden PDF-Dateien für --merge gefunden", 5000)
+            self._statusbar.showMessage(tr("Keine existierenden PDF-Dateien für --merge gefunden"), 5000)
             return
 
         from gui.dialogs.pdf_workshop import PDFWorkshopDialog
@@ -691,13 +776,13 @@ class MainWindow(QMainWindow, LoggerMixin):
         """Öffnet PDF-Annotationen (Info-Dialog)."""
         QMessageBox.information(
             self,
-            "PDF-Annotationen",
-            "PDF-Annotationen können über die Vorschau hinzugefügt werden:\n\n"
-            "• Rechtsklick auf PDF → Annotieren\n"
-            "• Marker, Kommentare, Stempel\n"
-            "• Freitext-Overlays\n"
-            "• Formen (Rechteck, Kreis, Linie)\n\n"
-            "Oder nutzen Sie die PDF-Werkstatt für erweiterte Optionen."
+            tr("PDF-Annotationen"),
+            f"{tr('PDF-Annotationen können über die Vorschau hinzugefügt werden:')}\n\n"
+            f"• {tr('Rechtsklick auf PDF → Annotieren')}\n"
+            f"• {tr('Marker, Kommentare, Stempel')}\n"
+            f"• {tr('Freitext-Overlays')}\n"
+            f"• {tr('Formen (Rechteck, Kreis, Linie)')}\n\n"
+            f"{tr('Oder nutzen Sie die PDF-Werkstatt für erweiterte Optionen.')}"
         )
 
     def _on_signature_overlay(self):
@@ -715,20 +800,20 @@ class MainWindow(QMainWindow, LoggerMixin):
         """Zeigt About-Dialog."""
         QMessageBox.about(
             self,
-            "Über DokuZen",
-            "<h2>DokuZen</h2>"
-            "<p>Version 1.0.0</p>"
-            "<p>Dokumenten- und Dateiverwaltungssuite</p>"
-            "<p>Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.</p>"
-            "<hr>"
-            "<p><b>Features:</b></p>"
-            "<ul>"
-            "<li>Dokumentenbibliothek mit Themen</li>"
-            "<li>PDF-Werkstatt (OCR, Schwärzung, Merge)</li>"
-            "<li>Konvertierung (Word, Text, PDF)</li>"
-            "<li>Formular-Builder</li>"
-            "<li>Entwickler-Tools</li>"
-            "</ul>"
+            tr("Über DokuZen"),
+            f"<h2>DokuZen</h2>"
+            f"<p>{tr('Version')} 1.0.0</p>"
+            f"<p>{tr('Dokumenten- und Dateiverwaltungssuite')}</p>"
+            f"<p>{tr('Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.')}</p>"
+            f"<hr>"
+            f"<p><b>{tr('Features')}:</b></p>"
+            f"<ul>"
+            f"<li>{tr('Dokumentenbibliothek mit Themen')}</li>"
+            f"<li>{tr('PDF-Werkstatt (OCR, Schwärzung, Merge)')}</li>"
+            f"<li>{tr('Konvertierung (Word, Text, PDF)')}</li>"
+            f"<li>{tr('Formular-Builder')}</li>"
+            f"<li>{tr('Entwickler-Tools')}</li>"
+            f"</ul>"
         )
     
     def _auto_save(self):
@@ -769,7 +854,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         if files:
             success, failed = self._library.add_documents(files)
             self._statusbar.showMessage(
-                f"{success} Datei(en) importiert, {failed} übersprungen", 3000
+                f"{success} {tr('Datei(en) importiert')}, {failed} {tr('übersprungen')}", 3000
             )
             self._document_panel.refresh()
             self._update_statusbar()

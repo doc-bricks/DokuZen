@@ -15,6 +15,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QAction
 
 from utils.logger import LoggerMixin
+from translator import tr
 
 
 class LibraryPanel(QWidget, LoggerMixin):
@@ -45,16 +46,16 @@ class LibraryPanel(QWidget, LoggerMixin):
         
         # Header
         header_layout = QHBoxLayout()
-        header_label = QLabel("<b>Bibliothek</b>")
-        header_layout.addWidget(header_label)
+        self._header_label = QLabel(f"<b>{tr('Bibliothek')}</b>")
+        header_layout.addWidget(self._header_label)
         
         # Plus-Button für neues Thema
         self._btn_add = QPushButton("+")
         self._btn_add.setFixedSize(24, 24)
-        self._btn_add.setToolTip("Neues Thema erstellen (Ctrl+N)")
-        self._btn_add.setAccessibleName("Neues Thema erstellen")
+        self._btn_add.setToolTip(tr("Neues Thema erstellen (Ctrl+N)"))
+        self._btn_add.setAccessibleName(tr("Neues Thema erstellen"))
         self._btn_add.setAccessibleDescription(
-            "Öffnet einen Dialog zum Anlegen eines neuen Bibliotheksthemas."
+            tr("Öffnet einen Dialog zum Anlegen eines neuen Bibliotheksthemas.")
         )
         self._btn_add.clicked.connect(self.create_new_theme)
         header_layout.addWidget(self._btn_add)
@@ -96,6 +97,18 @@ class LibraryPanel(QWidget, LoggerMixin):
             if theme.name == current_theme:
                 self._tree.setCurrentItem(item)
     
+    def retranslate_ui(self):
+        """Aktualisiert alle UI-Texte im LibraryPanel dynamisch."""
+        if hasattr(self, "_header_label"):
+            self._header_label.setText(f"<b>{tr('Bibliothek')}</b>")
+        if hasattr(self, "_btn_add"):
+            self._btn_add.setToolTip(tr("Neues Thema erstellen (Ctrl+N)"))
+            self._btn_add.setAccessibleName(tr("Neues Thema erstellen"))
+            self._btn_add.setAccessibleDescription(
+                tr("Öffnet einen Dialog zum Anlegen eines neuen Bibliotheksthemas.")
+            )
+        self.refresh()
+
     def refresh(self):
         """Aktualisiert die Anzeige."""
         self._populate()
@@ -104,8 +117,8 @@ class LibraryPanel(QWidget, LoggerMixin):
         """Öffnet Dialog für neues Thema."""
         name, ok = QInputDialog.getText(
             self,
-            "Neues Thema",
-            "Name des Themas:",
+            tr("Neues Thema"),
+            tr("Name des Themas:"),
             text=""
         )
         
@@ -116,8 +129,8 @@ class LibraryPanel(QWidget, LoggerMixin):
             else:
                 QMessageBox.warning(
                     self,
-                    "Fehler",
-                    f"Thema '{name}' existiert bereits oder ist ungültig."
+                    tr("Fehler"),
+                    f"{tr('Thema')} '{name}' {tr('existiert bereits oder ist ungültig.')}"
                 )
     
     def _on_item_changed(self, current, previous):
@@ -147,14 +160,14 @@ class LibraryPanel(QWidget, LoggerMixin):
 
         # BUGSWEEP-32: QActions an `menu` parenten, nicht an `self` (sonst QAction-Leak je Rechtsklick).
         # Umbenennen
-        action_rename = QAction("Umbenennen...", menu)
+        action_rename = QAction(tr("Umbenennen..."), menu)  # QAction("Umbenennen...", menu)
         action_rename.triggered.connect(lambda: self._rename_theme(theme_name))
         if theme_name in self._library.themes.RESERVED_THEMES:
             action_rename.setEnabled(False)
         menu.addAction(action_rename)
 
         # Löschen
-        action_delete = QAction("Löschen", menu)
+        action_delete = QAction(tr("Löschen"), menu)
         action_delete.triggered.connect(lambda: self._delete_theme(theme_name))
         if theme_name in self._library.themes.RESERVED_THEMES:
             action_delete.setEnabled(False)
@@ -163,7 +176,7 @@ class LibraryPanel(QWidget, LoggerMixin):
         menu.addSeparator()
 
         # Neues Thema
-        action_new = QAction("Neues Thema...", menu)
+        action_new = QAction(tr("Neues Thema..."), menu)
         action_new.triggered.connect(self.create_new_theme)
         menu.addAction(action_new)
         
@@ -175,8 +188,8 @@ class LibraryPanel(QWidget, LoggerMixin):
         """Benennt ein Thema um."""
         new_name, ok = QInputDialog.getText(
             self,
-            "Thema umbenennen",
-            "Neuer Name:",
+            tr("Thema umbenennen"),
+            tr("Neuer Name:"),
             text=old_name
         )
         
@@ -186,21 +199,21 @@ class LibraryPanel(QWidget, LoggerMixin):
             else:
                 QMessageBox.warning(
                     self,
-                    "Fehler",
-                    "Konnte Thema nicht umbenennen."
+                    tr("Fehler"),
+                    tr("Konnte Thema nicht umbenennen.")
                 )
     
     def _delete_theme(self, name: str):
         """Löscht ein Thema."""
         # Bestätigung
         docs = self._library.get_documents(name)
-        msg = f"Thema '{name}' wirklich löschen?"
+        msg = f"{tr('Thema')} '{name}' {tr('wirklich löschen?')}"
         if docs:
-            msg += f"\n\nDas Thema enthält {len(docs)} Dokument(e)."
+            msg += f"\n\n{tr('Das Thema enthält')} {len(docs)} {tr('Dokument(e)')}."
         
         result = QMessageBox.question(
             self,
-            "Thema löschen",
+            tr("Thema löschen"),
             msg,
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
@@ -211,6 +224,6 @@ class LibraryPanel(QWidget, LoggerMixin):
             else:
                 QMessageBox.warning(
                     self,
-                    "Fehler",
-                    "Konnte Thema nicht löschen."
+                    tr("Fehler"),
+                    tr("Konnte Thema nicht löschen.")
                 )

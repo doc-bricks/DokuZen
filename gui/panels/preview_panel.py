@@ -17,6 +17,7 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QPixmap, QImage
 
 from utils.logger import LoggerMixin
+from translator import tr
 
 
 class PreviewPanel(QWidget, LoggerMixin):
@@ -51,13 +52,13 @@ class PreviewPanel(QWidget, LoggerMixin):
         
         # Header
         header_layout = QHBoxLayout()
-        self._header_label = QLabel("<b>Vorschau</b>")
+        self._header_label = QLabel(f"<b>{tr('Vorschau')}</b>")
         header_layout.addWidget(self._header_label)
         
         header_layout.addStretch()
         
         # Öffnen-Button
-        self._btn_open = QPushButton("Öffnen")
+        self._btn_open = QPushButton(tr("Öffnen"))
         self._btn_open.setFixedWidth(70)
         self._btn_open.clicked.connect(self._open_external)
         self._btn_open.setEnabled(False)
@@ -72,10 +73,10 @@ class PreviewPanel(QWidget, LoggerMixin):
         # Seite 0: Kein Dokument
         self._empty_widget = QWidget()
         empty_layout = QVBoxLayout(self._empty_widget)
-        empty_label = QLabel("Kein Dokument ausgewählt")
-        empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        empty_label.setStyleSheet("color: #888;")
-        empty_layout.addWidget(empty_label)
+        self._empty_label = QLabel(tr("Kein Dokument ausgewählt"))
+        self._empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._empty_label.setStyleSheet("color: #888;")
+        empty_layout.addWidget(self._empty_label)
         self._stack.addWidget(self._empty_widget)
         
         # Seite 1: Text-Vorschau
@@ -102,15 +103,15 @@ class PreviewPanel(QWidget, LoggerMixin):
         # Seite 3: Nicht unterstützt
         self._unsupported_widget = QWidget()
         unsupported_layout = QVBoxLayout(self._unsupported_widget)
-        self._unsupported_label = QLabel("Vorschau nicht verfügbar")
+        self._unsupported_label = QLabel(tr("Vorschau nicht verfügbar"))
         self._unsupported_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._unsupported_label.setStyleSheet("color: #888;")
         unsupported_layout.addWidget(self._unsupported_label)
         
-        unsupported_info = QLabel("Doppelklick zum Öffnen")
-        unsupported_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        unsupported_info.setStyleSheet("color: #aaa; font-size: 9pt;")
-        unsupported_layout.addWidget(unsupported_info)
+        self._unsupported_info = QLabel(tr("Doppelklick zum Öffnen"))
+        self._unsupported_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._unsupported_info.setStyleSheet("color: #aaa; font-size: 9pt;")
+        unsupported_layout.addWidget(self._unsupported_info)
         
         self._stack.addWidget(self._unsupported_widget)
         
@@ -145,11 +146,28 @@ class PreviewPanel(QWidget, LoggerMixin):
         else:
             self._show_unsupported(ext)
     
+    def retranslate_ui(self):
+        """Aktualisiert alle UI-Texte im PreviewPanel dynamisch."""
+        if hasattr(self, "_btn_open"):
+            self._btn_open.setText(tr("Öffnen"))
+        if hasattr(self, "_empty_label"):
+            self._empty_label.setText(tr("Kein Dokument ausgewählt"))
+        if hasattr(self, "_unsupported_info"):
+            self._unsupported_info.setText(tr("Doppelklick zum Öffnen"))
+            
+        if self._current_path:
+            self.show_document(self._current_path)
+        else:
+            if hasattr(self, "_header_label"):
+                self._header_label.setText(f"<b>{tr('Vorschau')}</b>")
+            if hasattr(self, "_unsupported_label"):
+                self._unsupported_label.setText(tr("Vorschau nicht verfügbar"))
+
     def clear(self):
         """Leert die Vorschau."""
         self._current_path = None
         self._btn_open.setEnabled(False)
-        self._header_label.setText("<b>Vorschau</b>")
+        self._header_label.setText(f"<b>{tr('Vorschau')}</b>")
         self._stack.setCurrentIndex(0)
     
     def _show_text(self, path: Path):
@@ -166,7 +184,7 @@ class PreviewPanel(QWidget, LoggerMixin):
                     continue
             
             if content is None:
-                self._show_error("Encoding nicht erkannt")
+                self._show_error(tr("Encoding nicht erkannt"))
                 return
             
             # Syntax-Highlighting basierend auf Erweiterung
@@ -180,7 +198,7 @@ class PreviewPanel(QWidget, LoggerMixin):
             self._stack.setCurrentIndex(1)
             
         except Exception as e:
-            self._show_error(f"Fehler beim Lesen:\n{e}")
+            self._show_error(f"{tr('Fehler beim Lesen')}:\n{e}")
     
     def _show_image(self, path: Path):
         """Zeigt Bild-Vorschau."""
@@ -188,7 +206,7 @@ class PreviewPanel(QWidget, LoggerMixin):
             pixmap = QPixmap(str(path))
             
             if pixmap.isNull():
-                self._show_error("Bild konnte nicht geladen werden")
+                self._show_error(tr("Bild konnte nicht geladen werden"))
                 return
             
             # Skalieren wenn zu groß
@@ -204,7 +222,7 @@ class PreviewPanel(QWidget, LoggerMixin):
             self._stack.setCurrentIndex(2)
             
         except Exception as e:
-            self._show_error(f"Fehler beim Laden:\n{e}")
+            self._show_error(f"{tr('Fehler beim Laden')}:\n{e}")
     
     def _show_pdf(self, path: Path):
         """Zeigt PDF-Vorschau (erste Seite) mit PyMuPDF."""
@@ -244,18 +262,18 @@ class PreviewPanel(QWidget, LoggerMixin):
         except ImportError:
             # PyMuPDF nicht installiert
             self._unsupported_label.setText(
-                "PDF-Vorschau nicht verfügbar\n\n"
-                "Installieren Sie PyMuPDF:\n"
+                f"{tr('PDF-Vorschau nicht verfügbar')}\n\n"
+                f"{tr('Installieren Sie PyMuPDF')}:\n"
                 "pip install PyMuPDF"
             )
             self._stack.setCurrentIndex(3)
         except Exception as e:
-            self._show_error(f"PDF-Fehler:\n{e}")
+            self._show_error(f"{tr('PDF-Fehler')}:\n{e}")
     
     def _show_unsupported(self, ext: str):
         """Zeigt Meldung für nicht unterstützte Formate."""
         self._unsupported_label.setText(
-            f"Vorschau für {ext.upper()} nicht verfügbar"
+            f"{tr('Vorschau für')} {ext.upper()} {tr('nicht verfügbar')}"
         )
         self._stack.setCurrentIndex(3)
     
