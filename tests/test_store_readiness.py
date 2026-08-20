@@ -33,7 +33,7 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         self.assertTrue(cfg_file.exists(), "store_package.json is missing")
 
         data = json.loads(cfg_file.read_text(encoding="utf-8"))
-        self.assertEqual(data.get("identity_name"), "Geiger.DokuZenPro")
+        self.assertEqual(data.get("identity_name"), "Geiger.DokuZen")
         self.assertEqual(data.get("publisher"), "CN=52596601-BAB4-4F3F-B182-E8F3F273B202")
         self.assertEqual(data.get("publisher_display"), "Geiger")
         self.assertEqual(data.get("executable"), "DokuZen-Pro-1.0.0-win64.exe")
@@ -56,7 +56,7 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         if identity is None:
             identity = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Identity")
         self.assertIsNotNone(identity, "Identity element missing in AppxManifest.xml")
-        self.assertEqual(identity.attrib.get("Name"), "Geiger.DokuZenPro")
+        self.assertEqual(identity.attrib.get("Name"), "Geiger.DokuZen")
         self.assertEqual(identity.attrib.get("Publisher"), "CN=52596601-BAB4-4F3F-B182-E8F3F273B202")
 
         caps = root.find("appx:Capabilities", ns)

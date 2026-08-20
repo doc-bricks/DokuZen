@@ -4,13 +4,13 @@
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          IgnorableNamespaces="uap rescap">
 
-  <Identity Name="Geiger.DokuZenPro"
+  <Identity Name="Geiger.DokuZen"
             Publisher="CN=52596601-BAB4-4F3F-B182-E8F3F273B202"
             Version="1.0.0.0"
             ProcessorArchitecture="x64" />
 
   <Properties>
-    <DisplayName>DokuZen Pro</DisplayName>
+    <DisplayName>DokuZen</DisplayName>
     <PublisherDisplayName>Geiger</PublisherDisplayName>
     <Logo>icons\icon_150x150.png</Logo>
     <Description>Lokale Dokumenten-Werkstatt für PDF-Bearbeitung, OCR, Schwärzung, Konvertierung und Dateiverwaltung.</Description>
