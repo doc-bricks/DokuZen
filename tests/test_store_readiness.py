@@ -33,7 +33,7 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         self.assertTrue(cfg_file.exists(), "store_package.json is missing")
 
         data = json.loads(cfg_file.read_text(encoding="utf-8"))
-        self.assertEqual(data.get("identity_name"), "Geiger.DokuZenPro")
+        self.assertEqual(data.get("identity_name"), "Geiger.DokuZen")
         self.assertEqual(data.get("publisher"), "CN=52596601-BAB4-4F3F-B182-E8F3F273B202")
         self.assertEqual(data.get("publisher_display"), "Geiger")
         self.assertEqual(data.get("executable"), "DokuZen-Pro-1.0.0-win64.exe")
@@ -56,7 +56,8 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         if identity is None:
             identity = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Identity")
         self.assertIsNotNone(identity, "Identity element missing in AppxManifest.xml")
-        self.assertEqual(identity.attrib.get("Name"), "Geiger.DokuZenPro")
+        config = json.loads((PROJECT_ROOT / "store_package.json").read_text(encoding="utf-8"))
+        self.assertEqual(identity.attrib.get("Name"), config["identity_name"])
         self.assertEqual(identity.attrib.get("Publisher"), "CN=52596601-BAB4-4F3F-B182-E8F3F273B202")
 
         caps = root.find("appx:Capabilities", ns)
@@ -87,6 +88,12 @@ class TestWindowsStoreReadiness(unittest.TestCase):
     def test_store_screenshots_exist_and_have_1080p_resolution(self):
         screenshot_dir = PROJECT_ROOT / "screenshots" / "store"
         self.assertTrue(screenshot_dir.exists(), "screenshots/store directory is missing")
+        self.assertEqual(len(REQUIRED_SCREENSHOTS), 4)
+        self.assertEqual(
+            {path.name for path in screenshot_dir.glob("*.png")},
+            set(REQUIRED_SCREENSHOTS),
+            "screenshots/store must contain exactly the canonical four PNG files",
+        )
 
         for ss_name in REQUIRED_SCREENSHOTS:
             ss_file = screenshot_dir / ss_name

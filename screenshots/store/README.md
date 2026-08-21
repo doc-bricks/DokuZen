@@ -9,26 +9,25 @@
 - Maximalanzahl: 10 Screenshots
 - Dateinamen: aussagekräftig, kein Leerzeichen
 
-## Screenshot-Inventar (erstellt & verifiziert)
+## Screenshot-Inventar (erstellt und verifiziert)
 
 | Datei                          | Inhalt                                          | Auflösung   | Format | Status      |
 |--------------------------------|-------------------------------------------------|-------------|--------|-------------|
 | `01_bibliothek.png`            | Bibliotheksansicht mit Dokumentenliste          | 1920 × 1080 | PNG    | Verifiziert |
-| `02_pdf_vorschau.png`          | PDF-Vorschau mit Seitenleiste                   | 1920 × 1080 | PNG    | Verifiziert |
-| `03_ocr_dialog.png`            | OCR-Dialog mit Optionen & Texterkennung         | 1920 × 1080 | PNG    | Verifiziert |
-| `04_schwaerzung.png`           | Schwärzungs-Werkzeug & PII-Erkennung            | 1920 × 1080 | PNG    | Verifiziert |
-| `05_konvertierung.png`         | Konvertierungs-Dialog (PDF, DOCX, TXT, PNG)     | 1920 × 1080 | PNG    | Verifiziert |
-| `06_batch_verarbeitung.png`    | Batch-Verarbeitung, Seiten-Auszug & Workshop    | 1920 × 1080 | PNG    | Verifiziert |
+| `02_ocr.png`                   | OCR-Dialog mit Optionen und Texterkennung       | 1920 × 1080 | PNG    | Verifiziert |
+| `03_schwaerzung.png`           | Schwärzungs-Werkzeug und PII-Erkennung          | 1920 × 1080 | PNG    | Verifiziert |
+| `04_konvertierung.png`         | Konvertierungs-Dialog (PDF, DOCX, TXT, PNG)     | 1920 × 1080 | PNG    | Verifiziert |
 
 ## Hinweise
 
-- Screenshots unter Windows in nativer 1920 × 1080 Auflösung via PySide6 Offscreen Generator erzeugt (`tools/generate_store_screenshots.py`)
+- Screenshots unter Windows aus den echten laufenden PySide6-Widgets erzeugt (`tools/generate_store_screenshots.py`).
+- Der Generator lädt Segoe UI ausdrücklich und bricht ab, wenn die Schrift nicht korrekt aufgelöst werden kann; dadurch werden Qt-Glyphenfehler verhindert.
 - Keine echten personenbezogenen Daten (ausschließlich neutrale Muster- und Demodaten)
 - Deutschsprachige Store-UI im Dark-Teal Design-System
 
 ## Status
 
-- [x] Screenshots erstellt (2026-08-14 via `tools/generate_store_screenshots.py`)
-- [x] Qualität geprüft (Schärfe, 1080p, Valide PNG-Header, keine PII-Daten)
+- [x] Vier Screenshots erstellt (2026-08-21 via `tools/generate_store_screenshots.py`)
+- [x] Qualität geprüft (echte GUI, lesbare Schrift, echte Umlaute, 1080p, valide PNG-Header, keine PII-Daten)
 - [ ] In Store-Einreichung hochgeladen (erfordert manuelle Nutzer-Freigabe Partner Center)
 

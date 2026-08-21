@@ -4,7 +4,7 @@ Verifies repository-owned materials:
 - store_package.json completeness, publisher CN, version parity, https URLs
 - AppxManifest.xml schema, capabilities (runFullTrust), identity, publisher
 - Store tile icons (44x44, 50x50, 150x150, 310x150, 310x310) PNG integrity
-- Store screenshots (1920x1080) PNG integrity and required inventory
+- Four Store screenshots (1920x1080) PNG integrity and required inventory
 - Mandatory store documentation (STORE_LISTING, PRIVACY_POLICY, SUPPORT, THIRD_PARTY_LICENSES)
 """
 
@@ -42,12 +42,12 @@ REQUIRED_ICONS = {
 
 REQUIRED_SCREENSHOTS = (
     "01_bibliothek.png",
-    "02_pdf_vorschau.png",
-    "03_ocr_dialog.png",
-    "04_schwaerzung.png",
-    "05_konvertierung.png",
-    "06_batch_verarbeitung.png",
+    "02_ocr.png",
+    "03_schwaerzung.png",
+    "04_konvertierung.png",
 )
+
+STORE_SCREENSHOT_SIZE = (1920, 1080)
 
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 
@@ -105,12 +105,6 @@ def _check_png_file(path: Path, expected_size: tuple[int, int] | None = None) ->
             f"[asset] Dimension mismatch for {path.name}: "
             f"expected {expected_size[0]}x{expected_size[1]}, found {width}x{height}"
         )
-    elif expected_size is None and (width < 1366 or height < 768):
-        findings.append(
-            f"[screenshot] Screenshot resolution too low for {path.name}: "
-            f"{width}x{height} (minimum required 1366x768)"
-        )
-
     return findings
 
 
@@ -217,7 +211,12 @@ def check_store_repository(project_root: Path) -> list[str]:
     screenshot_dir = project_root / "screenshots" / "store"
     for ss_name in REQUIRED_SCREENSHOTS:
         ss_path = screenshot_dir / ss_name
-        findings.extend(_check_png_file(ss_path, expected_size=None))
+        findings.extend(_check_png_file(ss_path, expected_size=STORE_SCREENSHOT_SIZE))
+    unexpected_screenshots = sorted(
+        path.name for path in screenshot_dir.glob("*.png") if path.name not in REQUIRED_SCREENSHOTS
+    )
+    for ss_name in unexpected_screenshots:
+        findings.append(f"[screenshot] Unexpected PNG outside the canonical four-file inventory: {ss_name}")
 
     # 5. Required documents
     for doc_name in REQUIRED_DOCUMENTS:
@@ -264,7 +263,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print("  [OK] store_package.json is valid and complete")
     print("  [OK] AppxManifest.xml matches publisher and capability constraints")
     print("  [OK] 5/5 Store tile icons verified with correct pixel dimensions")
-    print("  [OK] 6/6 Store screenshots verified (1920x1080 PNG)")
+    print(f"  [OK] {len(REQUIRED_SCREENSHOTS)}/{len(REQUIRED_SCREENSHOTS)} Store screenshots verified (1920x1080 PNG)")
     print("  [OK] Mandatory Store legal and support documents verified (DE + EN)")
     return 0
 

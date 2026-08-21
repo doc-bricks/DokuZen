@@ -1,6 +1,6 @@
 # Windows Store — Vorbereitung DokuZen
 
-Stand: 2026-08-14
+Stand: 2026-08-21
 
 ---
 
@@ -8,7 +8,7 @@ Stand: 2026-08-14
 
 | Feld              | Wert                                         |
 |-------------------|----------------------------------------------|
-| Identity Name     | Geiger.DokuZenPro                        |
+| Identity Name     | Geiger.DokuZen                           |
 | Publisher         | CN=52596601-BAB4-4F3F-B182-E8F3F273B202      |
 | Publisher Display | Geiger                                       |
 | Version           | 1.0.0.0                                      |
@@ -31,7 +31,7 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
       `requirements.txt` erstellt (2026-07-12; kein transitive SBOM)
 - [x] `store_package/DokuZen/AppxManifest.xml` erstellt & validiert (2026-08-14)
 - [x] Store-Tile-Icons (44x44, 50x50, 150x150, 310x150, 310x310) generiert (2026-08-14)
-- [x] Store-Screenshots (6/6 in 1920x1080 PNG) generiert & verifiziert (2026-08-14)
+- [x] Store-Screenshots (4/4 in 1920x1080 PNG) aus echten GUI-Widgets generiert und verifiziert (2026-08-21)
 - [x] Store-Readiness-Gate `tools/check_store_readiness.py` & Testsuite `tests/test_store_readiness.py` (2026-08-14)
 
 ### GitHub-Repository
@@ -45,7 +45,7 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 
 - [ ] `build_exe.bat` ausführen → `releases/v1.0.0/DokuZen-Pro-1.0.0-win64.exe`
 - [x] `python tools\preflight.py` ausführen (Bestanden)
-- [ ] MSIX-Paket erzeugen (MakeAppx / Windows Application Packaging Project / WinStorePackager)
+- [x] MSIX-Paket erzeugt und gegen Manifest/EXE/Publisher geprüft (2026-08-21; SHA-256 `B5FD804D1AD23BCCFF0A946C8779807EB5FBC0D495B2F5F0AD43A5E8942D06FA`)
 - [ ] WACK-Test (Windows App Certification Kit) bestehen
 - [ ] Paket im Microsoft Partner Center hochladen (Manuelle Nutzer-Freigabe)
 

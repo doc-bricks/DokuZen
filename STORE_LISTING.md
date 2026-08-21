@@ -92,6 +92,7 @@ DOCX, text recognition
 
 - [x] GitHub-Repository `doc-bricks/DokuZen` erstellt und URL-Referenzen in
   `store_package.json` bestätigt (2026-08-02)
-- [ ] Screenshots erstellen (siehe `screenshots/store/README.md`)
-- [ ] MSIX-Paket erzeugen und WACK-Test bestehen
+- [x] Vier echte GUI-Screenshots erstellen und visuell prüfen (siehe `screenshots/store/README.md`)
+- [x] MSIX-Paket erzeugen und Manifest/EXE/Publisher prüfen
+- [ ] WACK-Test bestehen
 - [x] THIRD_PARTY_LICENSES.txt als direkte Runtime-Inventur aus `requirements.txt` angelegt

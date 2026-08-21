@@ -5,6 +5,9 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed (2026-08-21)
+- **Windows-Store-Assets:** Das Screenshot-Inventar wurde auf vier reale, reproduzierbare GUI-Aufnahmen konsolidiert. Der Generator lädt Segoe UI fail-closed, damit keine Qt-Glyphenfehler entstehen. Readiness-Checker, Tests, Manifest-Identität und Paketicons entsprechen nun dem gebauten MSIX mit `Geiger.DokuZen`.
+
 ### Geändert / Changed (2026-08-16)
 - **Discoverability, README-Design, Badges & Metadata Parity Check (Pfad B):**
   - Badges in `README.md` & `README_de.md` um Testsuite (281 Passed, 100% grün), Version (1.0.0), `doc-bricks` Ecosystem, `open-bricks` Umbrella und `llms.txt` Discovery synchronisiert.

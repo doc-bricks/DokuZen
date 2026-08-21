@@ -1,12 +1,10 @@
 """Generate official 1920x1080 Windows Store screenshots for DokuZen.
 
-Produces:
+Produces four screenshots from the real application widgets:
 - 01_bibliothek.png: Main library view with categories and document catalog
-- 02_pdf_vorschau.png: PDF preview reader with sidebar and zoom controls
-- 03_ocr_dialog.png: OCR optical character recognition dialog and settings
-- 04_schwaerzung.png: Redaction and PII detection tool with pattern rules
-- 05_konvertierung.png: Multi-format document converter (PDF, DOCX, TXT, PNG)
-- 06_batch_verarbeitung.png: PDF Marker and multi-page workshop layout
+- 02_ocr.png: OCR optical character recognition dialog and settings
+- 03_schwaerzung.png: Redaction and PII detection tool with pattern rules
+- 04_konvertierung.png: Multi-format document converter (PDF, DOCX, TXT, PNG)
 """
 
 from __future__ import annotations
@@ -17,6 +15,10 @@ from pathlib import Path
 import tempfile
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
+if os.name == "nt":
+    windows_font_dir = Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts"
+    if windows_font_dir.is_dir():
+        os.environ.setdefault("QT_QPA_FONTDIR", str(windows_font_dir))
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -24,7 +26,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 import fitz
 from PySide6.QtCore import Qt, QRect, QPoint, QSize
-from PySide6.QtGui import QColor, QFont, QPainter, QPixmap, QLinearGradient, QBrush, QPen
+from PySide6.QtGui import QColor, QFont, QFontDatabase, QFontInfo, QPainter, QPixmap, QLinearGradient, QBrush, QPen
 from PySide6.QtWidgets import QApplication, QWidget, QDialog
 
 from core.library.persistence import PersistenceManager
@@ -32,9 +34,31 @@ from gui.main_window import MainWindow
 from gui.dialogs.ocr_dialog import OCRDialog
 from gui.dialogs.redaction_dialog import RedactionDialog
 from gui.dialogs.convert_dialog import ConvertDialog
-from gui.dialogs.pdf_marker_dialog import PDFMarkerDialog
 
 OUTPUT_DIR = PROJECT_ROOT / "screenshots" / "store"
+
+
+def _configure_windows_store_font(app: QApplication) -> None:
+    """Load and require Segoe UI so headless captures never contain tofu glyphs."""
+    if os.name != "nt":
+        raise RuntimeError("Windows Store screenshots must be generated on Windows.")
+
+    font_dir = Path(os.environ.get("QT_QPA_FONTDIR", ""))
+    font_files = ("segoeui.ttf", "segoeuib.ttf", "segoeuii.ttf")
+    loaded = []
+    for font_name in font_files:
+        font_path = font_dir / font_name
+        if font_path.is_file():
+            font_id = QFontDatabase.addApplicationFont(str(font_path))
+            if font_id >= 0:
+                loaded.extend(QFontDatabase.applicationFontFamilies(font_id))
+
+    if not any(family.casefold() == "segoe ui" for family in loaded):
+        raise RuntimeError(f"Segoe UI could not be loaded from {font_dir}")
+
+    app.setFont(QFont("Segoe UI", 10))
+    if QFontInfo(app.font()).family().casefold() != "segoe ui":
+        raise RuntimeError("Qt did not resolve the required Segoe UI font.")
 
 
 def _create_sample_pdf(path: Path, title: str, paragraphs: list[str]) -> None:
@@ -74,7 +98,7 @@ def _compose_on_backdrop(dialog_pixmap: QPixmap, title_hint: str) -> QPixmap:
     # Subtle header watermark
     painter.setPen(QColor(45, 212, 191, 40))
     painter.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
-    painter.drawText(60, 60, f"DokuZen Pro  •  {title_hint}")
+    painter.drawText(60, 60, f"DokuZen  •  {title_hint}")
 
     # Center dialog with soft shadow
     dw = dialog_pixmap.width()
@@ -97,6 +121,16 @@ def _compose_on_backdrop(dialog_pixmap: QPixmap, title_hint: str) -> QPixmap:
 def generate_all_screenshots():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     app = QApplication.instance() or QApplication([])
+    _configure_windows_store_font(app)
+
+    for obsolete_name in (
+        "02_pdf_vorschau.png",
+        "03_ocr_dialog.png",
+        "04_schwaerzung.png",
+        "05_konvertierung.png",
+        "06_batch_verarbeitung.png",
+    ):
+        (OUTPUT_DIR / obsolete_name).unlink(missing_ok=True)
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_path = Path(tmp_dir)
@@ -149,24 +183,9 @@ def generate_all_screenshots():
             win1.close()
 
             # -------------------------------------------------------------
-            # Screenshot 2: 02_pdf_vorschau.png (1920x1080 MainWindow PDF Preview)
+            # Screenshot 2: 02_ocr.png (OCR Dialog)
             # -------------------------------------------------------------
-            print("Generating 02_pdf_vorschau.png...")
-            win2 = MainWindow()
-            win2.resize(1920, 1080)
-            win2.startup_import_paths((str(pdf1), str(pdf2), str(md1)))
-            win2.startup_open_path(str(pdf1))
-            win2.show()
-            app.processEvents()
-
-            pm2 = win2.grab()
-            pm2.save(str(OUTPUT_DIR / "02_pdf_vorschau.png"), "PNG")
-            win2.close()
-
-            # -------------------------------------------------------------
-            # Screenshot 3: 03_ocr_dialog.png (OCR Dialog)
-            # -------------------------------------------------------------
-            print("Generating 03_ocr_dialog.png...")
+            print("Generating 02_ocr.png...")
             dlg_ocr = OCRDialog()
             dlg_ocr.resize(880, 680)
             if hasattr(dlg_ocr, "_file_path"):
@@ -176,13 +195,13 @@ def generate_all_screenshots():
 
             dlg_pm3 = dlg_ocr.grab()
             canvas3 = _compose_on_backdrop(dlg_pm3, "OCR-Texterkennung & Durchsuchbare PDFs")
-            canvas3.save(str(OUTPUT_DIR / "03_ocr_dialog.png"), "PNG")
+            canvas3.save(str(OUTPUT_DIR / "02_ocr.png"), "PNG")
             dlg_ocr.close()
 
             # -------------------------------------------------------------
-            # Screenshot 4: 04_schwaerzung.png (Redaction Dialog)
+            # Screenshot 3: 03_schwaerzung.png (Redaction Dialog)
             # -------------------------------------------------------------
-            print("Generating 04_schwaerzung.png...")
+            print("Generating 03_schwaerzung.png...")
             dlg_redact = RedactionDialog()
             dlg_redact.resize(920, 720)
             if hasattr(dlg_redact, "_file_path"):
@@ -192,13 +211,13 @@ def generate_all_screenshots():
 
             dlg_pm4 = dlg_redact.grab()
             canvas4 = _compose_on_backdrop(dlg_pm4, "DSGVO-konforme Schwärzung & PII-Erkennung")
-            canvas4.save(str(OUTPUT_DIR / "04_schwaerzung.png"), "PNG")
+            canvas4.save(str(OUTPUT_DIR / "03_schwaerzung.png"), "PNG")
             dlg_redact.close()
 
             # -------------------------------------------------------------
-            # Screenshot 5: 05_konvertierung.png (Convert Dialog)
+            # Screenshot 4: 04_konvertierung.png (Convert Dialog)
             # -------------------------------------------------------------
-            print("Generating 05_konvertierung.png...")
+            print("Generating 04_konvertierung.png...")
             dlg_conv = ConvertDialog()
             dlg_conv.resize(860, 640)
             if hasattr(dlg_conv, "_input_path"):
@@ -208,24 +227,10 @@ def generate_all_screenshots():
 
             dlg_pm5 = dlg_conv.grab()
             canvas5 = _compose_on_backdrop(dlg_pm5, "Dokumenten-Konvertierung (PDF, DOCX, TXT, Bilder)")
-            canvas5.save(str(OUTPUT_DIR / "05_konvertierung.png"), "PNG")
+            canvas5.save(str(OUTPUT_DIR / "04_konvertierung.png"), "PNG")
             dlg_conv.close()
 
-            # -------------------------------------------------------------
-            # Screenshot 6: 06_batch_verarbeitung.png (PDF Marker / Workshop)
-            # -------------------------------------------------------------
-            print("Generating 06_batch_verarbeitung.png...")
-            dlg_marker = PDFMarkerDialog()
-            dlg_marker.resize(1100, 780)
-            dlg_marker.show()
-            app.processEvents()
-
-            dlg_pm6 = dlg_marker.grab()
-            canvas6 = _compose_on_backdrop(dlg_pm6, "PDF-Werkstatt, Seiten-Auszug & Stapelverarbeitung")
-            canvas6.save(str(OUTPUT_DIR / "06_batch_verarbeitung.png"), "PNG")
-            dlg_marker.close()
-
-            print(f"All 6 store screenshots generated successfully in {OUTPUT_DIR}.")
+            print(f"All 4 store screenshots generated successfully in {OUTPUT_DIR}.")
 
         finally:
             PersistenceManager.DEFAULT_STATE_FILE = orig_state
