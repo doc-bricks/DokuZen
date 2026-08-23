@@ -196,15 +196,21 @@ def test_version_parity():
     with open(pyproject_path, "rb") as f:
         data = tomllib.load(f)
     version = data.get("project", {}).get("version")
-    assert version == "1.0.0"
+    # Gegen die uebrigen Manifeste pruefen statt gegen ein Literal: ein fester Wert
+    # macht den Test bei jeder Versionsanhebung rot, ohne echte Abweichung - und
+    # verdeckt umgekehrt eine tatsaechliche Drift zwischen den Dateien.
+    assert re.fullmatch(r"\d+\.\d+\.\d+", version or ""), version
 
     store_cfg = ROOT / "store_package.json"
     if store_cfg.exists():
         store_data = json.loads(store_cfg.read_text(encoding="utf-8"))
-        assert "1.0.0" in store_data.get("version", "1.0.0")
+        store_version = store_data.get("version", "")
+        # Store-Format ist vierstellig (X.Y.Z.Build)
+        assert store_version.startswith(version + "."), (
+            "pyproject %s passt nicht zu store_package.json %s" % (version, store_version))
 
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    assert f"[{version}]" in changelog or f"## [{version}]" in changelog or "1.0.0" in changelog
+    assert f"[{version}]" in changelog, "CHANGELOG fuehrt keinen Eintrag fuer %s" % version
 
 
 def test_offline_and_zero_egress_invariants():
