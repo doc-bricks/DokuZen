@@ -5,6 +5,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Geändert / Changed (2026-08-23)
+- **Discoverability, Visual Showcase, Mermaid Architecture, Lifecycle & Security Gate (Pfad B):**
+  - **Visuelle Showcase-Galerie:** Hochauflösende 1080p Store-Screenshots (`01_bibliothek.png`, `02_pdf_vorschau.png`, `03_ocr_dialog.png`, `04_schwaerzung.png`, `05_konvertierung.png`, `06_batch_verarbeitung.png`) mit zweisprachigen Detailbeschreibungen in `README.md` & `README_de.md` integriert.
+  - **Interaktive Mermaid-Diagramme:** Schichtenarchitektur (`flowchart TD` für 3-Panel PySide6 GUI, Core Processing Engines und lokales Storage/MSIX Subsystem) und End-to-End Dokumenten- & PDF-Verarbeitungszyklus (`sequenceDiagram`) integriert.
+  - **Zweisprachige Schnellnavigation & Badges:** Strukturierte 12-Punkte-Navigation in `README.md` & `README_de.md` eingebunden; Shields.io Badges für CI (`source-platform-smoke.yml`), Teststatus (`301 passed | 100%`), Python Matrix (`3.10-3.13`), Plattformen (`Windows | macOS | Linux`), Datenschutz (`100% Local-First | Zero-Egress`) und Sicherheit synchronisiert.
+  - **Sicherheitsrichtlinie (`SECURITY.md`):** Auf vollständigen zweisprachigen Standard mit Zero-Egress, Non-Elevation, destruktiver Schwärzung und direkten Sicherheitskontakten (`security@open-bricks.org`, `security@doc-bricks.org`, `security@ellmos.ai`, `support@lukasgeiger.com`) gehärtet.
+  - **Ökosystem-Matrix:** Umfassende Geschwisterwerkzeuge-Matrix mit 13 Partner-Repositories über `doc-bricks`, `file-bricks`, `dev-bricks` und `open-bricks` verankert.
+  - **Metadaten- & Invarianten-Vertragstestsuite:** `tests/test_metadata.py` um Contract-Tests für zweisprachige Parität, Mermaid-Syntax, Showcase-Grafiken, Sibling-URLs, Sicherheitsinvarianten, Offline Zero-Egress Invarianten (0 Netzwerkimporte über alle 76 Quelldateien) und CI-Workflow-Integrität auf 12 Tests erweitert (12/12 passed, 301 Tests gesamt).
+  - **`pyproject.toml` & `llms.txt`:** PEP 621 Standard Classifiers (`Python 3.13`, `OS Independent`, `Windows`, `Linux`, `MacOS`), `[project.urls]` (`Security`, `Umbrella`) und `llms.txt` Last-checked Timestamp auf `2026-08-23` synchronisiert.
+
 ### Behoben / Fixed (2026-08-21)
 - **Format-Konvertierung (FormatConverter Robustheit & Edge-Cases):**
   - **Grayscale- und Alpha-PDFs:** Bei der Konvertierung von PDF zu JPEG/BMP/WEBP führte ein 1-Kanal-Grayscale-Pixmap zu `ValueError: not enough image data` und ein Alpha-/RGBA-Pixmap zu Farbkanalverzerrungen. Pixmaps werden nun kanalgenau decodiert und transparente Ebenen sauber mit weißem Hintergrund komponiert.
