@@ -5,7 +5,7 @@
 **Deutsch** | [English](README.md)
 
 [![CI](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml/badge.svg)](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml)
-[![Pytest Status](https://img.shields.io/badge/pytest-301%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-304%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
 [![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![Platforms](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/doc-bricks/DokuZen)
 [![Privacy](https://img.shields.io/badge/datenschutz-100%25%20Local--First%20%7C%20Zero--Egress-success.svg)](SECURITY.md)
@@ -36,6 +36,7 @@
 - 🧪 [Tests & Qualitätssicherung](#-tests--qualitätssicherung)
 - ⌨️ [Tastenkürzel](#️-tastenkürzel)
 - 🪟 [Windows Store & Paketierung](#-windows-store--paketierung)
+- 🐧 [Portables Linux-Bundle](#-portables-linux-bundle)
 - 📄 [Lizenz & Drittanbieter-Lizenzen](#-lizenz--drittanbieter-lizenzen)
 
 ---
@@ -269,6 +270,9 @@ python tests/test_source_platform_smoke.py
 # Windows Store Readiness Gatekeeper
 python tools/check_store_readiness.py
 
+# Vertrag des portablen Linux-Bundles hostunabhängig prüfen
+python tools/build_linux_bundle.py --check
+
 # Linting-Gatekeeper
 python -m ruff check .
 ```
@@ -294,6 +298,29 @@ DokuZen verfügt über vollständige Microsoft Windows Store (MSIX) Paketierungs
 - **Manifest**: `store_package/DokuZen/AppxManifest.xml` (`Geiger.DokuZen`, `runFullTrust`)
 - **Grafiken**: 1080p Store-Screenshots in `screenshots/store/` und High-DPI Kachelicons (44x44, 50x50, 150x150, 310x150, 310x310)
 - **Validierung**: Automatisierter Preflight-Prüflauf via `tools/check_store_readiness.py`
+
+---
+
+## 🐧 Portables Linux-Bundle
+
+DokuZen besitzt einen reproduzierbaren PyInstaller-onedir-Paketpfad für Linux.
+Ein eigener Workflow baut `DokuZen-1.0.0-linux-<architektur>.tar.gz` mit der
+Anwendung, Assets, dem sechssprachigen Katalog, Konfiguration,
+Freedesktop-Desktopdatei, AppStream-Metadaten, Lizenz und zweisprachiger
+Dokumentation.
+
+```bash
+# Metadaten-/Vertragsprüfung auf jedem Host
+python tools/build_linux_bundle.py --check
+
+# Tatsächlicher Bundle-Build unter Linux
+python tools/build_linux_bundle.py
+```
+
+Tesseract bleibt eine optionale externe Abhängigkeit. DokuZen startet ohne
+Tesseract; nur die OCR-Funktionen bleiben bis zur Installation eingeschränkt.
+Entpack- und Starthinweise stehen in
+[`packaging/linux/README.md`](packaging/linux/README.md).
 
 ---
 

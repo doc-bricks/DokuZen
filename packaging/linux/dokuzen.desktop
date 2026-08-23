@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=DokuZen
+GenericName=Document and PDF Workstation
+GenericName[de]=Dokumenten- und PDF-Werkstatt
+Comment=Manage and process documents locally
+Comment[de]=Dokumente lokal verwalten und verarbeiten
+Exec=dokuzen
+Icon=dokuzen
+Terminal=false
+Categories=Office;Utility;
+Keywords=document;pdf;ocr;redaction;
+Keywords[de]=Dokument;PDF;OCR;Schwärzung;
+StartupNotify=true

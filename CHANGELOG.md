@@ -5,6 +5,13 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt / Added (2026-08-23, Linux-Portierung)
+- **Portables Linux-Bundle:** `tools/build_linux_bundle.py` validiert den Paketvertrag und erzeugt unter Linux ein reproduzierbares PyInstaller-onedir-Archiv `DokuZen-1.0.0-linux-<architektur>.tar.gz`.
+- **Freedesktop-/AppStream-Metadaten:** Desktop-Eintrag, 512px-Iconpfad und zweisprachige AppStream-Beschreibung unter `packaging/linux/` ergänzt.
+- **CI-Artefaktpfad:** `.github/workflows/linux-bundle.yml` validiert Metadaten/Tests und baut bei manuellem Start oder Versionstag ein herunterladbares Linux-Artefakt.
+- **Bundle-Ressourcen:** Assets, Konfiguration und der sechssprachige Übersetzungskatalog werden in das Bundle aufgenommen; `TranslationSystem` löst Ressourcen nun korrekt über PyInstallers `_MEIPASS` auf.
+- **Contract-Tests:** Drei Tests sichern Metadaten, shell-freie PyInstaller-Argumente und Übersetzungs-Readback im Bundle; Gesamtstand 304 bestandene Tests.
+
 ### Geändert / Changed (2026-08-23)
 - **Discoverability, Visual Showcase, Mermaid Architecture, Lifecycle & Security Gate (Pfad B):**
   - **Visuelle Showcase-Galerie:** Hochauflösende 1080p Store-Screenshots (`01_bibliothek.png`, `02_pdf_vorschau.png`, `03_ocr_dialog.png`, `04_schwaerzung.png`, `05_konvertierung.png`, `06_batch_verarbeitung.png`) mit zweisprachigen Detailbeschreibungen in `README.md` & `README_de.md` integriert.

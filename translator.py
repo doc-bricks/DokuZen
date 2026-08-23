@@ -18,6 +18,7 @@ translator.set_language('en')
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
@@ -50,7 +51,7 @@ class TranslationSystem:
         self.current_lang = lang_code if lang_code in self.SUPPORTED_LANGUAGES else 'de'
 
         if app_dir is None:
-            app_dir = Path(__file__).resolve().parent
+            app_dir = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
         self.app_dir = Path(app_dir)
 
         self.translations_file = self.app_dir / "locales" / "translations.json"

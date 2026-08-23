@@ -11,7 +11,7 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (301 unit, integration & contract tests passed)
+- **Test Suite Status:** Pytest test suite 100% green (304 unit, integration & contract tests passed)
 - **Last-checked:** 2026-08-23
 
 ---
@@ -25,6 +25,7 @@ DokuZen ist als modulares 3-Panel-Desktop-System aufgebaut:
 4. **Entwickler-Tools (`plugins/dev_tools/`):** Python-Code zu EXE-Kompilierung, Lizenz-Generierung, Code-Splitter.
 5. **Hintergrunddienste (`plugins/background/`):** Privacy Guard (Datenschutz-Ampel), Sync Engine, Media Brain.
 6. **Windows Store Bridge (`store_package/` & `tools/`):** MSIX Packaging Manifest, Store Assets & Automatisierter Preflight Gatekeeper.
+7. **Linux Packaging (`packaging/linux/` & `tools/build_linux_bundle.py`):** Portable PyInstaller-onedir tarball with Freedesktop/AppStream metadata and CI artifact workflow.
 
 ---
 
@@ -85,6 +86,9 @@ python tests/test_source_platform_smoke.py
 # Windows Store Readiness Gatekeeper
 python tools/check_store_readiness.py
 
+# Linux bundle metadata/contract check (actual build requires Linux)
+python tools/build_linux_bundle.py --check
+
 # Ruff Linting Gatekeeper
 python -m ruff check .
 ```
@@ -99,5 +103,6 @@ python -m ruff check .
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Release Entries
 - [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
 - [`WINDOWS_STORE_PREP.md`](WINDOWS_STORE_PREP.md) — Windows Store Packaging & Asset Inventory
+- [`packaging/linux/README.md`](packaging/linux/README.md) — Portable Linux bundle usage and dependency boundary
 - [`pyproject.toml`](pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration
 - [`main.py`](main.py) — Desktop App Launcher & CLI Parser

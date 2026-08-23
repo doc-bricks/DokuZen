@@ -42,7 +42,7 @@ OPTIONAL_RUNTIME = [
 ]
 
 BUILD_TOOLS = [
-    ("PyInstaller", "Windows single-file EXE build"),
+    ("PyInstaller", "Windows EXE and portable Linux bundle builds"),
 ]
 
 EXTERNAL_TOOLS = [

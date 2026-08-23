@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.doc_bricks.DokuZen</id>
+  <name>DokuZen</name>
+  <summary>Local document and PDF workstation</summary>
+  <summary xml:lang="de">Lokale Dokumenten- und PDF-Werkstatt</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+  <description>
+    <p>Manage, preview, convert, OCR, merge, and redact local documents without uploading them.</p>
+    <p xml:lang="de">Lokale Dokumente ohne Upload verwalten, anzeigen, konvertieren, per OCR erfassen, zusammenführen und schwärzen.</p>
+  </description>
+  <launchable type="desktop-id">dokuzen.desktop</launchable>
+  <url type="homepage">https://github.com/doc-bricks/DokuZen</url>
+  <url type="bugtracker">https://github.com/doc-bricks/DokuZen/issues</url>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="1.0.0" date="2026-08-23" />
+  </releases>
+</component>
