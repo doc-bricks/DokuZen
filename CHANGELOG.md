@@ -3,6 +3,31 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.0.1] - 2026-08-23
+
+### Fixed
+- **Store-Paket registrierte keinen `.pdf`-Handler:** Das `AppxManifest.xml` deklarierte
+  weder `uap:FileTypeAssociation` noch `uap3:AppExecutionAlias`. Eine aus dem Store
+  installierte App hätte keine Dateizuordnung mitgebracht und wäre nicht unter „Öffnen mit"
+  erschienen. Ergänzt: `.pdf` sowie der Ausführungsalias `dokuzen.exe`.
+- **Sprachverlust im Paket:** Das zuletzt gebaute MSIX enthielt nur `en-us`, obwohl das
+  gepflegte Manifest `de-de` und `en-us` führte. `languages` ist jetzt in
+  `store_package.json` hinterlegt, damit der Generator beide Sprachen erzeugt.
+
+### Changed
+- Paketversion auf `1.0.1.0`; `MaxVersionTested` von `10.0.19041.0` auf `10.0.22621.0`.
+- Manifest wird jetzt aus `store_package.json` erzeugt (Generator store-packager 2.2.0)
+  statt von Hand gepflegt.
+
+### Notes
+- **Nicht eingereicht.** DokuZen ist noch nicht im Store veröffentlicht: Es existiert eine
+  offene Erstveröffentlichungs-Submission (`1152921505701654962`, Status `PendingCommit`)
+  mit vier Validierungsfehlern (`InvalidCategory`, `NoValidPackages` ×2,
+  `InvalidPricingAvailabilitySettings`). Diese Submission wurde bewusst nicht angetastet —
+  eine Erstveröffentlichung braucht Kategorie, Preis und Alterseinstufung aus dem
+  Partner Center. Das gebaute Paket liegt bereit unter
+  `releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix`.
+
 ## [Unreleased]
 
 ### Hinzugefügt / Added (2026-08-23, Linux-Portierung)

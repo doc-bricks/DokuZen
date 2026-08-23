@@ -177,7 +177,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     # werden separat geparst; an Qt durchgereicht wuerde Qt sie als unbekannte Optionen behandeln.
     app = QApplication([sys.argv[0]])
     app.setApplicationName("DokuZen")
-    app.setApplicationVersion("1.0.0")
+    app.setApplicationVersion("1.0.1")
     app.setOrganizationName("DokuZen")
     
     # Icon setzen (falls vorhanden)

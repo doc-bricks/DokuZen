@@ -21,7 +21,15 @@ def test_pyproject_metadata_and_pep621_classifiers():
 
     project = data.get("project", {})
     assert project.get("name") == "DokuZen"
-    assert project.get("version") == "1.0.0"
+    # Gegen die Paketkonfiguration pruefen statt gegen ein Literal: sonst schlaegt
+    # der Test bei jeder Versionsanhebung fehl, ohne dass etwas kaputt ist - und
+    # eine Abweichung zwischen pyproject und store_package.json bleibt unentdeckt.
+    version = project.get("version")
+    assert re.fullmatch(r"\d+\.\d+\.\d+", version or ""), version
+    with open(Path(__file__).resolve().parents[1] / "store_package.json", encoding="utf-8") as sf:
+        store_version = json.load(sf)["version"]
+    assert store_version.startswith(version + "."), (
+        "pyproject %s passt nicht zu store_package.json %s" % (version, store_version))
     assert "AGPL-3.0" in project.get("license", {}).get("text", "")
     assert "PySide6>=6.5.0" in project.get("dependencies", [])
 

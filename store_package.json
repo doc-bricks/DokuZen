@@ -3,7 +3,7 @@
   "publisher": "CN=52596601-BAB4-4F3F-B182-E8F3F273B202",
   "publisher_display": "Geiger",
   "identity_name": "Geiger.DokuZen",
-  "version": "1.0.0.0",
+  "version": "1.0.1.0",
   "store_id": "9PBLDN4QJDHN",
   "description": "Lokale Dokumenten-Werkstatt für PDF-Bearbeitung, OCR, Schwärzung, Konvertierung und Dateiverwaltung.",
   "executable": "DokuZen-Pro-1.0.0-win64.exe",
@@ -12,5 +12,18 @@
   "age_rating": "3+",
   "privacy_url": "https://github.com/doc-bricks/DokuZen/blob/main/PRIVACY_POLICY.md",
   "support_url": "https://github.com/doc-bricks/DokuZen/blob/main/SUPPORT.md",
-  "license": "AGPL-3.0-or-later"
+  "license": "AGPL-3.0-or-later",
+  "file_types": {
+    "name": "pdf",
+    "display_name": "PDF-Dokument",
+    "info_tip": "Mit DokuZen öffnen",
+    "extensions": [
+      ".pdf"
+    ]
+  },
+  "execution_alias": "dokuzen.exe",
+  "languages": [
+    "de-DE",
+    "en-US"
+  ]
 }
