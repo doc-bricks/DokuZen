@@ -409,3 +409,23 @@ class TestSignatureVorabpruefung:
         assert result.embedded is True
         assert result.skipped_existing is False
         assert _count_images_on_page(out, page_index=0) >= 1
+
+    def test_embed_signature_in_place(self, sample_pdf, signature_png):
+        from core.pdf.signature import SignatureOverlay
+
+        overlay = SignatureOverlay()
+        # In-place Aufruf (output_path == pdf_path)
+        ok = overlay.embed_signature(
+            pdf_path=str(sample_pdf),
+            signature_path=str(signature_png),
+            output_path=str(sample_pdf),
+            page_index=0,
+            x=50.0,
+            y=100.0,
+            width=120.0,
+            height=40.0,
+        )
+
+        assert ok is True
+        assert sample_pdf.is_file()
+        assert _count_images_on_page(sample_pdf, page_index=0) >= 1

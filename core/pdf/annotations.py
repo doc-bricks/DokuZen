@@ -6,8 +6,11 @@ DokuZen Pro - PDF Annotations
 Marker, Kommentare, Notizen und Stempel für PDFs.
 """
 
+import os
+import shutil
+import tempfile
 from pathlib import Path
-from typing import Optional, List, Tuple, Dict, Any
+from typing import Optional, List, Tuple, Dict, Any, Union
 from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
@@ -129,7 +132,59 @@ class PDFAnnotator(LoggerMixin):
     def __init__(self):
         if not PYMUPDF_AVAILABLE:
             self.logger.warning("PyMuPDF nicht verfügbar")
-    
+
+    def _resolve_stamp(self, stamp: Union[StampType, int, str]) -> Union[int, str]:
+        """Löst StampType, Integer-ID oder Name zu einem PyMuPDF-kompatiblen Stempel-Wert auf."""
+        stamp_map = {
+            StampType.APPROVED: getattr(fitz, "STAMP_Approved", 0) if PYMUPDF_AVAILABLE else 0,
+            StampType.EXPERIMENTAL: getattr(fitz, "STAMP_Experimental", 4) if PYMUPDF_AVAILABLE else 4,
+            StampType.NOT_APPROVED: getattr(fitz, "STAMP_NotApproved", 9) if PYMUPDF_AVAILABLE else 9,
+            StampType.AS_IS: getattr(fitz, "STAMP_AsIs", 1) if PYMUPDF_AVAILABLE else 1,
+            StampType.EXPIRED: getattr(fitz, "STAMP_Expired", 5) if PYMUPDF_AVAILABLE else 5,
+            StampType.NOT_FOR_PUBLIC: getattr(fitz, "STAMP_NotForPublicRelease", 10) if PYMUPDF_AVAILABLE else 10,
+            StampType.CONFIDENTIAL: getattr(fitz, "STAMP_Confidential", 2) if PYMUPDF_AVAILABLE else 2,
+            StampType.FINAL: getattr(fitz, "STAMP_Final", 6) if PYMUPDF_AVAILABLE else 6,
+            StampType.SOLD: getattr(fitz, "STAMP_Sold", 11) if PYMUPDF_AVAILABLE else 11,
+            StampType.DRAFT: getattr(fitz, "STAMP_Draft", 13) if PYMUPDF_AVAILABLE else 13,
+            StampType.FOR_COMMENT: getattr(fitz, "STAMP_ForComment", 7) if PYMUPDF_AVAILABLE else 7,
+            StampType.TOP_SECRET: getattr(fitz, "STAMP_TopSecret", 12) if PYMUPDF_AVAILABLE else 12,
+        }
+        if isinstance(stamp, StampType):
+            return stamp_map.get(stamp, getattr(fitz, "STAMP_Approved", 0) if PYMUPDF_AVAILABLE else 0)
+        if isinstance(stamp, int):
+            return stamp
+        if isinstance(stamp, str):
+            try:
+                enum_val = StampType[stamp.upper()]
+                return stamp_map.get(enum_val, 0)
+            except KeyError:
+                pass
+            attr_name = f"STAMP_{stamp}"
+            if PYMUPDF_AVAILABLE and hasattr(fitz, attr_name):
+                return getattr(fitz, attr_name)
+            if Path(stamp).is_file():
+                return stamp
+            return getattr(fitz, "STAMP_Approved", 0) if PYMUPDF_AVAILABLE else 0
+        return getattr(fitz, "STAMP_Approved", 0) if PYMUPDF_AVAILABLE else 0
+
+    def _save_pdf(self, doc, pdf_path: str, output_path: str) -> Optional[Path]:
+        """
+        Speichert das fitz-Dokument.
+        Bei In-Place-Überschreiben wird in eine temporäre Datei im Zielordner gespeichert,
+        die nach Schließen des Dokuments im finally-Block atomar ersetzt wird.
+        """
+        src = Path(pdf_path).resolve()
+        dst = Path(output_path).resolve()
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if src == dst:
+            with tempfile.NamedTemporaryFile(dir=dst.parent, prefix="dokuzen_annot_", suffix=".tmp", delete=False) as tmp:
+                temp_file = Path(tmp.name)
+            doc.save(str(temp_file))
+            return temp_file
+        else:
+            doc.save(output_path)
+            return None
+
     def add_highlight(self, pdf_path: str, output_path: str,
                       page_index: int, rect: Tuple[float, float, float, float],
                       color: AnnotationColor = None,
@@ -155,6 +210,7 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.yellow()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -163,16 +219,27 @@ class PDFAnnotator(LoggerMixin):
             if content:
                 annot.set_info(content=content)
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             self.logger.info(f"Highlight hinzugefügt: Seite {page_index + 1}")
             return True
         except Exception as e:
             self.logger.error(f"Highlight-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_underline(self, pdf_path: str, output_path: str,
                       page_index: int, rect: Tuple[float, float, float, float],
                       color: AnnotationColor = None) -> bool:
@@ -184,21 +251,33 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.red()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
             annot = page.add_underline_annot(fitz.Rect(rect))
             annot.set_colors(stroke=color.to_tuple())
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Underline-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_strikeout(self, pdf_path: str, output_path: str,
                       page_index: int, rect: Tuple[float, float, float, float],
                       color: AnnotationColor = None) -> bool:
@@ -210,21 +289,33 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.red()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
             annot = page.add_strikeout_annot(fitz.Rect(rect))
             annot.set_colors(stroke=color.to_tuple())
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Strikeout-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_text_note(self, pdf_path: str, output_path: str,
                       page_index: int, point: Tuple[float, float],
                       text: str, author: str = "") -> bool:
@@ -246,6 +337,7 @@ class PDFAnnotator(LoggerMixin):
             return False
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -253,16 +345,27 @@ class PDFAnnotator(LoggerMixin):
             if author:
                 annot.set_info(title=author)
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             self.logger.info(f"Text-Note hinzugefügt: Seite {page_index + 1}")
             return True
         except Exception as e:
             self.logger.error(f"Text-Note-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_freetext(self, pdf_path: str, output_path: str,
                      page_index: int, rect: Tuple[float, float, float, float],
                      text: str, fontsize: int = 12,
@@ -288,6 +391,7 @@ class PDFAnnotator(LoggerMixin):
             return False
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -301,19 +405,30 @@ class PDFAnnotator(LoggerMixin):
                 fill_color=fill_color,
             )
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             self.logger.info(f"Freitext hinzugefügt: Seite {page_index + 1}")
             return True
         except Exception as e:
             self.logger.error(f"Freitext-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_stamp(self, pdf_path: str, output_path: str,
                   page_index: int, rect: Tuple[float, float, float, float],
-                  stamp_type: StampType = StampType.APPROVED) -> bool:
+                  stamp_type: Union[StampType, int, str] = StampType.APPROVED) -> bool:
         """
         Fügt einen Stempel hinzu.
         
@@ -322,7 +437,7 @@ class PDFAnnotator(LoggerMixin):
             output_path: Ausgabe-PDF
             page_index: Seitenindex
             rect: Stempel-Rechteck
-            stamp_type: Stempel-Typ
+            stamp_type: Stempel-Typ (StampType Enum, Integer-ID oder Name/Pfad)
             
         Returns:
             True bei Erfolg
@@ -331,21 +446,35 @@ class PDFAnnotator(LoggerMixin):
             return False
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
-            annot = page.add_stamp_annot(fitz.Rect(rect), stamp=stamp_type.value)
+            stamp_val = self._resolve_stamp(stamp_type)
+            annot = page.add_stamp_annot(fitz.Rect(rect), stamp=stamp_val)
             annot.update()
-            doc.save(output_path)
-            self.logger.info(f"Stempel '{stamp_type.value}' hinzugefügt: Seite {page_index + 1}")
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
+            stamp_name = stamp_type.name if isinstance(stamp_type, StampType) else str(stamp_type)
+            self.logger.info(f"Stempel '{stamp_name}' hinzugefügt: Seite {page_index + 1}")
             return True
         except Exception as e:
             self.logger.error(f"Stempel-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_rect(self, pdf_path: str, output_path: str,
                  page_index: int, rect: Tuple[float, float, float, float],
                  color: AnnotationColor = None,
@@ -359,6 +488,7 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.red()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -368,15 +498,26 @@ class PDFAnnotator(LoggerMixin):
                 annot.set_colors(fill=fill_color.to_tuple())
             annot.set_border(width=width)
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Rechteck-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_circle(self, pdf_path: str, output_path: str,
                    page_index: int, rect: Tuple[float, float, float, float],
                    color: AnnotationColor = None,
@@ -390,6 +531,7 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.blue()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -399,15 +541,26 @@ class PDFAnnotator(LoggerMixin):
                 annot.set_colors(fill=fill_color.to_tuple())
             annot.set_border(width=width)
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Kreis-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_line(self, pdf_path: str, output_path: str,
                  page_index: int, 
                  start: Tuple[float, float],
@@ -422,6 +575,7 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.red()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -429,15 +583,26 @@ class PDFAnnotator(LoggerMixin):
             annot.set_colors(stroke=color.to_tuple())
             annot.set_border(width=width)
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Linien-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def add_ink(self, pdf_path: str, output_path: str,
                 page_index: int,
                 points: List[List[Tuple[float, float]]],
@@ -464,6 +629,7 @@ class PDFAnnotator(LoggerMixin):
             color = AnnotationColor.blue()
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
@@ -472,15 +638,26 @@ class PDFAnnotator(LoggerMixin):
             annot.set_colors(stroke=color.to_tuple())
             annot.set_border(width=width)
             annot.update()
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Ink-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
-    
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
+
     def get_annotations(self, pdf_path: str) -> List[Annotation]:
         """
         Liest alle Annotationen aus einem PDF.
@@ -554,20 +731,32 @@ class PDFAnnotator(LoggerMixin):
             return False
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             page = doc[page_index]
             annots = list(page.annots())
             if annot_index < len(annots):
                 page.delete_annot(annots[annot_index])
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             return True
         except Exception as e:
             self.logger.error(f"Annotation-Entfernen-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
     
     def remove_all_annotations(self, pdf_path: str, output_path: str,
                                page_index: int = None) -> bool:
@@ -586,6 +775,7 @@ class PDFAnnotator(LoggerMixin):
             return False
         
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             pages = [doc[page_index]] if page_index is not None else doc
@@ -593,12 +783,23 @@ class PDFAnnotator(LoggerMixin):
                 annots = list(page.annots())
                 for annot in annots:
                     page.delete_annot(annot)
-            doc.save(output_path)
+            temp_file = self._save_pdf(doc, pdf_path, output_path)
             self.logger.info(f"Annotationen entfernt: {pdf_path}")
             return True
         except Exception as e:
             self.logger.error(f"Annotationen-Entfernen-Fehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass

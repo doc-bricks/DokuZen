@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 """Kleine Utilitys zum Beschneiden von PDF-Seitenrändern."""
 
+import shutil
+import tempfile
+from pathlib import Path
+
 from utils.logger import LoggerMixin
 
 try:
@@ -52,18 +56,39 @@ class PDFMarginCropper(LoggerMixin):
             return False
 
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             if not self.crop_document_margins(doc, margin_mm=margin_mm):
                 return False
-            doc.save(output_path)
+
+            src = Path(pdf_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if src == dst:
+                with tempfile.NamedTemporaryFile(dir=dst.parent, prefix="dokuzen_crop_", suffix=".tmp", delete=False) as tmp:
+                    temp_file = Path(tmp.name)
+                doc.save(str(temp_file))
+            else:
+                doc.save(output_path)
             return True
         except Exception as exc:
             self.logger.error(f"PDF-Beschnitt fehlgeschlagen: {exc}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
 
 
 def crop_document_margins(doc, margin_mm: float = 5.0) -> bool:

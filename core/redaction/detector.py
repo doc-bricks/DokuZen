@@ -6,7 +6,10 @@ DokuZen Pro - Redaction Detector
 Erkennt sensible Daten für Schwärzung.
 """
 
+import os
 import re
+import shutil
+import tempfile
 from typing import List, Set, Dict, Optional, Tuple
 from dataclasses import dataclass
 from pathlib import Path
@@ -347,6 +350,7 @@ class RedactionApplier(LoggerMixin):
             return False
 
         doc = None
+        temp_file = None
         try:
             doc = self._fitz.open(input_path)
 
@@ -384,8 +388,16 @@ class RedactionApplier(LoggerMixin):
                 # Redactions anwenden
                 page.apply_redactions()
 
-            # Speichern
-            doc.save(output_path)
+            # Speichern (mit In-Place-Unterstützung)
+            src = Path(input_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if src == dst:
+                with tempfile.NamedTemporaryFile(dir=dst.parent, prefix="dokuzen_redact_", suffix=".tmp", delete=False) as tmp:
+                    temp_file = Path(tmp.name)
+                doc.save(str(temp_file))
+            else:
+                doc.save(output_path)
 
             if self.last_redaction_stats["missed"]:
                 self.logger.warning(
@@ -400,10 +412,21 @@ class RedactionApplier(LoggerMixin):
 
         except Exception as e:
             self.logger.error(f"Schwaerzungsfehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
 
 
 # === Hilfsfunktionen ===
@@ -514,5 +537,15 @@ def redact_pdf(input_path: str, output_path: str,
     if all_matches:
         applier = RedactionApplier()
         return applier.redact_pdf(input_path, output_path, all_matches)
+
+    src = Path(input_path).resolve()
+    dst = Path(output_path).resolve()
+    if src != dst:
+        try:
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src, dst)
+        except Exception as e:
+            _logger.error(f"Kopier-Fehler in redact_pdf: {e}")
+            return False
 
     return True

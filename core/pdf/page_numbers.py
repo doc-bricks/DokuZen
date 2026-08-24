@@ -6,6 +6,10 @@ DokuZen Pro - PDF Page Numbers
 Fügt exportierten PDFs optionale Seitenzahlen hinzu.
 """
 
+import shutil
+import tempfile
+from pathlib import Path
+
 from utils.logger import LoggerMixin
 
 try:
@@ -70,6 +74,7 @@ class PDFPageNumberer(LoggerMixin):
             return False
 
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
             ok = self.add_to_document(
@@ -80,14 +85,34 @@ class PDFPageNumberer(LoggerMixin):
             )
             if not ok:
                 return False
-            doc.save(output_path)
+
+            src = Path(pdf_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if src == dst:
+                with tempfile.NamedTemporaryFile(dir=dst.parent, prefix="dokuzen_num_", suffix=".tmp", delete=False) as tmp:
+                    temp_file = Path(tmp.name)
+                doc.save(str(temp_file))
+            else:
+                doc.save(str(dst))
             return True
         except Exception as exc:
             self.logger.error(f"PDF-Seitenzahlen-Fehler: {exc}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
 
 
 def add_page_numbers_to_document(doc, **kwargs) -> bool:

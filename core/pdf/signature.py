@@ -7,7 +7,9 @@ Bild (Signatur-PNG/JPG) in eine PDF-Seite einbetten.
 Unterstützt: PNG mit Transparenz, JPG, wählbare Seite, Position und Größe.
 """
 
+import os
 import shutil
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Sequence, Tuple
@@ -139,6 +141,7 @@ class SignatureOverlay(LoggerMixin):
             return False
 
         doc = None
+        temp_file = None
         try:
             doc = fitz.open(pdf_path)
 
@@ -173,7 +176,16 @@ class SignatureOverlay(LoggerMixin):
             # Bild als Overlay einfügen (über dem PDF-Inhalt)
             page.insert_image(rect, filename=str(sig_path), overlay=True)
 
-            doc.save(output_path)
+            src = Path(pdf_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if src == dst:
+                with tempfile.NamedTemporaryFile(dir=dst.parent, prefix="dokuzen_sig_", suffix=".tmp", delete=False) as tmp:
+                    temp_file = Path(tmp.name)
+                doc.save(str(temp_file))
+            else:
+                doc.save(output_path)
+
             self.logger.info(
                 f"Signatur eingebettet: Seite {page_index + 1}, "
                 f"Rect={rect}, Ausgabe: {output_path}"
@@ -182,10 +194,21 @@ class SignatureOverlay(LoggerMixin):
 
         except Exception as e:
             self.logger.error(f"Fehler beim Einbetten der Signatur: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return False
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(Path(output_path).resolve()))
+                except Exception:
+                    pass
 
     def detect_existing_signature(
         self,

@@ -30,6 +30,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben & Gehärtet / Fixed & Hardened (2026-08-24, Bugsearch & Robustness Audit)
+- **PDF-Stempel & Annotationen (`core/pdf/annotations.py`):** `add_stamp()` löst vordefinierte `StampType`-Enums, Namen und Integer-IDs nun robust auf PyMuPDF-Stempelkonstanten (`STAMP_*`) auf, statt String-Literale direkt als Dateipfad an PyMuPDF zu übergeben (behebt `FileNotFoundError: [Errno 2] No such file or directory: 'Approved'`).
+- **In-Place PDF-Speichern (`core/pdf/annotations.py`, `core/pdf/signature.py`, `core/pdf/crop.py`, `core/pdf/page_numbers.py`, `core/redaction/detector.py`):** Bei identischem Ein- und Ausgabepfad (`output_path == pdf_path`) wird die Datei nun atomar über ein temporäres Dokument im Zielordner gespeichert und nach Schließen des PyMuPDF-Dokument-Handles ersetzt (behebt `ValueError: save to original must be incremental` und Windows-Dateisperren).
+- **Integrations- & Regressionstestsuite:** 21 neue Tests in `tests/test_pdf_annotations_real.py` und `tests/test_pdf_signature_overlay.py` hinzugefügt; Testsuite auf 331 bestandene Tests (100% grün) erweitert.
+
 ### Behoben & Gehärtet / Fixed & Hardened (2026-08-24, Security & License Compliance Audit)
 - **Dependency-Floor-Härtung (OSV / GHSA Audit):** Mindestversionsgrenzen in `pyproject.toml` und `requirements.txt` gehärtet:
   - `Pillow>=12.0.0` schützt gegen 35+ bekannte CVEs/GHSAs älterer Versionen (Heap-Buffer-Overflows, Denial-of-Service, Command Injection).
@@ -37,7 +42,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 - **Third-Party License Inventory (`THIRD_PARTY_LICENSES.txt`):** Turnusgemäß auf den Stand `2026-08-24` auditiert; direkte Abhängigkeiten, Lizenzmodelle (AGPL/GPL/LGPL/Apache/MIT/BSD/0BSD/MPL) und Copyleft-Grenzwerte für Store- und Binärdistributionen verifiziert.
 - **Sicherheits- & Lizenzvertrags-Testsuite:** Neue Testsuite `tests/test_security_license_contract.py` integriert (6 Tests: Dependency-Floor-Härtung, Lizenzinventar, zweisprachige `SECURITY.md` mit 48h-SLA und Zero-Egress Invarianten, Secret-/Token-/Pfad-Hygiene, `.gitignore`-Schutz gegen Sync-Konflikte und Locks, AGPL-3.0 SPDX-Parität).
 - **Dateipfad- & Gitignore-Hygiene:** Legacy-Pfad in `SUITE_DOKUZEN_TEMPLATE.md` bereinigt; `.gitignore` um umfassende Schutzmuster (`*.conflict`, `*.sync-conflict-*`, `LOCK*.txt`, `.env`) erweitert.
-- **Gesamtstatus:** 310/310 Tests bestanden (100% grün).
+- **Gesamtstatus:** 331/331 Tests bestanden (100% grün).
 
 ### Hinzugefügt / Added (2026-08-23, Linux-Portierung)
 - **Portables Linux-Bundle:** `tools/build_linux_bundle.py` validiert den Paketvertrag und erzeugt unter Linux ein reproduzierbares PyInstaller-onedir-Archiv `DokuZen-1.0.0-linux-<architektur>.tar.gz`.
