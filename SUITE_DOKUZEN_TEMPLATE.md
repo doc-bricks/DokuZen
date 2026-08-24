@@ -378,7 +378,7 @@ PDF laden → OCR (falls Bild-PDF) → Schwärzen → Extrahieren → Merge → 
 
 ```bash
 # Ordner öffnen
-cd "C:\Users\User\OneDrive\.SOFTWARE\SUITEN\DokuZen"
+cd "path/to/DokuZen"
 
 # Virtuelle Umgebung (empfohlen)
 python -m venv venv

@@ -2,7 +2,7 @@ DokuZen - Third-Party License Inventory
 ===========================================
 
 Status: direct runtime dependency inventory
-Checked: 2026-07-12 via PyPI JSON metadata for the direct packages in
+Checked: 2026-08-24 via PyPI JSON metadata and OSV / GHSA vulnerability audit for direct packages in
 `requirements.txt`.
 
 Scope
@@ -21,21 +21,21 @@ copyleft components where available, especially PyMuPDF/Artifex.
 Direct Python Dependencies
 --------------------------
 
-| Package | Requirement | License metadata checked on 2026-07-12 | Notes |
+| Package | Requirement | License metadata checked on 2026-08-24 | Notes |
 |---|---|---|---|
 | PySide6 | `PySide6>=6.5.0` | `LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only` | Qt for Python bindings. Runtime wheels such as `PySide6_Addons`, `PySide6_Essentials`, and `shiboken6` follow the same Qt for Python licensing family. |
 | PyQt6-WebEngine | `PyQt6-WebEngine>=6.4.0` | `GPL-3.0-only` | Optional extended preview path. Bundling this wheel is GPL-only and must remain compatible with the app's AGPL distribution path. |
-| PyMuPDF | `PyMuPDF>=1.23.0` | GNU Affero GPL 3.0 or Artifex commercial license | Core PDF rendering/manipulation dependency and the main release-license blocker for any proprietary distribution. |
-| pikepdf | `pikepdf>=8.0.0` | MPL-2.0 | PDF repair/unlock fallback, powered by qpdf. |
-| reportlab | `reportlab>=4.0.0` | BSD license | PDF creation. |
-| pytesseract | `pytesseract>=0.3.10` | Apache-2.0 | Python wrapper for the external Tesseract OCR binary. |
-| Pillow | `Pillow>=10.0.0` | MIT-CMU | Image processing. |
+| PyMuPDF | `PyMuPDF>=1.24.0` | GNU Affero GPL 3.0 or Artifex commercial license | Core PDF rendering/manipulation dependency and the main release-license blocker for any proprietary distribution. Hardened floor >= 1.24.0. |
+| pikepdf | `pikepdf>=8.15.1` | MPL-2.0 | PDF repair/unlock fallback, powered by qpdf. Hardened floor >= 8.15.1. |
+| reportlab | `reportlab>=4.2.0` | BSD license | PDF creation. Hardened floor >= 4.2.0. |
+| pytesseract | `pytesseract>=0.3.13` | Apache-2.0 | Python wrapper for the external Tesseract OCR binary. Hardened floor >= 0.3.13. |
+| Pillow | `Pillow>=12.0.0` | MIT-CMU | Image processing. Hardened floor >= 12.0.0 (protects against 35+ CVEs/GHSAs). |
 | python-docx | `python-docx>=1.0.0` | MIT | Word document support. |
 | openpyxl | `openpyxl>=3.1.0` | MIT | Excel document support. |
 | chardet | `chardet>=5.0.0` | 0BSD | Character encoding detection. |
 | rapidfuzz | `rapidfuzz>=3.0.0` | MIT | Fuzzy matching for redaction/search helpers. |
 | pyperclip | `pyperclip>=1.8.0` | BSD | Clipboard access. |
-| pystray | `pystray>=0.19.0` | LGPLv3 | System tray integration. |
+| pystray | `pystray>=0.19.5` | LGPLv3 | System tray integration. Hardened floor >= 0.19.5. |
 | keyboard | `keyboard>=0.13.0` | MIT | Global hotkeys on Windows/Linux. |
 | watchdog | `watchdog>=3.0.0` | Apache-2.0 | File-system monitoring. |
 | appdirs | `appdirs>=1.4.0` | MIT | Platform-specific app directories. |

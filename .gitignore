@@ -26,6 +26,14 @@ _codex_artifacts/
 _Vorschläge/
 *_WORKSTATION-LG*
 *-WORKSTATION-LG*
+*.conflict
+*.sync-conflict-*
+LOCK*.txt
+.env
+*.env
+*.tmp
+*.bak
+*.swp
 
 *.exe
 *.msix
