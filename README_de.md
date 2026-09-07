@@ -10,7 +10,7 @@
 [![Platforms](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/doc-bricks/DokuZen)
 [![Privacy](https://img.shields.io/badge/datenschutz-100%25%20Local--First%20%7C%20Zero--Egress-success.svg)](SECURITY.md)
 [![Security](https://img.shields.io/badge/sicherheit-Zweisprachige%20Policy%20%7C%20Non--Elevation-informational.svg)](SECURITY.md)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](pyproject.toml)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](pyproject.toml)
 [![License AGPL-3.0](https://img.shields.io/badge/lizenz-AGPL--3.0--or--later-blue.svg)](LICENSE)
 [![Ecosystem doc-bricks](https://img.shields.io/badge/ecosystem-doc--bricks-orange.svg)](https://github.com/doc-bricks)
 [![Umbrella open-bricks](https://img.shields.io/badge/umbrella-open--bricks-blueviolet.svg)](https://github.com/open-bricks)

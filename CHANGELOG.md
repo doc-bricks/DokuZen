@@ -30,6 +30,13 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Gehärtet & Bereinigt / Hardened & Cleaned (2026-09-07, Pfad A Repository-Hygiene & CI-Härtung)
+- **CI-Workflow-Härtung (.github/workflows/source-platform-smoke.yml):** Concurrency Group mit cancel-in-progress: true hinzugefügt, um redundante CI-Läufe abzubrechen; automatisches Ruff Linting (python -m ruff check .) als Gatekeeper in CI verankert; tests/test_security_license_contract.py in den CI-Testschritt aufgenommen.
+- **Sicherheitsrichtlinie (SECURITY.md):** Strukturierte Tabelle für unterstützte Versionen (Supported Versions >= 1.0.x) ergänzt.
+- **Metadaten- & Badges-Parität:** Version-Badges in README.md und README_de.md von 1.0.0 auf 1.0.1 synchronisiert; llms.txt Last-checked Datum auf 2026-09-07 und Ecosystem-Version auf 1.0.1 aktualisiert.
+- **Vertragstest-Erweiterung (tests/test_metadata.py):** CI-Workflow-Integritätstest erweitert um Prüfungen für Concurrency, Ruff-Linting und Security-Contract-Ausführung; Version-Badge-Paritätsprüfungen gegen pyproject.toml und llms.txt-Zeitstempel 2026-09-07 verankert.
+
+
 ### Behoben & Gehärtet / Fixed & Hardened (2026-08-24, Bugsearch & Robustness Audit)
 - **PDF-Stempel & Annotationen (`core/pdf/annotations.py`):** `add_stamp()` löst vordefinierte `StampType`-Enums, Namen und Integer-IDs nun robust auf PyMuPDF-Stempelkonstanten (`STAMP_*`) auf, statt String-Literale direkt als Dateipfad an PyMuPDF zu übergeben (behebt `FileNotFoundError: [Errno 2] No such file or directory: 'Approved'`).
 - **In-Place PDF-Speichern (`core/pdf/annotations.py`, `core/pdf/signature.py`, `core/pdf/crop.py`, `core/pdf/page_numbers.py`, `core/redaction/detector.py`):** Bei identischem Ein- und Ausgabepfad (`output_path == pdf_path`) wird die Datei nun atomar über ein temporäres Dokument im Zielordner gespeichert und nach Schließen des PyMuPDF-Dokument-Handles ersetzt (behebt `ValueError: save to original must be incremental` und Windows-Dateisperren).

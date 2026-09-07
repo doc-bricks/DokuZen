@@ -89,7 +89,7 @@ def test_llms_txt_structure():
     assert "doc-bricks" in content
     assert "open-bricks" in content
     assert "Last-checked:" in content or "Last-checked:**" in content
-    assert any(d in content for d in ["2026-08-23", "2026-08-24"])
+    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07"])
     assert "PySide6" in content
     assert "PyMuPDF" in content
     assert "AGPL-3.0" in content
@@ -101,6 +101,9 @@ def test_readme_badges_and_bilingual_parity():
     readme_en = (ROOT / "README.md").read_text(encoding="utf-8")
     readme_de = (ROOT / "README_de.md").read_text(encoding="utf-8")
 
+    with open(ROOT / "pyproject.toml", "rb") as f:
+        project_version = tomllib.load(f).get("project", {}).get("version")
+
     for content in (readme_en, readme_de):
         assert "doc-bricks" in content
         assert "open-bricks" in content
@@ -109,6 +112,7 @@ def test_readme_badges_and_bilingual_parity():
         assert "assets/banner.png" in content
         assert "SECURITY.md" in content
         assert "source-platform-smoke.yml" in content
+        assert f"version-{project_version}-blue.svg" in content
 
     # Language switcher presence
     assert "[Deutsch](README_de.md)" in readme_en
@@ -181,6 +185,8 @@ def test_security_policy_bilingual_and_invariants():
     assert sec_path.exists(), "SECURITY.md must exist"
     content = sec_path.read_text(encoding="utf-8")
 
+    assert "Unterstützte Versionen" in content
+    assert "Supported Versions" in content
     assert "## Deutsch" in content
     assert "## English" in content
     assert "Zero-Egress" in content
@@ -243,6 +249,10 @@ def test_ci_workflow_integrity():
     assert "actions/checkout@v4" in content
     assert "actions/setup-python@v5" in content
     assert "pytest" in content
+    assert "concurrency:" in content
+    assert "cancel-in-progress: true" in content
+    assert "ruff check" in content
+    assert "test_security_license_contract.py" in content
 
 
 def test_changelog_parity():
@@ -251,6 +261,7 @@ def test_changelog_parity():
     assert changelog_path.exists(), "CHANGELOG.md must exist"
     content = changelog_path.read_text(encoding="utf-8")
 
+    assert "1.0.1" in content
     assert "1.0.0" in content
     assert "## [Unreleased]" in content or "## [1.0.0]" in content
 

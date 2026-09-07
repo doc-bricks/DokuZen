@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ["main", "master"]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke:
     strategy:
@@ -54,7 +58,12 @@ jobs:
             "chardet>=5.0.0" \
             "rapidfuzz>=3.0.0" \
             pytest \
-            pytest-subtests
+            pytest-subtests \
+            ruff
+
+      - name: Run ruff linting check
+        run: |
+          python -m ruff check .
 
       - name: Run source-platform smoke tests
         env:
@@ -80,7 +89,7 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
         run: |
-          python -m pytest tests/test_third_party_licenses.py tests/test_metadata.py -v
+          python -m pytest tests/test_third_party_licenses.py tests/test_security_license_contract.py tests/test_metadata.py -v
 
       - name: Compileall byte-compilation validation
         run: |

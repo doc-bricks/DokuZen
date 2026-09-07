@@ -12,7 +12,7 @@
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
 - **Test Suite Status:** Pytest test suite 100% green (331 unit, integration & security contract tests passed)
-- **Last-checked:** 2026-08-24
+- **Last-checked:** 2026-09-07
 
 ---
 
@@ -35,7 +35,7 @@ DokuZen ist eingebettet in die `doc-bricks` Suite unter dem Dach von `open-brick
 
 | Repository | Rolle | Status |
 |---|---|---|
-| [doc-bricks/DokuZen](https://github.com/doc-bricks/DokuZen) | All-in-One Dokumenten- & PDF-Verwaltungssuite | Aktiv / 1.0.0 |
+| [doc-bricks/DokuZen](https://github.com/doc-bricks/DokuZen) | All-in-One Dokumenten- & PDF-Verwaltungssuite | Aktiv / 1.0.1 |
 | [doc-bricks/CleanMarkdown](https://github.com/doc-bricks/CleanMarkdown) | Ablenkungsfreier Markdown-Editor & PDF-Exporter | Aktiv / 1.0.0 |
 | [doc-bricks/FormularErstellen](https://github.com/doc-bricks/FormularErstellen) | Interaktiver PDF- & AcroForm-Formulardesigner | Aktiv / 1.5.0 |
 | [doc-bricks/UniversalDocsGrabber](https://github.com/doc-bricks/UniversalDocsGrabber) | Automatisierter IMAP-Dokumentenabruf & PWA-Hub | Aktiv / 1.1.4 |

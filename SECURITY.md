@@ -1,5 +1,12 @@
 # Sicherheitsrichtlinie / Security Policy
 
+## Unterstützte Versionen / Supported Versions
+
+| Version | Unterstützt / Supported |
+|---|---|
+| >= 1.0.x | :white_check_mark: |
+| < 1.0.0 | :x: |
+
 ## Deutsch
 
 ### Sicherheitsphilosophie & Local-First Invarianten
