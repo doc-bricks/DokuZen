@@ -158,6 +158,7 @@ class FormTemplate:
         # BUGSWEEP-30: atomar schreiben (tmp + replace) — sonst hinterlaesst ein Crash/OneDrive-Lock
         # mitten im json.dump eine halbe/korrupte Template-JSON (persistence.py macht es bereits so).
         target = Path(filepath)
+        target.parent.mkdir(parents=True, exist_ok=True)
         tmp = target.with_name(target.name + ".tmp")
         with open(tmp, 'w', encoding='utf-8') as f:
             json.dump(self.to_dict(), f, indent=2, ensure_ascii=False)
@@ -221,6 +222,7 @@ class FormBuilder(LoggerMixin):
             return False
         
         fill_data = fill_data or {}
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         
         try:
             # Seitengröße
@@ -262,11 +264,13 @@ class FormBuilder(LoggerMixin):
         
         c.setFont("Helvetica", field.font_size)
         
-        if field.field_type == FieldType.LABEL:
+        ft_val = field.field_type.value if hasattr(field.field_type, "value") else str(field.field_type)
+
+        if ft_val == FieldType.LABEL.value:
             # Nur Text
             c.drawString(x, y + h - field.font_size, field.label or field.default_value)
         
-        elif field.field_type == FieldType.TEXT:
+        elif ft_val == FieldType.TEXT.value:
             # Rahmen zeichnen
             c.setStrokeColor(gray)
             c.rect(x, y, w, h)
@@ -281,15 +285,25 @@ class FormBuilder(LoggerMixin):
             if value:
                 c.drawString(x + 2, y + 4, value[:int(w/5)])
         
-        elif field.field_type == FieldType.TEXTAREA:
+        elif ft_val == FieldType.TEXTAREA.value:
             c.setStrokeColor(gray)
             c.rect(x, y, w, h)
             
             if field.label:
                 c.setFont("Helvetica", 8)
                 c.drawString(x, y + h + 2, field.label)
+                c.setFont("Helvetica", field.font_size)
+            if value:
+                c.setFont("Helvetica", field.font_size)
+                lines = value.split("\n")
+                line_y = y + h - field.font_size - 4
+                for line in lines:
+                    if line_y < y + 4:
+                        break
+                    c.drawString(x + 4, line_y, line[:int(w / 5)])
+                    line_y -= (field.font_size + 2)
         
-        elif field.field_type == FieldType.CHECKBOX:
+        elif ft_val == FieldType.CHECKBOX.value:
             # Checkbox-Rahmen
             box_size = min(h, 12)
             c.rect(x, y + (h - box_size) / 2, box_size, box_size)
@@ -304,8 +318,19 @@ class FormBuilder(LoggerMixin):
             # Label
             if field.label:
                 c.drawString(x + box_size + 4, y + (h - field.font_size) / 2 + 2, field.label)
+
+        elif ft_val == FieldType.RADIO.value:
+            c.setStrokeColor(gray)
+            radius = min(h, 12) / 2
+            c.circle(x + radius, y + h / 2, radius)
+            if value.lower() in ['true', '1', 'yes', 'ja', 'x']:
+                c.setFillColor(black)
+                c.circle(x + radius, y + h / 2, radius / 2, fill=1)
+                c.setFillColor(black)
+            if field.label:
+                c.drawString(x + radius * 2 + 4, y + (h - field.font_size) / 2 + 2, field.label)
         
-        elif field.field_type == FieldType.DROPDOWN:
+        elif ft_val == FieldType.DROPDOWN.value:
             c.setStrokeColor(gray)
             c.rect(x, y, w, h)
             
@@ -316,21 +341,28 @@ class FormBuilder(LoggerMixin):
             if field.label:
                 c.setFont("Helvetica", 8)
                 c.drawString(x, y + h + 2, field.label)
+                c.setFont("Helvetica", field.font_size)
+            if value:
+                c.drawString(x + 2, y + 4, value[:int((w - 12) / 5)])
         
-        elif field.field_type == FieldType.DATE:
+        elif ft_val == FieldType.DATE.value:
             c.setStrokeColor(gray)
             c.rect(x, y, w, h)
             
-            # Placeholder
-            c.setFillColor(gray)
-            c.drawString(x + 2, y + 4, "TT.MM.JJJJ")
-            c.setFillColor(black)
+            if value:
+                c.setFont("Helvetica", field.font_size)
+                c.drawString(x + 2, y + 4, value)
+            else:
+                # Placeholder
+                c.setFillColor(gray)
+                c.drawString(x + 2, y + 4, "TT.MM.JJJJ")
+                c.setFillColor(black)
             
             if field.label:
                 c.setFont("Helvetica", 8)
                 c.drawString(x, y + h + 2, field.label)
         
-        elif field.field_type == FieldType.SIGNATURE:
+        elif ft_val == FieldType.SIGNATURE.value:
             c.setStrokeColor(gray)
             c.setDash(3, 2)
             c.rect(x, y, w, h)
@@ -349,22 +381,24 @@ class FormBuilder(LoggerMixin):
         try:
             page = doc[0]
 
-            page_height = template.page_size[1]
+            scale = 72.0 / 25.4  # mm zu points
 
             for field in template.fields:
-                if field.field_type in [FieldType.LABEL]:
+                ft_val = field.field_type.value if hasattr(field.field_type, "value") else str(field.field_type)
+
+                if ft_val == FieldType.LABEL.value:
                     continue  # Labels sind nicht interaktiv
 
-                # Rechteck berechnen (PDF-Koordinaten: Y von unten)
-                x = field.x * 72 / 25.4  # mm zu points
-                y = (page_height - field.y - field.height) * 72 / 25.4
-                w = field.width * 72 / 25.4
-                h = field.height * 72 / 25.4
+                # Rechteck berechnen: PyMuPDF-Koordinaten (Ursprung oben links, Y wächst nach unten)
+                x = field.x * scale
+                y = field.y * scale
+                w = field.width * scale
+                h = field.height * scale
 
                 rect = fitz.Rect(x, y, x + w, y + h)
 
                 try:
-                    if field.field_type == FieldType.TEXT:
+                    if ft_val == FieldType.TEXT.value:
                         widget = fitz.Widget()
                         widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
                         widget.field_name = field.name
@@ -372,19 +406,60 @@ class FormBuilder(LoggerMixin):
                         widget.field_value = fill_data.get(field.name, field.default_value)
                         page.add_widget(widget)
 
-                    elif field.field_type == FieldType.CHECKBOX:
+                    elif ft_val == FieldType.TEXTAREA.value:
+                        widget = fitz.Widget()
+                        widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
+                        widget.field_name = field.name
+                        widget.rect = rect
+                        widget.field_flags |= getattr(fitz, "PDF_TX_FIELD_IS_MULTILINE", 4096)
+                        widget.field_value = fill_data.get(field.name, field.default_value)
+                        page.add_widget(widget)
+
+                    elif ft_val == FieldType.DATE.value:
+                        widget = fitz.Widget()
+                        widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
+                        widget.field_name = field.name
+                        widget.rect = rect
+                        widget.text_format = getattr(fitz, "PDF_WIDGET_TX_FORMAT_DATE", 3)
+                        widget.field_value = fill_data.get(field.name, field.default_value)
+                        page.add_widget(widget)
+
+                    elif ft_val == FieldType.CHECKBOX.value:
                         widget = fitz.Widget()
                         widget.field_type = fitz.PDF_WIDGET_TYPE_CHECKBOX
                         widget.field_name = field.name
                         widget.rect = rect
+                        val = str(fill_data.get(field.name, field.default_value)).strip().lower()
+                        if val in ['true', '1', 'yes', 'ja', 'x']:
+                            widget.field_value = True
                         page.add_widget(widget)
 
-                    elif field.field_type == FieldType.DROPDOWN:
+                    elif ft_val == FieldType.RADIO.value:
                         widget = fitz.Widget()
-                        widget.field_type = fitz.PDF_WIDGET_TYPE_LISTBOX
+                        widget.field_type = getattr(fitz, "PDF_WIDGET_TYPE_RADIOBUTTON", 5)
+                        widget.field_name = field.name
+                        widget.rect = rect
+                        val = str(fill_data.get(field.name, field.default_value)).strip().lower()
+                        if val in ['true', '1', 'yes', 'ja', 'x']:
+                            widget.field_value = True
+                        page.add_widget(widget)
+
+                    elif ft_val == FieldType.DROPDOWN.value:
+                        widget = fitz.Widget()
+                        widget.field_type = getattr(fitz, "PDF_WIDGET_TYPE_COMBOBOX", fitz.PDF_WIDGET_TYPE_LISTBOX)
                         widget.field_name = field.name
                         widget.rect = rect
                         widget.choice_values = field.options
+                        val = fill_data.get(field.name, field.default_value)
+                        if val:
+                            widget.field_value = val
+                        page.add_widget(widget)
+
+                    elif ft_val == FieldType.SIGNATURE.value:
+                        widget = fitz.Widget()
+                        widget.field_type = getattr(fitz, "PDF_WIDGET_TYPE_SIGNATURE", 6)
+                        widget.field_name = field.name
+                        widget.rect = rect
                         page.add_widget(widget)
 
                 except Exception as e:
@@ -435,10 +510,27 @@ class FormBuilder(LoggerMixin):
                 for page in doc:
                     for widget in page.widgets():
                         if widget.field_name in data:
-                            widget.field_value = data[widget.field_name]
+                            val = data[widget.field_name]
+                            if widget.field_type == fitz.PDF_WIDGET_TYPE_CHECKBOX:
+                                if isinstance(val, bool):
+                                    widget.field_value = val
+                                else:
+                                    widget.field_value = str(val).strip().lower() in ['true', '1', 'yes', 'ja', 'x']
+                            else:
+                                widget.field_value = val
                             widget.update()
 
-                doc.save(output_path)
+                is_same = False
+                try:
+                    is_same = Path(pdf_path).resolve() == Path(output_path).resolve()
+                except Exception:
+                    pass
+
+                if is_same:
+                    doc.saveIncr()
+                else:
+                    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+                    doc.save(output_path)
             finally:
                 doc.close()
 
