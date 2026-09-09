@@ -532,9 +532,9 @@ class SettingsDialog(QDialog, LoggerMixin):
         self._ocr_dpi.setValue(s.get("ocr_dpi", 300))
 
         # BUGSWEEP-34: font_family/icon_size/pdf_quality/pdf_compress wurden in _get_settings
-        # gespeichert, aber hier NIE wiederhergestellt -> beim erneuten Oeffnen Default-Widget ->
-        # beim nächsten OK still mit dem Default ueberschrieben (Datenverlust). Nur setzen, wenn
-        # vorhanden (Combos via findText, Checkbox nur bei vorhandenem Key -> UI-Default sonst unveraendert).
+        # gespeichert, aber hier NIE wiederhergestellt -> beim erneuten Öffnen Default-Widget ->
+        # beim nächsten OK still mit dem Default überschrieben (Datenverlust). Nur setzen, wenn
+        # vorhanden (Combos via findText, Checkbox nur bei vorhandenem Key -> UI-Default sonst unverändert).
         for key, combo in (("font_family", self._font_family),
                            ("icon_size", self._icon_size),
                            ("pdf_quality", self._pdf_quality)):

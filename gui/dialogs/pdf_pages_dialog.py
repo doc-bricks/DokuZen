@@ -514,7 +514,7 @@ class PDFPagesDialog(QDialog, LoggerMixin):
             finally:
                 new_doc.close()
 
-            # Bei In-Place-Save das offene Quell-Dokument schliessen (gibt das File-Handle frei),
+            # Bei In-Place-Save das offene Quell-Dokument schließen (gibt das File-Handle frei),
             # dann atomar ersetzen. closeEvent toleriert self._doc == None.
             same = bool(self._pdf_path) and Path(path).resolve() == Path(self._pdf_path).resolve()
             if same and self._doc is not None:

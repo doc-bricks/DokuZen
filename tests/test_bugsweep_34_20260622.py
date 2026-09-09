@@ -2,9 +2,9 @@
 """Regressionstests — DokuZen Desktop-Re-Sweep 2026-06-22 (Bugsweep-Loop-Lauf 34, PARTIAL Block 4c = restliche gui/dialogs — Monolith-Abschluss).
 
 GUI-Dialoge brauchen QApplication -> echter Test = Modul-Import-Smoke aller 8 Dialoge.
-Fixes zusaetzlich statisch (red-on-revert via B4C_SRC -> PRE-Backup-block4c/gui/dialogs).
+Fixes zusätzlich statisch (red-on-revert via B4C_SRC -> PRE-Backup-block4c/gui/dialogs).
 
-  BUG-34 pdf_pages (KRIT): In-Place-Save atomar (tmp+replace, offenes Doc schliessen).
+  BUG-34 pdf_pages (KRIT): In-Place-Save atomar (tmp+replace, offenes Doc schließen).
   BUG-34 pdf_marker: QImage.copy() im Worker, QPixmap.fromImage erst im GUI-Slot.
   BUG-34 redaction: input==output-Guard (Original-Korruptionsschutz).
   BUG-34 text_pool: atomarer Save + cp1252-vor-latin-1 + dragEnter-ignore.
@@ -47,7 +47,7 @@ def test_bug34_all_block4c_dialogs_import():
 def test_bug34_static_pdf_pages_atomic():
     src = read("gui/dialogs/pdf_pages_dialog.py")
     assert "tmp.replace(path)" in src, "BUG-34 pdf_pages atomarer In-Place-Save fehlt"
-    assert "same and self._doc is not None" in src, "BUG-34 offenes Doc schliessen fehlt"
+    assert "same and self._doc is not None" in src, "BUG-34 offenes Doc schließen fehlt"
 
 
 def test_bug34_static_pdf_marker_qimage():
