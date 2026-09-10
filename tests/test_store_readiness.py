@@ -10,19 +10,23 @@ Verifies:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import unittest
 import xml.etree.ElementTree as ET
+import zipfile
 from pathlib import Path
 from PIL import Image
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 from tools.check_store_readiness import (
+    FORBIDDEN_TRADEMARK_KEYWORDS,
     REQUIRED_DOCUMENTS,
     REQUIRED_ICONS,
     REQUIRED_SCREENSHOTS,
     check_store_repository,
+    parse_keywords_from_listing,
 )
 
 
@@ -109,6 +113,52 @@ class TestWindowsStoreReadiness(unittest.TestCase):
             self.assertTrue(doc_file.exists(), f"Mandatory document {doc_name} is missing")
             content = doc_file.read_text(encoding="utf-8")
             self.assertGreater(len(content.strip()), 100, f"{doc_name} is too short")
+
+    def test_store_listing_policy_10_1_3_keywords(self):
+        listing_file = PROJECT_ROOT / "STORE_LISTING.md"
+        self.assertTrue(listing_file.exists(), "STORE_LISTING.md is missing")
+        content = listing_file.read_text(encoding="utf-8")
+
+        keywords = parse_keywords_from_listing(content)
+        for lang in ("de", "en"):
+            self.assertIn(lang, keywords, f"Keywords missing for language {lang}")
+            kw_list = keywords[lang]
+            self.assertGreaterEqual(len(kw_list), 1, f"At least 1 keyword required for {lang}")
+            self.assertLessEqual(len(kw_list), 7, f"Partner Center Policy 10.1.3 allows max 7 keywords, found {len(kw_list)} for {lang}")
+            for kw in kw_list:
+                kw_lower = kw.lower()
+                for forbidden in FORBIDDEN_TRADEMARK_KEYWORDS:
+                    self.assertNotIn(
+                        f" {forbidden} ",
+                        f" {kw_lower} ",
+                        f"Keyword {kw!r} contains prohibited trademark {forbidden!r}",
+                    )
+
+    def test_msix_release_bundle_structure_and_checksum(self):
+        msix_file = PROJECT_ROOT / "releases" / "windowsstore" / "v1.0.1" / "DokuZen-1.0.1.0.msix"
+        self.assertTrue(msix_file.exists(), f"Expected MSIX package at {msix_file}")
+        self.assertGreater(msix_file.stat().st_size, 50_000_000, "MSIX bundle size suspiciously small")
+
+        # Verify ZIP/Appx internal structure
+        with zipfile.ZipFile(msix_file, "r") as zf:
+            namelist = set(zf.namelist())
+            self.assertIn("AppxManifest.xml", namelist)
+            self.assertIn("[Content_Types].xml", namelist)
+            self.assertIn("AppxBlockMap.xml", namelist)
+            self.assertIn("DokuZen-Pro-1.0.0-win64.exe", namelist)
+            self.assertTrue(any(n.startswith("icons/") for n in namelist), "Icons missing in MSIX")
+
+        # Verify SHA256SUMS.txt
+        checksum_file = msix_file.parent / "SHA256SUMS.txt"
+        self.assertTrue(checksum_file.exists(), "SHA256SUMS.txt is missing in release folder")
+        expected_hash = None
+        for line in checksum_file.read_text(encoding="utf-8").splitlines():
+            if msix_file.name in line:
+                expected_hash = line.split()[0].strip().lower()
+                break
+        self.assertIsNotNone(expected_hash, f"Entry for {msix_file.name} not found in SHA256SUMS.txt")
+        actual_hash = hashlib.sha256(msix_file.read_bytes()).hexdigest().lower()
+        self.assertEqual(actual_hash, expected_hash, "SHA256 checksum mismatch for MSIX release bundle")
 
 
 if __name__ == "__main__":

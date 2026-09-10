@@ -1,6 +1,6 @@
 # Windows Store — Vorbereitung DokuZen
 
-Stand: 2026-08-14
+Stand: 2026-09-10
 
 ---
 
@@ -33,6 +33,7 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 - [x] Store-Tile-Icons (44x44, 50x50, 150x150, 310x150, 310x310) generiert (2026-08-14)
 - [x] Store-Screenshots (6/6 in 1920x1080 PNG) generiert & verifiziert (2026-08-14)
 - [x] Store-Readiness-Gate `tools/check_store_readiness.py` & Testsuite `tests/test_store_readiness.py` (2026-08-14)
+- [x] Partner Center Richtlinie 10.1.3 Keywords gehärtet (max. 7 Begriffe je Sprache, markenrechtsfrei) (2026-09-10)
 
 ### GitHub-Repository
 
@@ -43,10 +44,10 @@ Konto). Werte verbatim aus `store_package.json` übernehmen.
 
 ### Paketierung & Freigabe
 
-- [ ] `build_exe.bat` ausführen → `releases/v1.0.0/DokuZen-Pro-1.0.0-win64.exe`
+- [x] `build_exe.bat` ausgeführt → `releases/v1.0.0/DokuZen-Pro-1.0.0-win64.exe` (99.3 MB)
 - [x] `python tools\preflight.py` ausführen (Bestanden)
-- [ ] MSIX-Paket erzeugen (MakeAppx / Windows Application Packaging Project / WinStorePackager)
-- [ ] WACK-Test (Windows App Certification Kit) bestehen
+- [x] MSIX-Paket erzeugt: `releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix` (98.8 MB, SHA256 verifiziert)
+- [ ] WACK-Test (Windows App Certification Kit) auf Zielumgebung abschließen
 - [ ] Paket im Microsoft Partner Center hochladen (Manuelle Nutzer-Freigabe)
 
 
@@ -91,9 +92,9 @@ Productivity — entspricht dem Funktionsprofil (PDF-Bearbeitung, OCR, Konvertie
 Die noch offenen Store-Schritte sind im TASKPLAN-Projekt
 `C:\_Local_DEV\repos\DokuZen` erfasst:
 
-- Task 1859 — Store-Screenshot-Paket erstellen (`effort=medium`, `scope=local`)
-- Task 1860 — Windows-Build und strikten Store-Preflight nachweisen (`effort=medium`, `scope=local`)
-- Task 1861 — MSIX-/WACK-Freigabe als Store-Entscheidung vorbereiten (`effort=special`, `scope=local`)
+- Task 1859 — Store-Screenshot-Paket erstellen (`[x] ERLEDIGT 2026-08-14`, 6/6 Screenshots 1920x1080)
+- Task 1860 — Windows-Build und strikten Store-Preflight nachweisen (`[x] ERLEDIGT 2026-08-14`)
+- Task 1861 — MSIX-Paket erzeugen und WACK/Store-Entscheidung vorbereiten (`[x] MSIX v1.0.1.0 erzeugt 2026-08-23; WACK-Zertifizierungstest auf Zielsystem offen`)
 
 Die externe Store-Hochladung ist durch Task 1861 nicht autorisiert; dafür bleibt
 eine ausgefüllte Nutzerentscheidung erforderlich.

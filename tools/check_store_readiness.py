@@ -11,9 +11,11 @@ Verifies repository-owned materials:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 import xml.etree.ElementTree as ET
+import zipfile
 from pathlib import Path
 from typing import Sequence
 
@@ -23,6 +25,41 @@ except ModuleNotFoundError:  # Python < 3.11 fallback if needed
     import tomli as tomllib  # type: ignore
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+FORBIDDEN_TRADEMARK_KEYWORDS = (
+    "microsoft",
+    "windows",
+    "office",
+    "adobe",
+    "chatgpt",
+    "claude",
+    "openai",
+    "gemini",
+)
+
+
+def parse_keywords_from_listing(content: str) -> dict[str, list[str]]:
+    """Extract keywords per language section from STORE_LISTING.md."""
+    keywords_by_lang: dict[str, list[str]] = {}
+    current_lang = "de"
+    lines = content.splitlines()
+    for i, line in enumerate(lines):
+        line_clean = line.strip()
+        if "## Deutsch" in line_clean:
+            current_lang = "de"
+        elif "## English" in line_clean:
+            current_lang = "en"
+        elif line_clean.startswith("**Schlüsselwörter**") or line_clean.startswith("**Keywords**"):
+            collected: list[str] = []
+            for next_line in lines[i + 1 :]:
+                stripped = next_line.strip()
+                if not stripped or stripped.startswith("#") or stripped.startswith("**") or stripped.startswith("---"):
+                    break
+                collected.append(stripped)
+            raw = " ".join(collected)
+            keywords = [k.strip() for k in raw.split(",") if k.strip()]
+            keywords_by_lang[current_lang] = keywords
+    return keywords_by_lang
 
 REQUIRED_DOCUMENTS = (
     "PRIVACY_POLICY.md",
@@ -234,10 +271,67 @@ def check_store_repository(project_root: Path) -> list[str]:
         if "Deutsch" not in store_listing or "English" not in store_listing:
             findings.append("[documentation] STORE_LISTING.md must contain both German and English sections")
 
+        # Partner Center Policy 10.1.3 Keyword limit & trademark check
+        keywords_by_lang = parse_keywords_from_listing(store_listing)
+        for lang in ("de", "en"):
+            kw_list = keywords_by_lang.get(lang, [])
+            if not kw_list:
+                findings.append(f"[policy 10.1.3] No keywords found for language {lang!r} in STORE_LISTING.md")
+            elif len(kw_list) > 7:
+                findings.append(
+                    f"[policy 10.1.3] Keywords for {lang!r} exceed maximum of 7 (found {len(kw_list)}: {kw_list})"
+                )
+            for kw in kw_list:
+                kw_lower = kw.lower()
+                for forbidden in FORBIDDEN_TRADEMARK_KEYWORDS:
+                    if forbidden == kw_lower or f" {forbidden} " in f" {kw_lower} ":
+                        findings.append(f"[policy 10.1.3] Keyword {kw!r} contains prohibited trademark {forbidden!r}")
+
     privacy = _read_nonempty(project_root / "PRIVACY_POLICY.md")
     if privacy:
         if "Offline" not in privacy and "offline" not in privacy and "lokal" not in privacy.lower():
             findings.append("[documentation] PRIVACY_POLICY.md must state offline processing guarantee")
+
+    # 7. Packaged MSIX bundle verification
+    msix_dir = project_root / "releases" / "windowsstore"
+    msix_candidates = list(msix_dir.glob("**/*.msix")) if msix_dir.exists() else []
+    if not msix_candidates:
+        findings.append("[package] No MSIX release package found under releases/windowsstore/")
+    else:
+        for msix_path in msix_candidates:
+            if not msix_path.is_file() or msix_path.stat().st_size < 1_000_000:
+                findings.append(f"[package] MSIX package {msix_path.name} is too small or invalid")
+                continue
+            try:
+                with zipfile.ZipFile(msix_path, "r") as zf:
+                    names = set(zf.namelist())
+                    if "AppxManifest.xml" not in names:
+                        findings.append(f"[package] {msix_path.name} is missing AppxManifest.xml inside archive")
+                    if "[Content_Types].xml" not in names:
+                        findings.append(f"[package] {msix_path.name} is missing [Content_Types].xml inside archive")
+                    if "AppxBlockMap.xml" not in names:
+                        findings.append(f"[package] {msix_path.name} is missing AppxBlockMap.xml inside archive")
+            except (zipfile.BadZipFile, OSError) as e:
+                findings.append(f"[package] {msix_path.name} corrupted zip: {e}")
+
+            # Verify SHA256 if SHA256SUMS.txt exists in same folder
+            chk_file = msix_path.parent / "SHA256SUMS.txt"
+            if chk_file.exists():
+                try:
+                    expected_hash = None
+                    for line in chk_file.read_text(encoding="utf-8").splitlines():
+                        if msix_path.name in line:
+                            expected_hash = line.split()[0].strip().lower()
+                            break
+                    if expected_hash:
+                        actual_hash = hashlib.sha256(msix_path.read_bytes()).hexdigest().lower()
+                        if actual_hash != expected_hash:
+                            findings.append(
+                                f"[package] SHA256 mismatch for {msix_path.name}: "
+                                f"expected {expected_hash}, calculated {actual_hash}"
+                            )
+                except OSError as e:
+                    findings.append(f"[package] Could not read SHA256SUMS.txt for {msix_path.name}: {e}")
 
     return findings
 
@@ -266,6 +360,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     print("  [OK] 5/5 Store tile icons verified with correct pixel dimensions")
     print("  [OK] 6/6 Store screenshots verified (1920x1080 PNG)")
     print("  [OK] Mandatory Store legal and support documents verified (DE + EN)")
+    print("  [OK] Policy 10.1.3 search terms conformant (<= 7 keywords/lang, no trademarks)")
+    print("  [OK] MSIX package bundles and SHA256 checksums verified")
     return 0
 
 

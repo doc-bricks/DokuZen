@@ -32,9 +32,8 @@ einsehbar.
 Lokale PDF-Werkstatt: Bearbeiten, OCR, Schwärzung, Konvertierung. Keine Cloud,
 keine Konten — alles auf Ihrem Gerät.
 
-**Schlüsselwörter**
-PDF, OCR, Dokumentenverwaltung, Schwärzung, Konvertierung, Datenschutz, offline,
-lokal, DOCX, Textererkennung
+**Schlüsselwörter** (Richtlinie 10.1.3: max. 7 Begriffe)
+PDF, OCR, Dokumentenverwaltung, Schwärzung, Konvertierung, Datenschutz, Offline
 
 ---
 
@@ -68,9 +67,8 @@ Full AGPL-3.0-or-later open-source code available for inspection.
 Local PDF workstation: edit, OCR, redact, convert. No cloud, no accounts —
 everything on your device.
 
-**Keywords**
-PDF, OCR, document management, redaction, conversion, privacy, offline, local,
-DOCX, text recognition
+**Keywords** (Policy 10.1.3: max 7 terms)
+PDF, OCR, document management, redaction, conversion, privacy, offline
 
 ---
 
@@ -88,10 +86,13 @@ DOCX, text recognition
 
 ---
 
-## Offene Punkte (vor Store-Einreichung)
+## Status & Offene Punkte (vor Store-Einreichung)
 
 - [x] GitHub-Repository `doc-bricks/DokuZen` erstellt und URL-Referenzen in
   `store_package.json` bestätigt (2026-08-02)
-- [ ] Screenshots erstellen (siehe `screenshots/store/README.md`)
-- [ ] MSIX-Paket erzeugen und WACK-Test bestehen
+- [x] Screenshots erstellt und verifiziert (6/6 hochauflösende Screenshots 1920x1080 PNG in `screenshots/store/`)
+- [x] MSIX-Paket v1.0.1.0 erzeugt (`releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix`, SHA256 verifiziert)
 - [x] THIRD_PARTY_LICENSES.txt als direkte Runtime-Inventur aus `requirements.txt` angelegt
+- [x] Richtlinie 10.1.3 Suchbegriffe gehärtet (max. 7 Keywords je Sprache, markenrechtsfrei)
+- [ ] WACK-Test (Windows App Certification Kit) auf Zielumgebung abschließen
+- [ ] Store-Einreichung via Microsoft Partner Center (Freigabe durch Nutzer)
