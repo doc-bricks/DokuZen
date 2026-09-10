@@ -227,7 +227,7 @@ DokuZen wird innerhalb der **`doc-bricks`** Suite unter dem gemeinsamen Dach von
 
 | Repository | Zweck | Status |
 |---|---|---|
-| [doc-bricks/DokuZen](https://github.com/doc-bricks/DokuZen) | All-in-One Dokumenten- & PDF-Verwaltungssuite | Aktiv / 1.0.0 |
+| [doc-bricks/DokuZen](https://github.com/doc-bricks/DokuZen) | All-in-One Dokumenten- & PDF-Verwaltungssuite | Aktiv / 1.0.1 |
 | [doc-bricks/CleanMarkdown](https://github.com/doc-bricks/CleanMarkdown) | Ablenkungsfreier Markdown-Editor & PDF-Exporter | Aktiv / 1.0.0 |
 | [doc-bricks/FormularErstellen](https://github.com/doc-bricks/FormularErstellen) | Interaktiver PDF- & AcroForm-Formulardesigner | Aktiv / 1.5.0 |
 | [doc-bricks/UniversalDocsGrabber](https://github.com/doc-bricks/UniversalDocsGrabber) | Automatisierter IMAP-Dokumentenabruf & PWA-Hub | Aktiv / 1.1.4 |
@@ -304,7 +304,7 @@ DokuZen verfügt über vollständige Microsoft Windows Store (MSIX) Paketierungs
 ## 🐧 Portables Linux-Bundle
 
 DokuZen besitzt einen reproduzierbaren PyInstaller-onedir-Paketpfad für Linux.
-Ein eigener Workflow baut `DokuZen-1.0.0-linux-<architektur>.tar.gz` mit der
+Ein eigener Workflow baut `DokuZen-1.0.1-linux-<architektur>.tar.gz` mit der
 Anwendung, Assets, dem sechssprachigen Katalog, Konfiguration,
 Freedesktop-Desktopdatei, AppStream-Metadaten, Lizenz und zweisprachiger
 Dokumentation.

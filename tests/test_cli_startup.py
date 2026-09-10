@@ -58,6 +58,18 @@ class CliStartupTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             apply_startup_command(window, StartupCommand("unknown", tuple()))
 
+    def test_cli_version_flag_exits_with_version_string(self):
+        import io
+        from contextlib import redirect_stdout
+        from core import __version__
+
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            with self.assertRaises(SystemExit) as ctx:
+                parse_cli_args(["--version"])
+        self.assertEqual(ctx.exception.code, 0)
+        self.assertIn(f"DokuZen {__version__}", buf.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

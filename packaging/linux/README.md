@@ -6,8 +6,8 @@ keine systemweite Python-Installation und läuft ohne Root-Rechte.
 ## Start
 
 ```bash
-tar -xzf DokuZen-1.0.0-linux-*.tar.gz
-cd DokuZen-1.0.0
+tar -xzf DokuZen-1.0.1-linux-*.tar.gz
+cd DokuZen-1.0.1
 ./dokuzen
 ```
 

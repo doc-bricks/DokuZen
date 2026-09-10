@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import tomllib
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from PIL import Image
 
@@ -217,6 +218,33 @@ def test_version_parity():
 
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     assert f"[{version}]" in changelog, "CHANGELOG fuehrt keinen Eintrag fuer %s" % version
+
+    import core
+    assert getattr(core, "__version__", None) == version, (
+        f"core.__version__ ({getattr(core, '__version__', None)}) stimmt nicht mit pyproject.toml ({version}) ueberein"
+    )
+
+    settings_file = ROOT / "config" / "settings.json"
+    if settings_file.exists():
+        settings_data = json.loads(settings_file.read_text(encoding="utf-8"))
+        assert settings_data.get("version") == version, (
+            f"config/settings.json ({settings_data.get('version')}) stimmt nicht mit pyproject.toml ({version}) ueberein"
+        )
+
+    linux_build = ROOT / "tools" / "build_linux_bundle.py"
+    if linux_build.exists():
+        content = linux_build.read_text(encoding="utf-8")
+        assert f'APP_VERSION = "{version}"' in content, (
+            f"tools/build_linux_bundle.py fuehrt nicht APP_VERSION = \"{version}\""
+        )
+
+    metainfo_file = ROOT / "packaging" / "linux" / "io.github.doc_bricks.DokuZen.metainfo.xml"
+    if metainfo_file.exists():
+        root = ET.fromstring(metainfo_file.read_text(encoding="utf-8"))
+        release_versions = [rel.attrib.get("version") for rel in root.findall(".//release")]
+        assert version in release_versions, (
+            f"packaging/linux/io.github.doc_bricks.DokuZen.metainfo.xml enthaelt keinen release-Eintrag fuer {version}"
+        )
 
 
 def test_offline_and_zero_egress_invariants():

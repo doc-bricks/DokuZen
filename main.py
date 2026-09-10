@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-DokuZen Pro - Dokumenten- und Dateiverwaltungssuite
-========================================================
+DokuZen - Dokumenten- und Dateiverwaltungssuite
+==============================================
 Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.
 
 Autor: User
-Version: 1.0.0
+Version: 1.0.1
 Lizenz: AGPL-3.0-or-later
 """
 
@@ -20,6 +20,8 @@ from typing import Optional, Sequence
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
+
+from core import __version__
 
 
 def resource_path(*parts: str) -> Path:
@@ -58,10 +60,16 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     """Parst die kleinen GUI-Startoptionen von DokuZen."""
 
     parser = argparse.ArgumentParser(
+        prog="DokuZen",
         description=(
             "Startet DokuZen optional direkt mit Import-, Öffnen-, OCR-, "
             "Schwärzungs- oder Merge-Aktion."
-        )
+        ),
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"DokuZen {__version__}",
     )
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--open", dest="open_path", metavar="DATEI", help="Datei direkt öffnen und in der Vorschau anzeigen.")

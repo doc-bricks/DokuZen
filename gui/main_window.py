@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-DokuZen Pro - Main Window
-=============================
+DokuZen - Main Window
+=====================
 Hauptfenster der Anwendung mit 3-Panel-Layout.
 """
 
@@ -22,6 +22,7 @@ from PySide6.QtCore import Qt, QSize, QTimer
 from PySide6.QtGui import QAction, QIcon, QKeySequence
 
 from utils.logger import get_logger, LoggerMixin
+from core import __version__
 from core.library import LibraryManager
 from translator import get_translator, tr
 
@@ -33,7 +34,7 @@ from gui.panels.preview_panel import PreviewPanel
 
 class MainWindow(QMainWindow, LoggerMixin):
     """
-    Hauptfenster von DokuZen Pro.
+    Hauptfenster von DokuZen.
     
     Layout:
 
@@ -802,7 +803,7 @@ class MainWindow(QMainWindow, LoggerMixin):
             self,
             tr("Über DokuZen"),
             f"<h2>DokuZen</h2>"
-            f"<p>{tr('Version')} 1.0.0</p>"
+            f"<p>{tr('Version')} {__version__}</p>"
             f"<p>{tr('Dokumenten- und Dateiverwaltungssuite')}</p>"
             f"<p>{tr('Vereint 22 Text-, PDF- und Datei-Tools in einer Anwendung.')}</p>"
             f"<hr>"

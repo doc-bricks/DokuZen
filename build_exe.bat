@@ -30,6 +30,7 @@ python -m PyInstaller ^
   --specpath "%BUILD_ROOT%" ^
   --distpath "%DIST_DIR%" ^
   --add-data "%CD%\assets;assets" ^
+  --add-data "%CD%\locales;locales" ^
   --add-data "%CD%\config;config" ^
   --exclude-module torch ^
   --exclude-module pandas ^

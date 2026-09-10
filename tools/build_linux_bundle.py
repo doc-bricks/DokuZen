@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 APP_NAME = "dokuzen"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 APPSTREAM_ID = "io.github.doc_bricks.DokuZen"
 
 

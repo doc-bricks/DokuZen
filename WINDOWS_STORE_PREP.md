@@ -8,11 +8,11 @@ Stand: 2026-08-14
 
 | Feld              | Wert                                         |
 |-------------------|----------------------------------------------|
-| Identity Name     | Geiger.DokuZenPro                        |
+| Identity Name     | Geiger.DokuZen                               |
 | Publisher         | CN=52596601-BAB4-4F3F-B182-E8F3F273B202      |
 | Publisher Display | Geiger                                       |
-| Version           | 1.0.0.0                                      |
-| Executable        | DokuZen-Pro-1.0.0-win64.exe              |
+| Version           | 1.0.1.0                                      |
+| Executable        | DokuZen-Pro-1.0.0-win64.exe                  |
 
 Publisher-Identität identisch mit ExplorerPro (gleiches Microsoft Partner Center
 Konto). Werte verbatim aus `store_package.json` übernehmen.
