@@ -1,0 +1,377 @@
+[x] Fehler in der Konsole -- DONE 2026-05-08
+    - Fehlende `QWidget`-Imports in `convert_dialog.py`, `redaction_dialog.py`,
+      `ocr_dialog.py` und `text_pool_dialog.py` behoben
+    - Smoke-Test für die vier Dialoge wird nun ohne `NameError` ausgeführt
+
+
+[x] Fehler in der Konsole -- DONE 2026-05-08
+    - Fehlende `QWidget`-Imports in `convert_dialog.py`, `redaction_dialog.py`,
+      `ocr_dialog.py` und `text_pool_dialog.py` behoben
+    - Smoke-Test für die vier Dialoge wird nun ohne `NameError` ausgeführt
+
+
+# AUFGABEN - DokuZen
+
+## PORTIERUNG / PLATTFORMEN (2026-05-27)
+
+[x] P1: Portables Linux-Tarball-Bundle mit PyInstaller-onedir -- DONE 2026-08-23
+    - Reproduzierbarer Builder `tools/build_linux_bundle.py` mit hostunabhängigem `--check`-Gate.
+    - Freedesktop-Desktopdatei, AppStream-Metadaten, Icon, Lizenz und DE/EN-Dokumentation werden mitgeführt.
+    - Assets, Konfiguration und sechs Sprachdateien sind im Bundle; `_MEIPASS`-Readback ist getestet.
+    - GitHub Actions Run 32627304988 auf Commit d8df0f0: Validate + Ubuntu-Build + Artifact-Upload grün.
+    - Artefakt `DokuZen-linux`, ID 9490062601, 130896660 Byte; echter Tray-/Hotkey-/Desktop-Environment-Smoke bleibt getrennt offen.
+
+## INTERNATIONALISIERUNG / I18N-EXPANSION-CHECK (2026-08-08)
+
+[x] I18N-System & Dynamische Mehrsprachenunterstützung (DE, EN, ES, ZH, JA, RU) -- DONE 2026-08-17
+    - translator.py (v1.1.0) implementiert mit TranslationSystem, get_translator(), tr() und robuster Fallback-Kette (Zielsprache -> EN -> DE -> Original-Key).
+    - locales/translations.json mit 175 UI-Strings zu 100% in 6 Sprachen (de, en, es, zh, ja, ru) kuratiert und gepflegt.
+    - Dynamische UI-Lokalisierung & retranslate_ui() für MainWindow (Menüs, Toolbar, Statusleiste, Dialog-Aufrufe), LibraryPanel, DocumentListPanel und PreviewPanel implementiert.
+    - SettingsDialog: Dynamische Sprachumschaltung (Deutsch, English, Español, 中文, 日本語, Русский) mit automatischer Propagierung über settings_changed an MainWindow.
+    - Neue Testsuite tests/test_i18n.py (4 Tests): Prüft translations.json Vollständigkeit (100%), TranslationSystem Methoden, Sprachcode-Normalisierung und MainWindow/Panel retranslate_ui() Smoke.
+    - Vollständige Pytest-Suite 274/274 passed (100% grün).
+
+[x] P0: Windows-Store-Basisartefakte & Store-Readiness erstellt -- DONE 2026-08-14
+    - store_package.json (Publisher-Identität, Executable-Name, Kategorien)
+    - AppxManifest.xml unter store_package/DokuZen/AppxManifest.xml (runFullTrust, Identity, Capabilities)
+    - Store-Tile-Icons (44x44, 50x50, 150x150, 310x150, 310x310) in store_package/DokuZen/icons und assets/icons
+    - STORE_LISTING.md (DE + EN Beschreibung, Schlüsselwörter)
+    - PRIVACY_POLICY.md (DE + EN, Offline-Verarbeitungs-Garantie)
+    - SUPPORT.md (GitHub Issues + FAQ)
+    - WINDOWS_STORE_PREP.md (Checkliste auf Stand 2026-08-14)
+    - screenshots/store/README.md & 6/6 Screenshots (1920x1080 PNG) via tools/generate_store_screenshots.py erzeugt
+    - tools/check_store_readiness.py & scripts/check_store_readiness.py (Fail-Closed Store-Readiness Gate)
+    - tests/test_store_materials.py & tests/test_store_readiness.py (12 Tests — 100% grün)
+    Offen bleibt: MSIX-Packaging / WACK-Lauf und Partner Center Upload (erfordert manuelle Nutzer-Freigabe)
+[x] P0: Tatsächlichen CLI/API-Status prüfen; GUI-CLI in `main.py` für `--import`, `--open`, `--ocr`, `--redact` und `--merge` nachgezogen und Doku bereinigt. -- DONE 2026-06-01
+[x] P1: GitHub Actions CI (source-platform-smoke) erstellt -- DONE 2026-06-07
+    - .github/workflows/source-platform-smoke.yml: ubuntu-latest + macos-latest
+    - Reduzierte Deps (kein PyQt6-WebEngine, pystray, keyboard, pyperclip)
+    - Linux: apt Qt-libs + tesseract; macOS: brew tesseract
+    - Lokal verifiziert: 9/9 Tests grün (Windows)
+    - CI unverifiziert (kein Git-Repo, Actions nicht lauffähig) -- Aktivierung nach Repo-Erstellung
+[x] P1: Linux-Source-Smoke mit isolierter State-Datei abgesichert -- DONE 2026-06-04
+    - `tests/test_source_platform_smoke.py` startet DokuZen offscreen mit echter UTF-8-Markdown-Datei und echtem PDF, prüft Import/Preview über `MainWindow` und verifiziert den Linux-Öffnungspfad via `xdg-open`.
+    - Der Smoke hält Nutzerzustand sauber, weil `PersistenceManager.DEFAULT_STATE_FILE` pro Lauf auf eine Temp-State-Datei umgebogen wird.
+    - Packaging-, Tray- und globale-Hotkey-Fragen bleiben für spätere echte Linux-Läufe offen.
+[x] P2: Windows-only-Integrationen sauber kapseln, damit macOS/Linux ohne Registry-Kontextmenüs und Windows-spezifische Hotkeys stabil laufen. -- DONE 2026-06-14
+    - registry.py: import winreg in try/except gekapselt, _WINREG_AVAILABLE-Flag, HKCR/HKCU conditional
+    - settings_dialog.py: import sys ergänzt, Windows-Integration-Gruppe hinter if sys.platform=="win32"
+    - _get_settings(): hasattr-Guard für _register_context/_register_associations
+    - Neuer Test: tests/test_registry_platform_import.py (4 Tests — alle grün)
+    Offen: GitHub-Repo doc-bricks/DokuZen anlegen
+[x] P2: `THIRD_PARTY_LICENSES.txt` als direkte Runtime-Inventur aus
+    `requirements.txt` ergänzt -- DONE 2026-07-12
+    - Keine globale Maschinen-/venv-Paketliste; bewusst kein transitive SBOM.
+    - PyPI-Metadaten für direkte Runtime-Pakete geprüft.
+    - Copyleft-/Store-Grenzen für PyMuPDF/AGPL, PyQt6-WebEngine/GPL und PySide6/Qt dokumentiert.
+    - Guard: `tests/test_third_party_licenses.py`.
+
+[ ] P2: Falls echte Automations- oder Remote-Usecases entstehen, headless Batch-CLI oder projektlokale REST-API gezielt statt als Template-Claim implementieren.
+[ ] P3: Mobile/Web nur neu bewerten, wenn später eine getrennte Produktidee entsteht; aktuell keine PWA-, Android- oder iOS-Aufgabe anlegen.
+[x] Empfohlene Architekturänderung oder FALLBACK für Poppler
+Du kannst Poppler komplett streichen, indem du:
+1.  ihn entfernst
+→ ersetzt durch
+2. Vorschau‑Widget () auf fitz‑Rendering umstellst
+→ du hast das bereits teilweise implementiert
+3. OCR‑Pipeline () so lässt wie sie ist
+→ Tesseract arbeitet mit Bildern, und die bekommst du über fitz
+4. Marker‑Dialog ()
+→ Thumbnails über fitz generieren (du machst das schon)
+
+## Status: QUALITÄT GEPRÜFT
+Stand: 11.01.2026
+
+## API/CLI-STEUERBARKEIT (2026-03-15)
+
+[x] GUI-CLI-Startoptionen in `main.py`: `--import`, `--open`, `--ocr`, `--redact`, `--merge` -- DONE 2026-06-01
+[ ] Headless Batch-CLI für OCR/Schwärzung/Merge nur bei echtem Automationsbedarf ergänzen.
+[ ] Projektlokale REST-API nur dann bauen, wenn ein belegter Remote- oder Agenten-Usecase vorliegt.
+[ ] API-Dokumentation erst zusammen mit einer realen REST-API anlegen.
+
+## EMPFEHLUNGEN (optional):
+(keine offenen)
+
+---
+ERLEDIGT (Archiv):
+[x] Style-Review für Einrückungen: 68 Kern-Dateien geprüft, alle PEP-8-konform (4-Space), keine Tabs, kein Mixed (12.02.2026)
+[x] CODE-ANALYSE main.py: 84 Zeilen, Complexity 7 (04.01.2026)
+[x] ENCODING-CHECK: UTF-8 OK (04.01.2026)
+[x] Debug-Prints Zeilen 27-30: Analysiert - KEINE Änderung nötig (05.01.2026)
+[x] BUG: Absturz bei PDF-Auswahl in Codeanalyse - GEFIXT (11.01.2026)
+  -> Fix in code_analysis_dialog.py: Dateiendung-Prüfung vor Analyse
+  -> Fix in code_splitter.py: Return None statt nur Warnung bei falscher Endung
+
+## BUGFIXES (Session 2026-03-13, Claude Opus)
+
+[x] HOCH: 4x Resource-Leak in PDF-Processor (extract_pages, rotate_pages, delete_pages, set_metadata)
+    - Fix: try/finally mit output_doc.close() in allen vier Methoden
+[x] KRITISCH: Fuzzy-Matching in redaction detector lieferte falsche Positionen bei wiederholten Woertern
+    - Fix: re.finditer statt text.find für korrekte Positions-Ermittlung
+[x] HOCH: RedactionApplier.redact_pdf() fitz Document Leak
+    - Fix: try/finally mit doc.close()
+[x] HOCH: redact_pdf() Helper fitz Document Leak
+    - Fix: try/finally mit doc.close()
+
+## OFFENE BUGS
+
+(keine bekannten offenen Bugs)
+
+## BUGFIXES (Session 2026-07-22, Codex Bugsweep)
+
+[x] MITTEL: PDF-Marker Delete-all erzeugte leeren Export und lief in PyMuPDF-Save-Fehler
+    -- DONE 2026-07-22
+    - Repro: Zwei-Seiten-PDF laden, beide Seiten mit `Entfernen (D)` markieren,
+      Aktion `Markierte (D) löschen...` ausführen.
+    - Vorher: `QMessageBox.critical` mit `cannot save with zero pages`.
+    - Fix: `_extract_pages()` bricht bei leerer Exportseitenliste früh mit
+      verständlicher Warnung ab.
+    - Regression: `tests/test_pdf_marker_empty_export.py`.
+
+## BUGFIXES (Session 2026-07-23, FABLE-SOL Software-Loop Punkt 20)
+
+[x] P0 KRITISCH (Privacy/PII-Leak): `RedactionApplier.redact_pdf()` meldete
+    "Erfolg", obwohl einzelne Treffer im PDF nicht lokalisiert und daher NICHT
+    geschwärzt wurden -- DONE 2026-07-23
+    - Ursache: `core/redaction/detector.py::RedactionApplier.redact_pdf()`
+      verwirft die vom `RedactionDetector` berechneten (start,end)-Offsets und
+      sucht den Treffertext per `page.search_for(match.text)` neu. Bei Texten
+      mit internen Leerzeichen/Zeilenumbrüchen (z.B. IBAN "DE89 3704 ...",
+      mehrzeilige Namen) liefert `search_for()` `[]` -> keine
+      Redaction-Annotation, aber die Funktion gab weiterhin `True` zurück.
+      `gui/dialogs/redaction_dialog.py` zeigte dem Nutzer daraufhin
+      "Erfolg -- N Stellen geschwärzt", obwohl die Ausgabedatei einzelne
+      sensible Stellen noch im Klartext enthielt.
+    - Dieses Risiko war bereits als Kommentar in `detector.py`
+      (BUGSWEEP-28 KRITISCH USER-REVIEW) dokumentiert, aber NICHT in diese
+      Aufgabenliste eingetragen und blieb daher als "keine bekannten offenen
+      Bugs" unsichtbar.
+    - Fix (bewusst minimalinvasiv, KEIN Umbau der Matching-Architektur):
+      `RedactionApplier` zählt jetzt pro Aufruf mit, wie viele Treffer
+      tatsächlich eine Fundstelle hatten (`last_redaction_stats`:
+      total/redacted/missed) und loggt bei fehlenden Treffern eine Warnung
+      mit Beispielen. `redaction_dialog.py` wertet `last_redaction_stats`
+      aus: bei `missed > 0` erscheint statt "Erfolg" ein deutlicher
+      Warnhinweis ("Unvollständig geschwärzt ... bitte manuell prüfen"),
+      der die betroffene Datei NICHT mehr als sicher ausgibt.
+    - Echter Architektur-Fix bleibt offen (P2, siehe unten): Schwärzung
+      anhand des vom Detector berechneten Span/Rects statt erneuter
+      Textsuche -- das ist die im User-Review-Kommentar skizzierte, aber
+      bewusst nicht automatisch durchgeführte Redesign-Option.
+    - Regression: `tests/test_redaction_applier_partial_match.py` (3 Tests:
+      teilweiser Fund, vollständiger Fund, Stats-Reset zwischen Aufrufen).
+    - Smoke: `pytest -q tests --import-mode=importlib` vorher 248, danach
+      251 bestanden (26 Subtests unverändert), keine Regression.
+
+[x] P2: Echter Architektur-Fix für Redaction-Reliability: Treffer anhand des
+    vom `RedactionDetector` berechneten Span/Rects schwärzen statt per
+    `page.search_for(match.text)` erneut zu suchen. Schließt die verbleibende
+    Lücke, dass Treffer mit internen Leerzeichen/Zeilenumbrüchen (IBANs,
+    mehrzeilige Namen) weiterhin ungeschwärzt bleiben -- DONE 2026-07-27 (Gemini Antigravity)
+    - `extract_page_text_and_char_rects()` und `char_bboxes_to_rects()` in `detector.py` implementiert.
+    - `RedactionDetector.detect()` berechnet präzise Match-Rechtecke `m.rects`.
+    - `RedactionApplier.redact_pdf()` verwendet `match.rects` direkt ohne Re-Searching, mit Fallback auf `search_for`.
+    - `redaction_dialog.py` scannt nun inklusive `char_rects`.
+    - Testsuite: `tests/test_redaction_span_rects.py` (4 neue Tests), alle 258 Pytest-Tests grün.
+[x] P2: `core/pdf/reader_prefixbak_20260607.py`, `core/pdf/merger_prefixbak_20260607.py`,
+    `core/pdf/annotations_prefixbak_20260607.py` und
+    `core/ocr/engine_prefixbak_20260607.py` aus den aktiven Paketordnern
+    in `_archive/` verschoben -- DONE 2026-07-25 (Gemini)
+
+## GITHUB-POLICY Compliance (Stand: 05.03.2026)
+Referenz: .SOFTWARE/GITHUB-POLICY.md
+
+[x] README.md zweisprachig (EN-Abschnitt fehlt) -- DONE 2026-03-08 (Opus-Session)
+[x] LICENSE -- BEREITS VORHANDEN (Sonnet-Prüfung 2026-03-08)
+[x] .gitignore -- BEREITS VORHANDEN (Sonnet-Prüfung 2026-03-08)
+[x] CHANGELOG.md -- BEREITS VORHANDEN (Sonnet-Prüfung 2026-03-08)
+[x] CODE_OF_CONDUCT.md -- BEREITS VORHANDEN (Sonnet-Prüfung 2026-03-08)
+[x] SECURITY.md -- BEREITS VORHANDEN (Sonnet-Prüfung 2026-03-08)
+[x] CONTRIBUTING.md -- BEREITS VORHANDEN (Sonnet-Prüfung 2026-03-08)
+
+## MIGRATION PyQt5+PyQt6 -> PySide6 (2026-03-15, Claude Opus)
+
+[x] PyQt5+PyQt6 -> PySide6: 58 Dateien (22 aktiv + 36 Vorschlaege), QRegExp in 6 PythonBox-Kopien
+[x] Syntax-Check: OK
+
+
+## Aus PDFAuszuege/TextBrain zu übernehmen (2026-06-27)
+
+### (A) Aus PDFAuszuege fehlende Funktionen nachbauen
+
+[x] Unterschrift-Overlay: Bild (Signatur-PNG/JPG) auf Seite 1 eines PDFs einbetten -- DONE 2026-06-28
+    (ReportLab- oder PyMuPDF-Overlay, analog zu PDFAuszuege/logic/main_process.py)
+    Implementiert: core/pdf/signature.py (SignatureOverlay + embed_signature()),
+    gui/dialogs/signature_overlay_dialog.py, Menü-Eintrag in main_window.py,
+    14 Tests in tests/test_pdf_signature_overlay.py (14/14 grün).
+[x] Unterschrift-Erkennung: OCR-Check ob Signatur bereits auf einer Seite vorhanden ist -- DONE 2026-06-29
+    Vor dem Einbetten prüft `SignatureOverlay.embed_signature_checked()` zuerst vorhandenen
+    PDF-Text und optional den bestehenden OCR-Pfad auf Signaturhinweise; bei Treffer wird das
+    Overlay übersprungen und das Original unverändert in den Ausgabepfad übernommen.
+    Dialog-Checkbox ergänzt; 17 Tests in tests/test_pdf_signature_overlay.py (17/17 grün).
+[x] Beschnitt/Crop: Seiten-Preprocessing — Seitenränder vor Export beschneiden -- DONE 2026-07-04
+    - PDF-Marker-Dialog bietet jetzt die Exportoption "Seitenränder beschneiden"
+      mit konfigurierbarem Rand (1-25 mm, Standard 5 mm).
+    - Implementiert über `core/pdf/crop.py` via PyMuPDF-CropBox auf den
+      exportierten Zielseiten; funktioniert zusammen mit optionalen Seitenzahlen.
+    - Tests: `tests/test_pdf_crop.py` prüft Utility, Fehlpfad und Dialog-Anbindung.
+[x] Seitenzahlen einbetten: Optionale Seitenzahlen in exportierte PDFs einschreiben -- DONE 2026-07-03
+    - PDF-Marker-Dialog bietet jetzt die Checkbox "Seitenzahlen einfügen"
+    - Exportierte PDFs erhalten unten mittig `Seite X / Y`
+    - Implementiert über `core/pdf/page_numbers.py` + Marker-Exportpfad
+    - Tests: `tests/test_pdf_page_numbers.py` prüft Utility und Dialog-Anbindung
+
+### (B) Bedienkonzept PDFAuszuege übernehmen: Branch/Auszug-Erzeugung
+
+Originalkonzept PDFAuszuege (PDFMarker2000, vollständig ausgearbeitet):
+- PDFs per Drag-and-Drop oder Dateidialog laden; Office-/Bilddateien werden automatisch zu PDF gewandelt
+- Vorschaufenster: Seite für Seite mit Pfeiltasten (← →) oder Buttons navigieren; Seitenanzahl und aktueller Status werden angezeigt
+    Erledigt am 2026-06-27. Betroffen und abgeschlossen:
+    - Projektordner-Name: DEV_DokuZentrum_SUITE → DEV_DokuZen ✓
+    - store_package.json, build_exe.bat ✓
+    - Window-Titel (main.py / main_window.py), Icons ✓
+    - STORE_LISTING.md, README.md, CHANGELOG.md ✓
+    - State-Datei: .dokuzentrum_state.json → .dokuzen_state.json (mit Backward-Compat-Migration) ✓
+    - releases.json, PROJECT_STATUS.md, NAMING-SYSTEM.md ✓
+    - GitHub-Repo (doc-bricks/DokuZen) — noch anlegen nach Repo-Erstellung
+
+### (D) TextBrain-Integration — ENTSCHEIDUNG GETROFFEN 2026-06-27
+
+**Variante C: Geteilte Engine, zwei Frontends** (vom User bestätigt, 2026-06-27)
+
+NICHT: TextBrain in DokuZen einschmelzen.
+STATTDESSEN:
+- Die Konvertier-/OCR-/Dokumentverarbeitungs-Logik wird in ein gemeinsames Modul ausgelagert:
+    C:\Users\User\OneDrive\.TOPICS\.AI\.MODULES\doc-convert-core
+- Beide Frontends importieren dasselbe Modul (doc-convert-core).
+- TextBrain bleibt eigenständig = "Überholspur" (schnell starten, Datei droppen, umwandeln).
+- DokuZen = "Werkstatt" (organisieren, Bibliothek, schwärzen).
+
+**Umsetzungsplan (4 Phasen):**
+
+[x] Phase 1: doc-convert-core-Modul anlegen [ERLEDIGT 2026-06-27 - 30 Tests gruen, standalone]
+    Gemeinsames Modul unter .AI/.MODULES/doc-convert-core erstellen.
+    Inhalt: Batch-Convert (35+ Formate), OCR-Wrapper, eigene Test-Suite.
+    Quelle: bestehende TextBrain-Konvertier-Engine (textbrain/core/convert_engine.py u.a.) extrahieren.
+    Ergebnis: doc-convert-core ist unabhängig importierbar, hat eigene Tests, kein UI-Coupling.
+
+[x] Phase 2: TextBrain auf doc-convert-core umstellen [ERLEDIGT 2026-06-27 - Shims+EventBus->SignalHub-Bridge, 57 Tests gruen, keine Regression]
+    TextBrain importiert doc-convert-core statt eigener Engine.
+    Smoke-Tests müssen weiter grün bleiben.
+    TextBrain bleibt schlanke eigenständige App (Drag-and-Drop, Tray, schnelle Konvertierung).
+
+[~] Phase 3: VERWORFEN/RESCOPED 2026-06-27 (Entscheidung Lukas) — DokuZen behält seine eigene Engine.
+    Befund: DokuZens Engine ist ein SUPERSET von doc-convert-core, kein Duplikat —
+    docx/html/Excel-Konvertierung (PyMuPDF), volle PDF-Seiten-Ops (split/extract/reorder/
+    delete/rotate), reichere OCR (recognize_image/_pdf, pdf_to_searchable_pdf, Sprachen).
+    Umstellung auf die schlankere doc-convert-core-Engine wäre ein DOWNGRADE → nicht durchgeführt.
+    doc-convert-core bleibt TextBrains schlanke Engine; DokuZen-Engine bleibt unverändert.
+    (Falls je EINE Engine gewünscht: andere Richtung — DokuZens Engine zum Superset-Modul
+     ausbauen, dann beide nutzen; eigenes großes Projekt, hier bewusst NICHT gewählt.)
+
+[ ] Phase 4: TextBrain-Unique-Features nach DokuZen spiegeln [OFFEN]
+    Nur die produktiv sinnvollen Alleinstellungen übertragen:
+    (1) Clipboard-to-File mit Heading-Erkennung + Auto-Benennung
+        (Quelle: textbrain/core/clipboard.py)
+    (2) Workspace-Export-JSON (textbrain-workspace-v1.json) + read-only PWA-Companion
+        (Quelle: build_workspace_snapshot + web_companion/)
+    NICHT übertragen: PDF-Unlock via Geburtstags-Bruteforce — Nische + rechtlich heikel,
+    bleibt optional nur in TextBrain (unlocker.py).
+
+Konsistenz: Alle 4 Phasen und der Modulname doc-convert-core sind identisch in
+DEV_TextBrain/AUFGABEN.txt dokumentiert.
+
+
+## TASKWRITER-BÜNDEL 2026-07-18 — Selektor deep
+
+Der Selektor lieferte `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DEV_DokuZen`; dieser Pfad existiert nicht. Root-Register (`PROJECT_STATUS.md`, `releases.json`) und Dateisystem belegen den kanonischen Pfad `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DOCS\DEV_DokuZen`. Das Routing wurde für diesen Lauf korrigiert; Selektor-/Registercode wurde nicht geändert.
+
+Nachzertifizierung 2026-07-27: Der aktive OfficeHub-Katalog verwendet inzwischen `DOCS/DEV_DokuZen` als `project_path` und ersten `detection.default_paths`-Eintrag; `DOCS/DEV_DokuZentrum_SUITE` bleibt nur ein kompatibler Fallback. Der kanonische Pfad ist außerdem in `PROJECT_STATUS.md`, `releases.json` und `_tools/software_maintenance_audit.json` bestätigt. Der ursprünglich offene Selektorpunkt ist damit erfüllt; es war keine Produktcode-, Git- oder externe Änderung nötig.
+
+Prüfstand (aktualisiert 2026-08-03):
+- Der kanonische Lauf `pytest -q tests --import-mode=importlib` ist grün: 270 Tests und 26 Subtests bestanden.
+- `python -m compileall -q core gui plugins utils main.py tests` ist grün.
+- Die früheren Collection- und PDF-Utility-Befunde sind historisch; sie sind kein aktueller Fehlerstatus.
+- Store-, Geräte-, WACK-, Signatur-, Partner-Center- und echter Linux-/macOS-Nachweis bleiben davon getrennte, offene externe Gates.
+- Projekt ist kein Git-Checkout. Es wurde in diesem Taskwriter-Slice kein Git-, Build-, Store- oder Binärartefakt verändert.
+
+TASKPLAN-Aufgaben:
+- [x] TW-DZ-01 → 1019: Selektorpfad auf kanonischen DOCS-Pfad korrigieren. -- DONE 2026-07-27
+- [x] TW-DZ-02 → 1020: Pytest-Collection und PDF-Crop-/Seitenzahlentest isolieren. -- DONE 2026-07-22
+    - `test_pdf_reader_search.py` lädt den Reader mit einem testspezifischen Modulnamen und stellt den temporären `fitz`-Stub danach wieder her.
+    - Verifiziert: `pytest -q tests --import-mode=importlib` → 246 bestanden, 26 Subtests bestanden.
+- [x] TW-DZ-03 → 1021: DokuZen-/DokuZentrum-Release-Namen konsolidieren. -- DONE 2026-07-25
+    - Release-Executable in `releases/v1.0.0/` von legacy `DokuZentrum-Pro-1.0.0-win64.exe` auf kanonische `DokuZen-Pro-1.0.0-win64.exe` umbenannt.
+    - SHA256 (`EA14879F3D711E83D4FCF2CF1BB75B40C9AEAA9A58C0100ACD647C786D81778F`) verifiziert gegen `SHA256SUMS.txt`, `build_exe.bat` und `store_package.json`.
+- [ ] TW-DZ-04 → 1022: Screenshots, MSIX, WACK und Store-Gate nachweisen.
+- [ ] TW-DZ-05 → 1023: GitHub-Repo und Privacy-/Support-/Security-URLs verifizieren.
+- [ ] TW-DZ-06 → 1024: AGPL-/GPL-/SBOM-Distribution-Gate klären.
+- [ ] TW-DZ-07 → 1025: Store-, Privacy- und Third-Party-Dokumente synchronisieren.
+- [ ] TW-DZ-08 → 1026: Source-Platform-CI und echte Linux-/macOS-Grenzen prüfen.
+- [ ] TW-DZ-09 → 1027: Runtime-/Build-Preflight definieren.
+- [x] TW-DZ-10 → 1028: GUI-CLI gegen Headless-/REST-Bedarf entscheiden. -- DONE 2026-08-11
+    - Verifiziert: `python main.py --help` zeigt `--import`, `--open`, `--ocr`, `--redact` und `--merge`; die gezielten CLI-/Store-/Lizenztests bestehen mit 14/14 Tests und 26 Subtests.
+    - Kein konkreter Headless-/Remote-Usecase belegt; README und Portierungsplan dokumentieren die vorhandene GUI-CLI, keine projektlokale REST-API und eine Erweiterung nur bei echtem Bedarf. Keine REST- oder Batch-API als Template ergänzt.
+    - Keine Produktcode-, Binary-, Git-, Store- oder externe Änderung; der lokale Plan-D-Klon blieb sauber und unveröffentlicht.
+- [ ] TW-DZ-11 → 1029: Branch-/Auszug-Pfad mit SPLIT/MERGE abschließen.
+- [x] TW-DZ-12 → 1030: Integrationsplan, Log und historische Testberichte synchronisieren. -- DONE 2026-08-03
+    - Veraltete Fehlerclaims, alte Projektpfade und der historische „Nächste Session“-Block sind als historische Befunde kenntlich gemacht.
+    - Aktueller, reproduzierter Prüfstand: `pytest -q tests --import-mode=importlib` → 270 bestanden, 26 Subtests bestanden; `compileall` grün.
+    - Keine Produktcode-, Binary-, Git-, Store- oder externe Änderung.
+
+TASKWRITER-Grenze: Keine Produktcode-, Binary-, Git-, Store- oder externen Änderungen in diesem Bündel; nur Controls, TASKPLAN und Register-/Log-Writeback.
+
+[WELLE-1-USERTEST 2026-08-14]
+Usertest durch Lukas ABGEBROCHEN. Zitat: "zu komplex um es jetzt schnell zu
+testen". Kein Mangel festgestellt - die App ist schlicht zu umfangreich fuer
+einen Schnelltest zwischen zwei Einreichungen.
+
+NUTZERENTSCHEIDUNG: Store-Veroeffentlichung VERSCHOBEN (nicht in der aktuellen
+Welle). GitHub-Veroeffentlichung darf dagegen erfolgen, sofern noch nicht
+geschehen.
+
+U1  Vollstaendiger Funktionstest der GUI beauftragen.
+    Zitat: "beauftrage einen test aller funktionen innerhalb der gui nicht
+    fuer jetzt". Also NICHT sofort ausfuehren, sondern als Arbeitspaket
+    vormerken: jede Schaltflaeche, jeder Menuepunkt, jeder Reiter der
+    Oberflaeche wird einmal ausgeloest und das Verhalten protokolliert.
+    Anlass: In der heutigen Testrunde hatten drei von vier geprueften Apps
+    genau solche Maengel - Menuepunkte ohne Wirkung (ExplorerPro), fehlende
+    Symbole und ein toter Knopf (UpToday), abgeschnittene Bedienleiste
+    (LitZen). Bei DokuZen ist die Oberflaeche die groesste der Welle, ein
+    stichprobenartiger Blick reicht dort nicht.
+    Pruefpunkte, die sich heute als typisch erwiesen haben:
+      - Menuepunkt vorhanden, loest aber nichts aus (Signal nicht verbunden
+        oder Dialog ohne gehaltene Referenz -> Garbage Collector)
+      - Symbole fehlen NUR in der gebauten EXE (Ressourcen nicht in der .spec
+        oder relativer Pfad statt sys._MEIPASS) -> Test MUSS an der EXE
+        stattfinden, nicht am Quellstart
+      - Layout: Bedienelemente werden von Anzeigeflaechen ueberdeckt
+    Ergebnis als Protokoll im Projekt ablegen.
+
+U2  GitHub-Veroeffentlichung pruefen und ggf. durchfuehren.
+    Zitat: "falls noch nicht auf github koennte dies aber erfolgen".
+    WINDOWS_STORE_PIPELINE.md fuehrt fuer DokuZen "GitHub: TBD". Vor dem
+    Public-Stellen zwingend den Skill 'repo-publish-check' durchlaufen
+    (Recht, Privacy, Lizenz) - AGPL beachten.
+
+HINWEIS UMBENENNUNG: Produkt heisst seit 2026-08-14 "DokuZen" (vorher
+"DokuZen Pro"; "Pro" war nie ein Preismodell, sondern der Suite-Name).
+Store-ID 9PBLDN4QJDHN, identity Geiger.DokuZen. Store-Dokumente sind
+umgestellt; die Artefaktdatei DokuZen-Pro-1.0.0-win64.exe behaelt bewusst
+ihren Namen, sie ist in store_package.json als executable referenziert.
+
+## TASKPLAN-AUFGABEN (2026-09-10)
+
+[x] #372 Aktive Versionsquelle über GUI, Build, Linux und Dokumentation synchronisieren -- DONE 2026-09-10
+    - Python-Paket: __version__ = "1.0.1" in core/__init__.py definiert und exportiert.
+    - CLI: --version Option in main.py parse_cli_args ergänzt ("DokuZen 1.0.1").
+    - GUI: MainWindow _on_about nutzt nun dynamisch core.__version__ statt Hardcoding.
+    - Konfiguration: config/settings.json auf Version 1.0.1 synchronisiert.
+    - Build: build_exe.bat um locales-Verzeichnis in PyInstaller add-data erweitert.
+    - Linux Packaging: tools/build_linux_bundle.py APP_VERSION = "1.0.1", packaging/linux/README.md aktualisiert, packaging/linux/io.github.doc_bricks.DokuZen.metainfo.xml Release 1.0.1 nachgezogen.
+    - Dokumentation & Badges: README.md und README_de.md Badges, Ökosystemtabelle und Linux-Bundle-Archive auf 1.0.1 aktualisiert; WINDOWS_STORE_PREP.md auf Identität Geiger.DokuZen und Version 1.0.1.0 synchronisiert.
+    - Testsuite & Parity-Gating: tests/test_cli_startup.py um test_cli_version_flag_exits_with_version_string erweitert; tests/test_metadata.py test_version_parity um Prüfung von core.__version__, config/settings.json, tools/build_linux_bundle.py und packaging/linux/io.github.doc_bricks.DokuZen.metainfo.xml erweitert.
+    - Verifikation: 337/337 Tests bestanden in 8.99s; Ruff 0 Fehler; store_readiness PASSED; build_linux_bundle --check OK; test_source_platform_smoke OK.
+
