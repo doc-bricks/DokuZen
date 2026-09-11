@@ -34,7 +34,7 @@ class PDFMarginCropper(LoggerMixin):
 
         target_rects = []
         for page in doc:
-            rect = page.rect
+            rect = page.cropbox
             cropped = fitz.Rect(
                 rect.x0 + margin_points,
                 rect.y0 + margin_points,

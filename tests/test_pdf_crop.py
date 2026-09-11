@@ -92,3 +92,54 @@ def test_pdf_marker_dialog_offers_crop_option():
     assert "Seitenränder beschneiden" in source
     assert "_crop_margin_mm" in source
     assert "crop_document_margins(new_doc" in source
+
+
+def test_crop_document_margins_supports_rotated_pages():
+    from core.pdf.crop import POINTS_PER_MM, crop_document_margins
+
+    for rotation in (90, 180, 270):
+        doc = fitz.open()
+        try:
+            page = doc.new_page(width=400, height=600)
+            page.set_rotation(rotation)
+            orig_w = page.rect.width
+            orig_h = page.rect.height
+
+            # Vor Fix: wirft ValueError ("CropBox not in MediaBox") bei 90 und 270 Grad
+            ok = crop_document_margins(doc, margin_mm=5.0)
+            assert ok is True
+
+            expected_delta = 2 * 5.0 * POINTS_PER_MM
+            assert page.rect.width == pytest.approx(orig_w - expected_delta, abs=0.2)
+            assert page.rect.height == pytest.approx(orig_h - expected_delta, abs=0.2)
+        finally:
+            doc.close()
+
+
+def test_crop_document_margins_preserves_pre_existing_cropbox_origin():
+    from core.pdf.crop import POINTS_PER_MM, crop_document_margins
+
+    doc = fitz.open()
+    try:
+        page = doc.new_page(width=1000, height=1000)
+        page.set_cropbox(fitz.Rect(100, 100, 500, 700))
+        orig_crop = fitz.Rect(page.cropbox)
+
+        # Vor Fix: berechnete cropped auf page.rect (0..400 x 0..600) statt page.cropbox
+        ok = crop_document_margins(doc, margin_mm=5.0)
+        assert ok is True
+
+        delta = 5.0 * POINTS_PER_MM
+        expected_crop = fitz.Rect(
+            orig_crop.x0 + delta,
+            orig_crop.y0 + delta,
+            orig_crop.x1 - delta,
+            orig_crop.y1 - delta,
+        )
+        assert page.cropbox.x0 == pytest.approx(expected_crop.x0, abs=0.2)
+        assert page.cropbox.y0 == pytest.approx(expected_crop.y0, abs=0.2)
+        assert page.cropbox.x1 == pytest.approx(expected_crop.x1, abs=0.2)
+        assert page.cropbox.y1 == pytest.approx(expected_crop.y1, abs=0.2)
+    finally:
+        doc.close()
+
