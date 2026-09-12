@@ -270,11 +270,18 @@ STATTDESSEN:
     (Falls je EINE Engine gewünscht: andere Richtung — DokuZens Engine zum Superset-Modul
      ausbauen, dann beide nutzen; eigenes großes Projekt, hier bewusst NICHT gewählt.)
 
-[ ] Phase 4: TextBrain-Unique-Features nach DokuZen spiegeln [OFFEN]
+[-] Phase 4: TextBrain-Unique-Features nach DokuZen spiegeln [TEILWEISE ERFÜLLT]
     Nur die produktiv sinnvollen Alleinstellungen übertragen:
-    (1) Clipboard-to-File mit Heading-Erkennung + Auto-Benennung
-        (Quelle: textbrain/core/clipboard.py)
-    (2) Workspace-Export-JSON (textbrain-workspace-v1.json) + read-only PWA-Companion
+    [x] (1) Clipboard-to-File mit Heading-Erkennung + Auto-Benennung (Quelle: textbrain/core/clipboard.py)
+        Erledigt 2026-09-12 (Gemini/antigravity via software-high-end):
+        - Neues Modul core/clipboard (structure.py, naming.py, manager.py).
+        - Strukturierte Heading- und Absatzanalyse (Markdown, UPPERCASE, Colon-Suffix, Titelheuristiken).
+        - Intelligente Dateinamengenerierung via Slugify mit Umlaut-Normalisierung, Wortgrenzen und Fallbacks.
+        - Mehrformat-Export: TXT, MD, PDF (ReportLab), DOCX (python-docx), RTF (Unicode- und Astral-Plane-Escapes).
+        - Atomare Speicherung (.tmp -> atomic replace) verhindert unvollständige Dateireste.
+        - Abwärtskompatible Integration in plugins/spawner/clipboard_monitor.py (ClipboardSaver & Hilfsfunktionen).
+        - Dedizierte Testsuite tests/test_clipboard_spawner.py (17 neue Tests, alle 357 DokuZen-Tests grün).
+    [ ] (2) Workspace-Export-JSON (textbrain-workspace-v1.json) + read-only PWA-Companion
         (Quelle: build_workspace_snapshot + web_companion/)
     NICHT übertragen: PDF-Unlock via Geburtstags-Bruteforce — Nische + rechtlich heikel,
     bleibt optional nur in TextBrain (unlocker.py).

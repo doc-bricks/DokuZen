@@ -30,6 +30,15 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-12, Phase 4 Clipboard Spawner & Multi-Format Export)
+- **Clipboard-to-File Modul (`core/clipboard`):** Neues Kernmodul für das Speichern von Zwischenablage-Inhalten:
+  - `structure.py`: Robuste Text- und Überschriftenanalyse mit Heuristiken für Markdown-Header (`#`), Versalzeilen, Doppelpunkt-Endungen und Titelzeilen.
+  - `naming.py`: Intelligente Dateinamenerzeugung (`slugify_filename`) aus Überschriften oder Textanfang mit Umlautnormalisierung (ä/ö/ü/ß), Längenbegrenzung, Kollisionsschutz (`unique_path`) und Zeitstempel-Fallbacks.
+  - `manager.py`: Mehrformat-Exportunterstützung für `TXT`, `MD`, `PDF` (ReportLab), `DOCX` (python-docx) und `RTF` (inkl. voller Unicode- und Astral-Plane-Emoji-Escapes) mit atomarer `.tmp`-Speicherung und `replace()`.
+- **Spawner-Plugin-Integration (`plugins/spawner/clipboard_monitor.py`):** `ClipboardSaver` um automatische Slug-Benennung, strukturierte Formatierung (`design=True`) sowie direkte `save_as_docx`, `save_as_rtf` und `save_content`-Methoden abwärtskompatibel erweitert.
+- **Unit- & Regressionstests (`tests/test_clipboard_spawner.py`):** 17 neue Tests für Struktur-Erkennung, Namensgenerierung, Dateikollisionen, alle 5 Exportformate und ClipboardSaver-Integration (Testsuite auf 357 bestandene Tests gehoben).
+
+
 ### Gehärtet & Bereinigt / Hardened & Cleaned (2026-09-07, Pfad A Repository-Hygiene & CI-Härtung)
 - **CI-Workflow-Härtung (.github/workflows/source-platform-smoke.yml):** Concurrency Group mit cancel-in-progress: true hinzugefügt, um redundante CI-Läufe abzubrechen; automatisches Ruff Linting (python -m ruff check .) als Gatekeeper in CI verankert; tests/test_security_license_contract.py in den CI-Testschritt aufgenommen.
 - **Sicherheitsrichtlinie (SECURITY.md):** Strukturierte Tabelle für unterstützte Versionen (Supported Versions >= 1.0.x) ergänzt.
