@@ -321,7 +321,10 @@ TASKPLAN-Aufgaben:
     - Verifiziert: `python main.py --help` zeigt `--import`, `--open`, `--ocr`, `--redact` und `--merge`; die gezielten CLI-/Store-/Lizenztests bestehen mit 14/14 Tests und 26 Subtests.
     - Kein konkreter Headless-/Remote-Usecase belegt; README und Portierungsplan dokumentieren die vorhandene GUI-CLI, keine projektlokale REST-API und eine Erweiterung nur bei echtem Bedarf. Keine REST- oder Batch-API als Template ergänzt.
     - Keine Produktcode-, Binary-, Git-, Store- oder externe Änderung; der lokale Plan-D-Klon blieb sauber und unveröffentlicht.
-- [ ] TW-DZ-11 → 1029: Branch-/Auszug-Pfad mit SPLIT/MERGE abschließen.
+- [x] TW-DZ-11 → 1029: Branch-/Auszug-Pfad mit SPLIT/MERGE abschließen. -- DONE 2026-09-13
+    - core/pdf/branching.py: merge_branches erweitert um optionale Randbeschneidung (crop_margin_mm) und Seitennummerierung (add_page_numbers); Hilfsfunktion merge_with_branch ergänzt.
+    - gui/dialogs/pdf_marker_dialog.py: UI-Aktion "Branch zusammenführen (Merge)..." hinzugefügt; Workflow unterstützt Zusammenführen des Dokuments (alle oder nur markierte M/K-Seiten) mit externen Branch-Dateien inklusive Formatierung und direktem Öffnen des Resultats.
+    - tests/test_pdf_branching.py: Testsuite auf 10 Tests erweitert (Formatierungsoptionen, Helper, Dialog-Action, Mocking-Flow, Fehlerbehandlung); alle 10 Tests bestanden.
 - [x] TW-DZ-12 → 1030: Integrationsplan, Log und historische Testberichte synchronisieren. -- DONE 2026-08-03
     - Veraltete Fehlerclaims, alte Projektpfade und der historische „Nächste Session“-Block sind als historische Befunde kenntlich gemacht.
     - Aktueller, reproduzierter Prüfstand: `pytest -q tests --import-mode=importlib` → 270 bestanden, 26 Subtests bestanden; `compileall` grün.
