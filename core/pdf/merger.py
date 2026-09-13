@@ -6,6 +6,8 @@ DokuZen Pro - PDF Merger
 Führt mehrere PDFs zusammen oder teilt sie auf.
 """
 
+import shutil
+import tempfile
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 from dataclasses import dataclass
@@ -105,6 +107,7 @@ class PDFMerger(LoggerMixin):
             if total_pages == 0:
                 return MergeResult(False, output_path, 0, "Keine Seiten zum Zusammenführen")
 
+            Path(output_path).resolve().parent.mkdir(parents=True, exist_ok=True)
             output_doc.save(output_path)
             self.logger.info(f"PDF erstellt: {output_path} ({total_pages} Seiten)")
             return MergeResult(True, output_path, total_pages)
@@ -281,6 +284,8 @@ class PDFMerger(LoggerMixin):
             return MergeResult(False, output_path, 0, "Ungültige Rotation")
         
         doc = None
+        temp_file = None
+        dst = Path(output_path).resolve()
         try:
             doc = fitz.open(input_path)
 
@@ -295,17 +300,37 @@ class PDFMerger(LoggerMixin):
 
             for idx in page_indices:
                 page = doc[idx]
-                page.set_rotation(page.rotation + rotation)
+                page.set_rotation((page.rotation + rotation) % 360)
 
             page_count = doc.page_count
-            doc.save(output_path)
+            dst.parent.mkdir(parents=True, exist_ok=True)
+
+            src = Path(input_path).resolve()
+            if src == dst:
+                with tempfile.NamedTemporaryFile(dir=dst.parent, prefix="dokuzen_rot_", suffix=".tmp", delete=False) as tmp:
+                    temp_file = Path(tmp.name)
+                doc.save(str(temp_file))
+            else:
+                doc.save(output_path)
+
             return MergeResult(True, output_path, page_count)
 
         except Exception as e:
+            if temp_file is not None and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+                temp_file = None
             return MergeResult(False, output_path, 0, str(e))
         finally:
             if doc is not None:
                 doc.close()
+            if temp_file is not None and temp_file.exists():
+                try:
+                    shutil.move(str(temp_file), str(dst))
+                except Exception:
+                    pass
 
 
 # === Hilfsfunktionen ===
