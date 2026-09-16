@@ -12,7 +12,8 @@ der Review-Nachweis.
   metainfo, packaging README, README badges & text, tests/test_metadata.py Parity-Gating).
 - [ ] #373 Aktive Store-Vorbereitung und historische DokuZen-Pro-Artefakte
   abgleichen.
-- [ ] #374 GitHub-Actions auf verifizierte unveränderliche SHAs pinnen.
+- [x] #374 GitHub-Actions auf verifizierte unveränderliche SHAs pinnen -- DONE in b9f9f5f.
+- [x] #375 TW-DZ-13 Sammel-PDF-Export (Collection / Binder PDF) mit Lesezeichen, Seitennummerierung und Dialog -- DONE 2026-09-16 (core/pdf/collection.py, CollectionExportDialog, MainWindow & DocumentList Context Menu, 37 neue Übersetzungen, 375 Tests 100% grün).
 
 ## TASKWRITER-Review — 2026-09-05
 

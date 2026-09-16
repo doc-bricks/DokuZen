@@ -10,6 +10,12 @@ from .crop import PDFMarginCropper, crop_document_margins, crop_pdf_margins
 from .page_ranges import parse_page_range_notation
 from .page_numbers import PDFPageNumberer, add_page_numbers, add_page_numbers_to_document
 from .signature import SignatureOverlay, embed_signature
+from .collection import (
+    CollectionExporter,
+    CollectionExportOptions,
+    CollectionExportResult,
+    export_collection_pdf,
+)
 
 __all__ = [
     "PDFProcessor",
@@ -36,4 +42,8 @@ __all__ = [
     "add_page_numbers_to_document",
     "SignatureOverlay",
     "embed_signature",
+    "CollectionExporter",
+    "CollectionExportOptions",
+    "CollectionExportResult",
+    "export_collection_pdf",
 ]

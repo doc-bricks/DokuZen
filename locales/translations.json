@@ -1398,5 +1398,301 @@
     "zh": "或使用 PDF 工作台获取高级选项。",
     "ja": "または詳細オプションにPDFワークショップをご利用ください。",
     "ru": "Или используйте мастерскую PDF для расширенных возможностей."
+  },
+  "Sammel-PDF erstellen": {
+    "de": "Sammel-PDF erstellen",
+    "en": "Create Collection PDF",
+    "es": "Crear PDF recopilatorio",
+    "zh": "创建合集PDF",
+    "ja": "まとめPDFの作成",
+    "ru": "Создать сборный PDF"
+  },
+  "Als Sammel-PDF exportieren...": {
+    "de": "Als Sammel-PDF exportieren...",
+    "en": "Export as Collection PDF...",
+    "es": "Exportar como PDF recopilatorio...",
+    "zh": "导出为合集PDF...",
+    "ja": "まとめPDFとしてエクスポート...",
+    "ru": "Экспортировать как сборный PDF..."
+  },
+  "Sammel-PDF erstellt": {
+    "de": "Sammel-PDF erstellt",
+    "en": "Collection PDF created",
+    "es": "PDF recopilatorio creado",
+    "zh": "已创建合集PDF",
+    "ja": "まとめPDFを作成しました",
+    "ru": "Сборный PDF создан"
+  },
+  "Dokumente in der Sammelmappe": {
+    "de": "Dokumente in der Sammelmappe",
+    "en": "Documents in Binder",
+    "es": "Documentos en la carpeta",
+    "zh": "文档合集列表",
+    "ja": "バインダー内のドキュメント",
+    "ru": "Документы в подборке"
+  },
+  "Dokumentenliste für Sammel-PDF": {
+    "de": "Dokumentenliste für Sammel-PDF",
+    "en": "Document list for collection PDF",
+    "es": "Lista de documentos para PDF recopilatorio",
+    "zh": "合集PDF的文档列表",
+    "ja": "まとめPDF用ドキュメント一覧",
+    "ru": "Список документов для сборного PDF"
+  },
+  "Liste der Dokumente, die in das Sammel-PDF eingebunden werden. Mit Checkboxen abwählbar.": {
+    "de": "Liste der Dokumente, die in das Sammel-PDF eingebunden werden. Mit Checkboxen abwählbar.",
+    "en": "List of documents to include in the collection PDF. Can be deselected via checkboxes.",
+    "es": "Lista de documentos a incluir en el PDF recopilatorio. Deseleccionable mediante casillas.",
+    "zh": "包含在合集PDF中的文档列表。可通过复选框取消选择。",
+    "ja": "まとめPDFに含まれるドキュメントのリスト。チェックボックスで選択解除できます。",
+    "ru": "Список документов для включения в сборный PDF. Можно отключить флажками."
+  },
+  "Dateien hinzufügen...": {
+    "de": "Dateien hinzufügen...",
+    "en": "Add Files...",
+    "es": "Añadir archivos...",
+    "zh": "添加文件...",
+    "ja": "ファイルを追加...",
+    "ru": "Добавить файлы..."
+  },
+  "Weitere Dokumente oder Bilder zur Mappe hinzufügen": {
+    "de": "Weitere Dokumente oder Bilder zur Mappe hinzufügen",
+    "en": "Add more documents or images to binder",
+    "es": "Añadir más documentos o imágenes a la carpeta",
+    "zh": "向合集添加更多文档或图像",
+    "ja": "バインダーにドキュメントや画像を追加",
+    "ru": "Добавить дополнительные документы или изображения в подборку"
+  },
+  "Markierte Dokumente aus der Liste entfernen": {
+    "de": "Markierte Dokumente aus der Liste entfernen",
+    "en": "Remove selected documents from list",
+    "es": "Eliminar documentos seleccionados de la lista",
+    "zh": "从列表中删除选定的文档",
+    "ja": "選択したドキュメントをリストから削除",
+    "ru": "Удалить выбранные документы из списка"
+  },
+  "Nach oben": {
+    "de": "Nach oben",
+    "en": "Move Up",
+    "es": "Mover arriba",
+    "zh": "上移",
+    "ja": "上へ",
+    "ru": "Вверх"
+  },
+  "Verschiebt das gewählte Dokument eine Position nach oben": {
+    "de": "Verschiebt das gewählte Dokument eine Position nach oben",
+    "en": "Moves selected document up one position",
+    "es": "Mueve el documento seleccionado una posición hacia arriba",
+    "zh": "将所选文档上移一位",
+    "ja": "選択したドキュメントを1つ上に移動",
+    "ru": "Перемещает выбранный документ на одну позицию вверх"
+  },
+  "Nach unten": {
+    "de": "Nach unten",
+    "en": "Move Down",
+    "es": "Mover abajo",
+    "zh": "下移",
+    "ja": "下へ",
+    "ru": "Вниз"
+  },
+  "Verschiebt das gewählte Dokument eine Position nach unten": {
+    "de": "Verschiebt das gewählte Dokument eine Position nach unten",
+    "en": "Moves selected document down one position",
+    "es": "Mueve el documento seleccionado una posición hacia abajo",
+    "zh": "将所选文档下移一位",
+    "ja": "選択したドキュメントを1つ下に移動",
+    "ru": "Перемещает выбранный документ на одну позицию вниз"
+  },
+  "Keine auswählen": {
+    "de": "Keine auswählen",
+    "en": "Select None",
+    "es": "Deseleccionar todo",
+    "zh": "全不选",
+    "ja": "すべて選択解除",
+    "ru": "Снять выделение"
+  },
+  "Export-Optionen": {
+    "de": "Export-Optionen",
+    "en": "Export Options",
+    "es": "Opciones de exportación",
+    "zh": "导出选项",
+    "ja": "エクスポートオプション",
+    "ru": "Параметры экспорта"
+  },
+  "Inhaltsverzeichnis / Lesezeichen erstellen (Bookmarks)": {
+    "de": "Inhaltsverzeichnis / Lesezeichen erstellen (Bookmarks)",
+    "en": "Generate Table of Contents / Bookmarks",
+    "es": "Generar índice / marcadores",
+    "zh": "生成目录 / 书签",
+    "ja": "目次 / しおりの作成",
+    "ru": "Создать оглавление / закладки"
+  },
+  "Erstellt ein anklickbares PDF-Inhaltsverzeichnis mit Links zu den Startseiten der Dokumente.": {
+    "de": "Erstellt ein anklickbares PDF-Inhaltsverzeichnis mit Links zu den Startseiten der Dokumente.",
+    "en": "Creates a clickable PDF table of contents with links to document start pages.",
+    "es": "Crea un índice PDF interactivo con enlaces a las páginas iniciales de los documentos.",
+    "zh": "创建可点击的PDF目录，包含指向文档首页的链接。",
+    "ja": "ドキュメントの開始ページへのリンクを含むクリック可能なPDF目次を作成します。",
+    "ru": "Создает интерактивное оглавление PDF со ссылками на начальные страницы документов."
+  },
+  "Lesezeichen erstellen": {
+    "de": "Lesezeichen erstellen",
+    "en": "Create Bookmarks",
+    "es": "Crear marcadores",
+    "zh": "创建书签",
+    "ja": "しおりを作成",
+    "ru": "Создать закладки"
+  },
+  "Aktiviert das Inhaltsverzeichnis im PDF-Reader.": {
+    "de": "Aktiviert das Inhaltsverzeichnis im PDF-Reader.",
+    "en": "Enables the outline/table of contents in PDF readers.",
+    "es": "Habilita el índice en los visores de PDF.",
+    "zh": "在PDF阅读器中启用大纲/目录。",
+    "ja": "PDFリーダーで目次・しおりを有効にします。",
+    "ru": "Включает оглавление в программах для чтения PDF."
+  },
+  "Fortlaufende Seitenzahlen hinzufügen": {
+    "de": "Fortlaufende Seitenzahlen hinzufügen",
+    "en": "Add Consecutive Page Numbers",
+    "es": "Añadir numeración de páginas consecutiva",
+    "zh": "添加连续页码",
+    "ja": "連続ページ番号の追加",
+    "ru": "Добавить сквозную нумерацию страниц"
+  },
+  "Bettet am unteren Seitenrand fortlaufende Seitennummern ein.": {
+    "de": "Bettet am unteren Seitenrand fortlaufende Seitennummern ein.",
+    "en": "Embeds consecutive page numbers at the bottom of each page.",
+    "es": "Inserta números de página consecutivos en la parte inferior.",
+    "zh": "在页面底部嵌入连续页码。",
+    "ja": "各ページの下部に連続したページ番号を挿入します。",
+    "ru": "Вставляет сквозные номера страниц в нижней части каждой страницы."
+  },
+  "Fortlaufende Seitenzahlen": {
+    "de": "Fortlaufende Seitenzahlen",
+    "en": "Consecutive Page Numbers",
+    "es": "Páginas consecutivas",
+    "zh": "连续页码",
+    "ja": "連続ページ番号",
+    "ru": "Сквозные номера страниц"
+  },
+  "Muster": {
+    "de": "Muster",
+    "en": "Pattern",
+    "es": "Patrón",
+    "zh": "格式模式",
+    "ja": "パターン",
+    "ru": "Шаблон"
+  },
+  "Dokumente zur Sammelmappe hinzufügen": {
+    "de": "Dokumente zur Sammelmappe hinzufügen",
+    "en": "Add Documents to Binder",
+    "es": "Añadir documentos a la carpeta",
+    "zh": "添加文档到合集",
+    "ja": "バインダーにドキュメントを追加",
+    "ru": "Добавить документы в подборку"
+  },
+  "Keine Dokumente in der Liste.": {
+    "de": "Keine Dokumente in der Liste.",
+    "en": "No documents in list.",
+    "es": "No hay documentos en la lista.",
+    "zh": "列表中没有文档。",
+    "ja": "リストにドキュメントがありません。",
+    "ru": "В списке нет документов."
+  },
+  "von": {
+    "de": "von",
+    "en": "of",
+    "es": "de",
+    "zh": "共",
+    "ja": "中",
+    "ru": "из"
+  },
+  "Dokument(en) für Sammel-PDF aktiviert.": {
+    "de": "Dokument(en) für Sammel-PDF aktiviert.",
+    "en": "document(s) enabled for collection PDF.",
+    "es": "documento(s) activado(s) para el PDF recopilatorio.",
+    "zh": "个文档已启用用于合集PDF。",
+    "ja": "個のドキュメントがまとめPDF用に有効です。",
+    "ru": "документов выбрано для сборного PDF."
+  },
+  "Keine Dokumente": {
+    "de": "Keine Dokumente",
+    "en": "No Documents",
+    "es": "Sin documentos",
+    "zh": "无文档",
+    "ja": "ドキュメントなし",
+    "ru": "Нет документов"
+  },
+  "Bitte aktivieren Sie mindestens ein Dokument für den Export.": {
+    "de": "Bitte aktivieren Sie mindestens ein Dokument für den Export.",
+    "en": "Please enable at least one document for export.",
+    "es": "Por favor, active al menos un documento para exportar.",
+    "zh": "请至少选择一个文档进行导出。",
+    "ja": "エクスポートするドキュメントを少なくとも1つ選択してください。",
+    "ru": "Пожалуйста, выберите хотя бы один документ для экспорта."
+  },
+  "Sammel-PDF speichern": {
+    "de": "Sammel-PDF speichern",
+    "en": "Save Collection PDF",
+    "es": "Guardar PDF recopilatorio",
+    "zh": "保存合集PDF",
+    "ja": "まとめPDFを保存",
+    "ru": "Сохранить сборный PDF"
+  },
+  "Export fehlgeschlagen": {
+    "de": "Export fehlgeschlagen",
+    "en": "Export Failed",
+    "es": "Error en la exportación",
+    "zh": "导出失败",
+    "ja": "エクスポートに失敗しました",
+    "ru": "Экспорт не удался"
+  },
+  "Sammel-PDF erfolgreich erstellt:": {
+    "de": "Sammel-PDF erfolgreich erstellt:",
+    "en": "Collection PDF successfully created:",
+    "es": "PDF recopilatorio creado con éxito:",
+    "zh": "成功创建合集PDF：",
+    "ja": "まとめPDFが正常に作成されました：",
+    "ru": "Сборный PDF успешно создан:"
+  },
+  "Seiten gesamt:": {
+    "de": "Seiten gesamt:",
+    "en": "Total pages:",
+    "es": "Páginas totales:",
+    "zh": "总页数：",
+    "ja": "総ページ数：",
+    "ru": "Всего страниц:"
+  },
+  "Eingebundene Dokumente:": {
+    "de": "Eingebundene Dokumente:",
+    "en": "Included documents:",
+    "es": "Documentos incluidos:",
+    "zh": "包含的文档：",
+    "ja": "含まれるドキュメント：",
+    "ru": "Включенные документы:"
+  },
+  "Übersprungene Dateien:": {
+    "de": "Übersprungene Dateien:",
+    "en": "Skipped files:",
+    "es": "Archivos omitidos:",
+    "zh": "跳过的文件：",
+    "ja": "スキップされたファイル：",
+    "ru": "Пропущенные файлы:"
+  },
+  "Möchten Sie das Dokument jetzt öffnen?": {
+    "de": "Möchten Sie das Dokument jetzt öffnen?",
+    "en": "Would you like to open the document now?",
+    "es": "¿Desea abrir el documento ahora?",
+    "zh": "您现在要打开该文档吗？",
+    "ja": "ドキュメントを今すぐ開きますか？",
+    "ru": "Хотите открыть документ сейчас?"
+  },
+  "Export erfolgreich": {
+    "de": "Export erfolgreich",
+    "en": "Export Successful",
+    "es": "Exportación exitosa",
+    "zh": "导出成功",
+    "ja": "エクスポート成功",
+    "ru": "Экспорт успешно завершен"
   }
 }

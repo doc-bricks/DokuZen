@@ -30,6 +30,23 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-16, TW-DZ-13 Sammel-PDF-Export & Dialog)
+- **Sammel-PDF-Export-Engine (`core/pdf/collection.py`):** Neues Kernmodul für die Erstellung einheitlicher Dokumentenmappen (Binder) aus heterogenen Quellen (PDFs, Bilder, Markdown, Text und Office-Dateien).
+  - Unterstützt native Einbettung mehrseitiger PDFs, automatische A4-Bildeinpassung mit Orientierungserkennung sowie formatierten Text- und Quellcode-Umbruch mit Kopfzeilen.
+  - Generiert hierarchische PDF-Lesezeichen (TOC Bookmarks) für jedes eingebundene Dokument.
+  - Integriert optionale fortlaufende Seitennummerierung (`PDFPageNumberer`).
+  - Fehlertolerante Verarbeitung: überspringt unlesbare/verschlüsselte Dateien mit Protokollierung in `CollectionExportResult`.
+- **Interaktiver Konfigurationsdialog (`gui/dialogs/collection_export_dialog.py`):**
+  - Übersichtliche Liste aller Mappendokumente mit Reihenfolge-Steuerung (`Nach oben` / `Nach unten`).
+  - Dokumenten-Auswahl per Checkboxen, Hinzufügen weiterer Dateien über System-Dateidialog und Entfernen.
+  - Konfiguration von Lesezeichen/TOC und Seitennummern mit Formatvorlagen (`Seite {page} / {total}`).
+  - Direkte Rückmeldung, Fortschrittsanzeige und Option zum unmittelbaren Öffnen der generierten PDF.
+- **MainWindow & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menüpunkt `Datei -> Sammel-PDF exportieren...` von Platzhalter auf den interaktiven Exportdialog umgestellt (mit Fallback auf selektierte Dokumente oder alle Dokumente des aktiven Themas).
+  - Kontextmenü in der Dokumententabelle um `Als Sammel-PDF exportieren...` für markierte Dateien erweitert.
+- **Mehrsprachigkeit & Lokalisierung (`locales/translations.json`):** 37 neue Übersetzungsbegriffe für alle Dialog- und Aktionsbereiche in 6 Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) hinterlegt.
+- **Testabdeckung (`tests/test_pdf_collection.py`, `tests/test_dialog_smoke.py`):** 10 neue Unit- und GUI-Integrationstests (Gesamtsuite: 375 bestanden, 1 übersprungen, 26 Subtests, 100% grün).
+
 ### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-12, Phase 4 Clipboard Spawner & Multi-Format Export)
 - **Clipboard-to-File Modul (`core/clipboard`):** Neues Kernmodul für das Speichern von Zwischenablage-Inhalten:
   - `structure.py`: Robuste Text- und Überschriftenanalyse mit Heuristiken für Markdown-Header (`#`), Versalzeilen, Doppelpunkt-Endungen und Titelzeilen.

@@ -385,3 +385,11 @@ ihren Namen, sie ist in store_package.json als executable referenziert.
     - Testsuite & Parity-Gating: tests/test_cli_startup.py um test_cli_version_flag_exits_with_version_string erweitert; tests/test_metadata.py test_version_parity um Prüfung von core.__version__, config/settings.json, tools/build_linux_bundle.py und packaging/linux/io.github.doc_bricks.DokuZen.metainfo.xml erweitert.
     - Verifikation: 337/337 Tests bestanden in 8.99s; Ruff 0 Fehler; store_readiness PASSED; build_linux_bundle --check OK; test_source_platform_smoke OK.
 
+[x] TW-DZ-13 Sammel-PDF-Export (Collection / Binder PDF) mit Lesezeichen, Seitennummerierung und Dialog -- DONE 2026-09-16
+    - Problemstellung: Menüpunkt 'Datei -> Sammel-PDF exportieren...' war ein unfertiger Platzhalter ('Funktion noch nicht implementiert'), was direkt dem Nutzerhinweis U1 (Menüpunkte ohne Wirkung) widersprach.
+    - Kernmodul: core/pdf/collection.py mit CollectionExporter, CollectionExportOptions, CollectionExportResult und export_collection_pdf implementiert. Unterstützt native PDF-Zusammenführung, automatische A4-Bildeinpassung, formatierte Text/MD-Paginierung und hierarchische Lesezeichen/TOC.
+    - Dialog: gui/dialogs/collection_export_dialog.py mit CollectionExportDialog implementiert (Listenverwaltung, Sortierung Nach oben/Nach unten, Hinzufügen/Entfernen, Checkbox-Filterung, Bookmarks- und Seitenzahl-Optionen, Fortschrittsanzeige und Direkt-Öffnen).
+    - GUI-Integration: gui/main_window.py _on_export_pdf angebunden mit Fallback auf selektierte Dokumente oder alle Dokumente des aktuellen Themas; gui/panels/document_list.py um Kontextmenü-Eintrag 'Als Sammel-PDF exportieren...' erweitert.
+    - Lokalisierung: 37 neue Übersetzungs-Einträge in allen 6 Sprachen (de, en, es, zh, ja, ru) in locales/translations.json gepflegt.
+    - Tests & Verifikation: Neue Suite tests/test_pdf_collection.py (9 Tests) + tests/test_dialog_smoke.py erweitert (1 Test); Gesamte Testsuite von 365 auf 375 bestandene Tests gesteigert (100% grün, 0 Fehler bei ruff check .).
+

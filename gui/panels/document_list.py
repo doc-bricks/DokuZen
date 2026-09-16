@@ -249,6 +249,11 @@ class DocumentListPanel(QWidget, LoggerMixin):
         action_open.triggered.connect(lambda: self.document_double_clicked.emit(paths[0]))
         menu.addAction(action_open)
 
+        # Sammel-PDF exportieren
+        action_export_pdf = QAction(tr("Als Sammel-PDF exportieren..."), menu)
+        action_export_pdf.triggered.connect(lambda: self._export_as_collection_pdf(paths))
+        menu.addAction(action_export_pdf)
+
         menu.addSeparator()
 
         # Gelesen/Ungelesen markieren
@@ -298,6 +303,17 @@ class DocumentListPanel(QWidget, LoggerMixin):
             for path in paths:
                 self._library.remove_document(path)
             self.refresh()
+
+    def _export_as_collection_pdf(self, paths: List[str]):
+        """Öffnet den Sammel-PDF-Dialog für die markierten Dokumente."""
+        from gui.dialogs.collection_export_dialog import CollectionExportDialog
+        current_theme = self._library.themes.get_current_theme() or ""
+        dialog = CollectionExportDialog(
+            self,
+            initial_documents=paths,
+            current_theme=current_theme,
+        )
+        dialog.exec()
     
     # === Drag & Drop ===
     

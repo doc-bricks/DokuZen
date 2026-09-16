@@ -13,6 +13,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QPushButton
 
+from gui.dialogs.collection_export_dialog import CollectionExportDialog
 from gui.dialogs.convert_dialog import ConvertDialog
 from gui.dialogs.ocr_dialog import OCRDialog
 from gui.dialogs.pdf_marker_dialog import PDFMarkerDialog, PageThumbnail
@@ -168,6 +169,15 @@ class DialogSmokeTest(unittest.TestCase):
             },
         )
 
+        dialog.close()
+
+    def test_collection_export_dialog_instantiates(self):
+        dialog = CollectionExportDialog()
+        self.assertIsNotNone(dialog)
+        self.assertTrue(dialog._check_bookmarks.isChecked())
+        self.assertFalse(dialog._check_numbers.isChecked())
+        self.assertEqual(dialog._list_widget.count(), 0)
+        self.assertEqual(dialog._check_bookmarks.accessibleName(), "Lesezeichen erstellen")
         dialog.close()
 
 

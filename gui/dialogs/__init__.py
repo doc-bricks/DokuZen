@@ -14,6 +14,7 @@ from .image_converter_dialog import ImageConverterDialog
 from .pyinstaller_dialog import PyInstallerDialog
 from .pdf_pages_dialog import PDFPagesDialog
 from .code_analysis_dialog import CodeAnalysisDialog
+from .collection_export_dialog import CollectionExportDialog
 
 __all__ = [
     "ConvertDialog",
@@ -29,4 +30,5 @@ __all__ = [
     "PyInstallerDialog",
     "PDFPagesDialog",
     "CodeAnalysisDialog",
+    "CollectionExportDialog",
 ]

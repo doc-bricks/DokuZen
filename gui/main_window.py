@@ -467,8 +467,25 @@ class MainWindow(QMainWindow, LoggerMixin):
                 self._statusbar.showMessage(tr("Keine unterstützten Dateien gefunden"), 3000)
     
     def _on_export_pdf(self):
-        """Exportiert Sammel-PDF."""
-        self._statusbar.showMessage(tr("Funktion noch nicht implementiert"), 3000)
+        """Exportiert Sammel-PDF aus ausgewählten oder allen Dokumenten des Themas."""
+        from gui.dialogs.collection_export_dialog import CollectionExportDialog
+
+        selected = self._document_panel.get_selected_paths()
+        if not selected:
+            docs = self._library.get_documents()
+            selected = [d.path for d in docs]
+
+        current_theme = self._library.themes.get_current_theme() or ""
+        dialog = CollectionExportDialog(
+            self,
+            initial_documents=selected,
+            current_theme=current_theme,
+        )
+        if dialog.exec() and dialog.exported_file:
+            self._statusbar.showMessage(
+                f"{tr('Sammel-PDF erstellt')}: {Path(dialog.exported_file).name}",
+                5000,
+            )
     
     def _on_settings(self):
         """Öffnet Einstellungen."""
