@@ -1694,5 +1694,37 @@
     "zh": "导出成功",
     "ja": "エクスポート成功",
     "ru": "Экспорт успешно завершен"
+  },
+  "Arbeitsbereich exportieren...": {
+    "de": "Arbeitsbereich exportieren...",
+    "en": "Export Workspace...",
+    "es": "Exportar espacio de trabajo...",
+    "zh": "导出工作区...",
+    "ja": "ワークスペースをエクスポート...",
+    "ru": "Экспорт рабочей области..."
+  },
+  "Arbeitsbereich exportieren": {
+    "de": "Arbeitsbereich exportieren",
+    "en": "Export Workspace",
+    "es": "Exportar espacio de trabajo",
+    "zh": "导出工作区",
+    "ja": "ワークスペースをエクスポート",
+    "ru": "Экспорт рабочей области"
+  },
+  "Arbeitsbereich exportiert nach": {
+    "de": "Arbeitsbereich exportiert nach",
+    "en": "Workspace exported to",
+    "es": "Espacio de trabajo exportado a",
+    "zh": "工作区已导出至",
+    "ja": "ワークスペースのエクスポート先",
+    "ru": "Рабочая область экспортирована в"
+  },
+  "Fehler beim Exportieren des Arbeitsbereichs": {
+    "de": "Fehler beim Exportieren des Arbeitsbereichs",
+    "en": "Error exporting workspace",
+    "es": "Error al exportar el espacio de trabajo",
+    "zh": "导出工作区时出错",
+    "ja": "ワークスペースのエクスポート中にエラーが発生しました",
+    "ru": "Ошибка при экспорте рабочей области"
   }
 }

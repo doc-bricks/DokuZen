@@ -16,5 +16,6 @@ __all__ = [
     "redaction",
     "converter",
     "forms",
+    "workspace_export",
 ]
 

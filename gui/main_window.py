@@ -52,13 +52,13 @@ class MainWindow(QMainWindow, LoggerMixin):
     └─────────────────────────────────────────────────────┘
     """
     
-    def __init__(self):
+    def __init__(self, library: Optional[LibraryManager] = None):
         super().__init__()
         
         self.logger.info("Hauptfenster wird erstellt...")
         
         # Library Manager initialisieren
-        self._library = LibraryManager()
+        self._library = library if library is not None else LibraryManager()
         self._library.initialize()
         
         # UI aufbauen
@@ -86,7 +86,13 @@ class MainWindow(QMainWindow, LoggerMixin):
         """Konfiguriert das Hauptfenster."""
         self.setWindowTitle(tr("DokuZen"))
         self.setMinimumSize(1000, 600)
-        self.resize(1400, 900)
+        from PySide6.QtCore import QSettings
+        settings = QSettings("Geiger", "DokuZen")
+        geom = settings.value("geometry")
+        if geom:
+            self.restoreGeometry(geom)
+        else:
+            self.resize(1400, 900)
         
         # Zentrales Widget
         self._central_widget = QWidget()
@@ -116,6 +122,11 @@ class MainWindow(QMainWindow, LoggerMixin):
         self._action_export_pdf = QAction(tr("Sammel-PDF exportieren..."), self)
         self._action_export_pdf.triggered.connect(self._on_export_pdf)
         self._menu_file.addAction(self._action_export_pdf)
+        
+        self._action_export_workspace = QAction(tr("Arbeitsbereich exportieren..."), self)
+        self._action_export_workspace.setShortcut(QKeySequence("Ctrl+Shift+E"))
+        self._action_export_workspace.triggered.connect(self._on_export_workspace)
+        self._menu_file.addAction(self._action_export_workspace)
         
         self._menu_file.addSeparator()
         
@@ -363,6 +374,8 @@ class MainWindow(QMainWindow, LoggerMixin):
             self._action_import.setText(t("&Importieren..."))
             self._action_import_folder.setText(t("Ordner importieren..."))
             self._action_export_pdf.setText(t("Sammel-PDF exportieren..."))
+            if hasattr(self, "_action_export_workspace"):
+                self._action_export_workspace.setText(t("Arbeitsbereich exportieren..."))
             self._action_settings.setText(t("&Einstellungen..."))
             self._action_exit.setText(t("&Beenden"))
             
@@ -485,6 +498,52 @@ class MainWindow(QMainWindow, LoggerMixin):
             self._statusbar.showMessage(
                 f"{tr('Sammel-PDF erstellt')}: {Path(dialog.exported_file).name}",
                 5000,
+            )
+    
+    def _get_current_settings_dict(self) -> dict:
+        """Liest aktuelle Konfiguration für den Export."""
+        from pathlib import Path
+        import json
+        config_path = Path(__file__).resolve().parent.parent / "config" / "settings.json"
+        if config_path.exists():
+            try:
+                return json.loads(config_path.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        return {}
+
+    def _on_export_workspace(self):
+        """Exportiert einen redigierten Arbeitsbereich-Snapshot (dokuzen-workspace-v1.json)."""
+        from pathlib import Path
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        from core.workspace_export import export_workspace_to_file
+
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            tr("Arbeitsbereich exportieren"),
+            "dokuzen-workspace-v1.json",
+            "JSON (*.json);;" + tr("Alle Dateien") + " (*.*)",
+        )
+        if not path:
+            return
+
+        try:
+            settings_dict = self._get_current_settings_dict()
+            out_file = export_workspace_to_file(
+                filepath=path,
+                library=self._library,
+                settings=settings_dict,
+            )
+            self._statusbar.showMessage(
+                f"{tr('Arbeitsbereich exportiert nach')}: {Path(out_file).name}",
+                5000,
+            )
+        except Exception as e:
+            self.logger.error(f"Fehler beim Exportieren des Arbeitsbereichs: {e}")
+            QMessageBox.critical(
+                self,
+                tr("Fehler"),
+                f"{tr('Fehler beim Exportieren des Arbeitsbereichs')}:\n{e}",
             )
     
     def _on_settings(self):
@@ -852,7 +911,10 @@ class MainWindow(QMainWindow, LoggerMixin):
         # Speichern
         self._library.shutdown()
         
-        # Fenstergeometrie merken (TODO: in Settings speichern)
+        # Fenstergeometrie merken (in QSettings speichern)
+        from PySide6.QtCore import QSettings
+        settings = QSettings("Geiger", "DokuZen")
+        settings.setValue("geometry", self.saveGeometry())
         self.logger.info("Hauptfenster geschlossen")
         
         event.accept()

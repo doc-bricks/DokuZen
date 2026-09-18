@@ -30,6 +30,23 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-18, Phase 4(2) Workspace-Snapshot-Export & PWA Web Companion)
+- **Workspace-Snapshot-Export (`core/workspace_export.py`):** Neues Kernmodul für den sicheren, redigierten Export des gesamten Arbeitsbereichs (`dokuzen-workspace-v1.json`).
+  - Strikte Datenschutz-Redaction: Entfernt alle lokalen absoluten Pfade (`C:\...`), interne Dateisystemstrukturen, Rohdokumente und Zugangsdaten/Passwörter.
+  - Sichere Whitelist für Konfigurationseinstellungen (`theme`, `language`, `ocr_language`, `duplicate_check`, `pdf_dpi` etc.); filtert verbotene Schlüssel wie Passwörter und Fensterkoordinaten.
+  - Aggregation von Themen, Dokumenten-Metadaten (Dateiname, Typ, Größe, Tags, Notizen, Lesestatus) und Formular-Vorlagen.
+  - Atomare Speicherung via temporärer Prozess-ID-Datei (`.tmp.<pid>`) und atomarem `replace()`.
+- **GUI-Integration (`gui/main_window.py`):**
+  - Neuer Menüeintrag `Datei -> Arbeitsbereich exportieren...` (Tastenkürzel `Ctrl+Shift+E`) mit nativem Speicherdialog, Fehlerbehandlung und Statusleisten-Rückmeldung.
+  - Fenstergeometrie-Persistenz: Speichert und restauriert Position und Größe des Hauptfensters über `QSettings("Geiger", "DokuZen")`.
+- **Lokalisierung (`locales/translations.json`):** 4 neue Übersetzungsbegriffe in 6 Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) hinterlegt.
+- **PWA Web Companion (`web_companion/`):** Vollwertige offline-fähige Web-App zum Durchsuchen und Betrachten von Arbeitsbereichen ohne Desktop-Installation:
+  - Responsive Benutzeroberfläche mit Theme-/Themenliste, Such- und Tagfilterung, Lesestatus-Filter und Formularübersicht.
+  - Drag-and-Drop-Unterstützung für `dokuzen-workspace-v1.json`-Dateien und integrierter Demo-Modus.
+  - Service-Worker (`sw.js`) und Web-Manifest (`manifest.webmanifest`) für vollwertige Offline-PWA-Installation auf Mobil- und Desktopgeräten.
+- **Repository-Hygiene:** `core/library/persistence_prefixbak_20260607_162043.py` in `_archive/` überführt.
+- **Testabdeckung:** 13 neue Unit- und Integrationstests (`tests/test_workspace_export.py`, `tests/test_export_action.py`, `tests/test_web_companion.py`). Testsuite wächst auf 388 bestandene Tests (100% grün).
+
 ### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-16, TW-DZ-13 Sammel-PDF-Export & Dialog)
 - **Sammel-PDF-Export-Engine (`core/pdf/collection.py`):** Neues Kernmodul für die Erstellung einheitlicher Dokumentenmappen (Binder) aus heterogenen Quellen (PDFs, Bilder, Markdown, Text und Office-Dateien).
   - Unterstützt native Einbettung mehrseitiger PDFs, automatische A4-Bildeinpassung mit Orientierungserkennung sowie formatierten Text- und Quellcode-Umbruch mit Kopfzeilen.

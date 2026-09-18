@@ -178,6 +178,7 @@ ERLEDIGT (Archiv):
     `core/pdf/annotations_prefixbak_20260607.py` und
     `core/ocr/engine_prefixbak_20260607.py` aus den aktiven Paketordnern
     in `_archive/` verschoben -- DONE 2026-07-25 (Gemini)
+[x] P2: `core/library/persistence_prefixbak_20260607_162043.py` in `_archive/` verschoben -- DONE 2026-09-18 (Gemini)
 
 ## GITHUB-POLICY Compliance (Stand: 05.03.2026)
 Referenz: .SOFTWARE/GITHUB-POLICY.md
@@ -281,8 +282,18 @@ STATTDESSEN:
         - Atomare Speicherung (.tmp -> atomic replace) verhindert unvollständige Dateireste.
         - Abwärtskompatible Integration in plugins/spawner/clipboard_monitor.py (ClipboardSaver & Hilfsfunktionen).
         - Dedizierte Testsuite tests/test_clipboard_spawner.py (17 neue Tests, alle 357 DokuZen-Tests grün).
-    [ ] (2) Workspace-Export-JSON (textbrain-workspace-v1.json) + read-only PWA-Companion
-        (Quelle: build_workspace_snapshot + web_companion/)
+    [x] (2) Workspace-Export-JSON (dokuzen-workspace-v1.json) + read-only PWA-Companion -- DONE 2026-09-18 (Gemini Antigravity)
+        - Neues Kernmodul `core/workspace_export.py` mit Privacy-Redaction (strikt ohne absolute Pfade,
+          Rohdaten oder sensible Konfigurationsdaten), Whitelist sicherer UI-Einstellungen,
+          Formular-Metadaten-Aggregation und atomarem JSON-Export.
+        - Integration in `gui/main_window.py` (Menü Datei -> "Arbeitsbereich exportieren...", Shortcut Ctrl+Shift+E,
+          Fehlerbehandlung und Statusleistenmeldung).
+        - Fenstergeometrie-Persistenz in `MainWindow` via `QSettings("Geiger", "DokuZen")` implementiert.
+        - Mehrsprachigkeit: 4 neue Schlüssel in 6 Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) in `locales/translations.json`.
+        - Vollständiger PWA Web Companion unter `web_companion/` (`index.html`, `style.css`, `app.js`, `library.js`,
+          `manifest.webmanifest`, `sw.js`, `sample_workspace.json`, App-Icons) für offline Browser-Nutzung.
+        - Testabdeckung: 13 neue Tests in `tests/test_workspace_export.py`, `tests/test_export_action.py`
+          und `tests/test_web_companion.py` (Gesamtsuite: 388 bestanden, 1 übersprungen, 26 Subtests, 100% grün).
     NICHT übertragen: PDF-Unlock via Geburtstags-Bruteforce — Nische + rechtlich heikel,
     bleibt optional nur in TextBrain (unlocker.py).
 

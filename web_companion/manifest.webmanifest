@@ -1,0 +1,21 @@
+{
+  "name": "DokuZen Companion",
+  "short_name": "DokuZen",
+  "description": "Read-Only Offline Web Companion f\u00fcr DokuZen Arbeitsbereich-Snapshots",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "icons/dokureader-companion-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/dokureader-companion-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

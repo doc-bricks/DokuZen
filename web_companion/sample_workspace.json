@@ -1,0 +1,42 @@
+{
+  "schema": "dokuzen-workspace-v1",
+  "schema_version": 1,
+  "export_app": "DokuZen",
+  "app_version": "1.0.1",
+  "exported_at": "2026-09-18T10:48:50.312485+00:00",
+  "source_platform": "windows",
+  "redaction": {
+    "raw_documents_embedded": false,
+    "absolute_paths_included": false,
+    "secrets_included": false
+  },
+  "settings": {
+    "theme": "light",
+    "language": "de",
+    "ocr_language": "deu+eng",
+    "duplicate_check": true,
+    "default_theme": "Allgemein"
+  },
+  "themes": [
+    {
+      "name": "Allgemein",
+      "document_count": 0,
+      "read_count": 0
+    }
+  ],
+  "documents": [],
+  "forms": [],
+  "companion_hints": {
+    "recommended_mode": "read_only",
+    "can_import_settings": false,
+    "can_preview_forms": true,
+    "can_show_job_summary": true,
+    "can_filter_by_theme": true
+  },
+  "totals": {
+    "theme_count": 1,
+    "document_count": 0,
+    "form_count": 0,
+    "read_document_count": 0
+  }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="color-scheme" content="light dark">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="DokuZen">
+  <title>DokuZen Companion</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="icons/dokureader-companion-192.png">
+  <link rel="apple-touch-icon" href="icons/dokureader-companion-180.png">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <span class="logo-badge">DOKUZEN</span>
+      <h1>Companion</h1>
+    </div>
+    <div class="header-actions">
+      <button id="import-btn" title="JSON Arbeitsbereich importieren">JSON importieren</button>
+      <button id="demo-btn" class="secondary" title="Demo-Arbeitsbereich laden">Demo laden</button>
+      <input type="file" id="file-input" accept=".json" hidden>
+    </div>
+  </header>
+
+  <div id="dropzone" class="dropzone" aria-label="JSON-Datei hierher ziehen">
+    <p>dokuzen-workspace-v1.json hierher ziehen oder klicken zum Auswählen</p>
+  </div>
+
+  <div class="stats-bar">
+    <span class="stat-item">Themen: <strong id="stat-themes">0</strong></span>
+    <span class="stat-item">Dokumente: <strong id="stat-docs">0</strong></span>
+    <span class="stat-item">Gelesen: <strong id="stat-read">0</strong></span>
+    <span class="stat-item">Formulare: <strong id="stat-forms">0</strong></span>
+  </div>
+
+  <main class="main-layout">
+    <aside class="sidebar">
+      <h2>Themen</h2>
+      <ul id="theme-list" class="theme-list"></ul>
+    </aside>
+
+    <section class="content-area">
+      <div class="filter-bar">
+        <input type="search" id="search-input" class="search-input" placeholder="Dokument, Notiz oder #Tag suchen…">
+        <select id="status-select" class="status-select" aria-label="Status-Filter">
+          <option value="all">Alle Status</option>
+          <option value="unread">Ungelesen</option>
+          <option value="read">Gelesen</option>
+        </select>
+      </div>
+
+      <div id="doc-list" class="doc-list"></div>
+
+      <div id="forms-section" class="forms-section" hidden>
+        <h3>Formular-Vorlagen</h3>
+        <div id="forms-badges" class="form-badges"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
