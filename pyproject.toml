@@ -56,6 +56,9 @@ Documentation = "https://github.com/doc-bricks/DokuZen#readme"
 Changelog = "https://github.com/doc-bricks/DokuZen/blob/main/CHANGELOG.md"
 Security = "https://github.com/doc-bricks/DokuZen/blob/main/SECURITY.md"
 Umbrella = "https://github.com/open-bricks"
+"Third-Party Licenses" = "https://github.com/doc-bricks/DokuZen/blob/main/THIRD_PARTY_LICENSES.txt"
+"Marketing Log" = "https://github.com/doc-bricks/DokuZen/blob/main/MARKETING-LOG.txt"
+"LLM Ready" = "https://github.com/doc-bricks/DokuZen/blob/main/llms.txt"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

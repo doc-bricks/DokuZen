@@ -221,11 +221,17 @@ def build_workspace_snapshot(
 
     if library is not None:
         if hasattr(library, "themes") and hasattr(library.themes, "get_all_themes"):
-            all_theme_names = library.themes.get_all_themes()
-            for t_name in all_theme_names:
-                t_obj = library.themes.get_theme(t_name)
-                doc_count = t_obj.document_count if t_obj else 0
-                read_count = t_obj.read_count if t_obj else 0
+            all_themes_raw = library.themes.get_all_themes()
+            for t_item in all_themes_raw:
+                if hasattr(t_item, "name"):
+                    t_name = t_item.name
+                    doc_count = getattr(t_item, "document_count", 0)
+                    read_count = getattr(t_item, "read_count", 0)
+                else:
+                    t_name = str(t_item)
+                    t_obj = getattr(library.themes, "get_theme", lambda _: None)(t_name) if hasattr(library.themes, "get_theme") else None
+                    doc_count = t_obj.document_count if t_obj else 0
+                    read_count = t_obj.read_count if t_obj else 0
                 themes_list.append({
                     "name": t_name,
                     "document_count": doc_count,

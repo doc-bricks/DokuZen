@@ -41,6 +41,9 @@ def test_pyproject_metadata_and_pep621_classifiers():
     assert urls.get("Changelog") == "https://github.com/doc-bricks/DokuZen/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/doc-bricks/DokuZen/blob/main/SECURITY.md"
     assert urls.get("Umbrella") == "https://github.com/open-bricks"
+    assert urls.get("Third-Party Licenses") == "https://github.com/doc-bricks/DokuZen/blob/main/THIRD_PARTY_LICENSES.txt"
+    assert urls.get("Marketing Log") == "https://github.com/doc-bricks/DokuZen/blob/main/MARKETING-LOG.txt"
+    assert urls.get("LLM Ready") == "https://github.com/doc-bricks/DokuZen/blob/main/llms.txt"
 
     classifiers = project.get("classifiers", [])
     assert any("3.10" in c for c in classifiers)
@@ -72,6 +75,8 @@ def test_required_documentation_files():
         "SUPPORT.md",
         "STORE_LISTING.md",
         "THIRD_PARTY_LICENSES.txt",
+        "THIRD_PARTY_LICENSES.md",
+        "MARKETING-LOG.txt",
         "WINDOWS_STORE_PREP.md",
     ]
     for rel_path in required_files:
@@ -90,7 +95,7 @@ def test_llms_txt_structure():
     assert "doc-bricks" in content
     assert "open-bricks" in content
     assert "Last-checked:" in content or "Last-checked:**" in content
-    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07"])
+    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19"])
     assert "PySide6" in content
     assert "PyMuPDF" in content
     assert "AGPL-3.0" in content
@@ -294,3 +299,80 @@ def test_changelog_parity():
     assert "## [Unreleased]" in content or "## [1.0.0]" in content
 
 
+def test_quick_navigation_18_points_and_reciprocal_anchors():
+    """Validate that README.md and README_de.md maintain exactly 18 navigation points and reciprocal anchors."""
+    readme_en = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    expected_anchors = [
+        "visual-showcase",
+        "architecture",
+        "lifecycle",
+        "core-features",
+        "target-personas",
+        "comparative-matrix",
+        "installation",
+        "cli-entry-points",
+        "ecosystem",
+        "privacy-security",
+        "verification-testing",
+        "keyboard-shortcuts",
+        "windows-store",
+        "linux-bundle",
+        "workspace-export",
+        "audit-transparency",
+        "statutory-notice",
+        "license-third-party",
+    ]
+    assert len(expected_anchors) == 18
+
+    for anchor in expected_anchors:
+        # Check anchor target in both READMEs
+        assert f'<a id="{anchor}"></a>' in readme_en, f"Missing anchor <a id=\"{anchor}\"></a> in README.md"
+        assert f'<a id="{anchor}"></a>' in readme_de, f"Missing anchor <a id=\"{anchor}\"></a> in README_de.md"
+
+        # Check navigation link in both READMEs
+        assert f"(#{anchor})" in readme_en, f"Missing navigation link (#{anchor}) in README.md"
+        assert f"(#{anchor})" in readme_de, f"Missing navigation link (#{anchor}) in README_de.md"
+
+
+def test_personas_and_comparative_matrix_parity():
+    """Verify presence of 4 target personas and 10 comparative invariants across docs."""
+    readme_en = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (ROOT / "README_de.md").read_text(encoding="utf-8")
+    marketing = (ROOT / "MARKETING-LOG.txt").read_text(encoding="utf-8")
+    licenses_md = (ROOT / "THIRD_PARTY_LICENSES.md").read_text(encoding="utf-8")
+
+    expected_personas = ["[PERSONA-01]", "[PERSONA-02]", "[PERSONA-03]", "[PERSONA-04]"]
+    for persona in expected_personas:
+        assert persona in readme_en, f"Missing {persona} in README.md"
+        assert persona in readme_de, f"Missing {persona} in README_de.md"
+        assert persona in marketing, f"Missing {persona} in MARKETING-LOG.txt"
+
+    expected_invariants = [
+        "INV-LOCAL-01",
+        "INV-COST-02",
+        "INV-PRIV-03",
+        "INV-TOOL-04",
+        "INV-OCR-05",
+        "INV-PERF-06",
+        "INV-PLAT-07",
+        "INV-FMT-08",
+        "INV-SECR-09",
+        "INV-ARCH-10",
+    ]
+    for inv in expected_invariants:
+        assert inv in readme_en, f"Missing {inv} in README.md"
+        assert inv in readme_de, f"Missing {inv} in README_de.md"
+        assert inv in marketing, f"Missing {inv} in MARKETING-LOG.txt"
+        assert inv in licenses_md, f"Missing {inv} in THIRD_PARTY_LICENSES.md"
+
+
+def test_statutory_liability_notice():
+    """Verify German statutory liability limitation under § 521 BGB in READMEs."""
+    readme_en = (ROOT / "README.md").read_text(encoding="utf-8")
+    readme_de = (ROOT / "README_de.md").read_text(encoding="utf-8")
+
+    assert "521 BGB" in readme_en
+    assert "521 BGB" in readme_de
+    assert "Haftungsbeschränkung bei unentgeltlicher Bereitstellung" in readme_de

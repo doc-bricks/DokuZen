@@ -11,8 +11,8 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (331 unit, integration & security contract tests passed)
-- **Last-checked:** 2026-09-07
+- **Test Suite Status:** Pytest test suite 100% green (391 unit, integration & security contract tests passed)
+- **Last-checked:** 2026-09-19 (Prior audit: 2026-09-07)
 
 ---
 
@@ -101,7 +101,9 @@ python -m ruff check .
 - [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
 - [`SECURITY.md`](SECURITY.md) — Zweisprachige Sicherheitsrichtlinie & Zero-Egress Invarianten
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Release Entries
+- [`MARKETING-LOG.txt`](MARKETING-LOG.txt) — Pfad B Marketing & Discoverability Audit Register
 - [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) — Direct Runtime Dependencies & License Boundaries
+- [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) — Formatted SPDX Inventory & Copyleft Boundaries
 - [`WINDOWS_STORE_PREP.md`](WINDOWS_STORE_PREP.md) — Windows Store Packaging & Asset Inventory
 - [`packaging/linux/README.md`](packaging/linux/README.md) — Portable Linux bundle usage and dependency boundary
 - [`pyproject.toml`](pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration

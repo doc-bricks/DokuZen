@@ -30,6 +30,18 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-19, Pfad B Marketing, Discoverability, Visual Architecture & Metadata Contract)
+- **Marketing & Discoverability Contract (Pfad B):**
+  - GitHub-Themenanreicherung auf 20/20 optimierte Schlagwörter (`desktop-app`, `document-processing`, `local-first`, `ocr`, `offline-first`, `pdf`, `pdf-tools`, `pyside6`, `python`, `redaction`, `windows`, `document-management`, `open-bricks`, `pdf-editor`, `pdf-merger`, `pikepdf`, `pymupdf`, `pytesseract`, `zero-egress`, `doc-bricks`).
+  - Neue Dokumentation `MARKETING-LOG.txt` mit detaillierter Persona-Matrix (`[PERSONA-01]` bis `[PERSONA-04]`), High-Intent SEO-Suchbegriffen und 10-Dimensionen-Vergleichsmatrix (`INV-LOCAL-01` bis `INV-ARCH-10`) gegen 5 Alternativen (Adobe Acrobat Pro, Smallpdf/iLovePDF SaaS, PDF24 Creator, Master PDF Editor, Okular/Evince).
+  - Neue Drittanbieter-Lizenzdokumentation `THIRD_PARTY_LICENSES.md` mit tabellarischer SPDX-Übersicht, Copyleft-Isolationsgrenzen und Nachweis der Zero-Egress-Invarianten.
+  - Erweiterung von `pyproject.toml` [project.urls] um `"Third-Party Licenses"`, `"Marketing Log"` und `"LLM Ready"`.
+  - Vollständige Harmonisierung der 18-Punkte-Schnellnavigation in `README.md` und `README_de.md` mit reziproken HTML-Ankern (`<a id="..."></a>`), Zielgruppen-Abschnitt, Vergleichsmatrix, 5-Schichten-Architekturdiagramm und rechtlichem Haftungsausschluss gem. § 521 BGB.
+  - Aktualisierung des KI-Integrationsindexes `llms.txt` auf 391 bestandene Tests und neue Dokumentationsdateien.
+- **Bugfixes & Robustheits-Härtung:**
+  - `core/workspace_export.py`: Behebung des `AttributeError: 'ThemeManager' object has no attribute 'get_theme'` bei der Verarbeitung von `Theme`-Objektlisten in `build_workspace_snapshot()`.
+  - `tests/test_export_action.py`: Absicherung gegen Qt Offscreen-Fenstergeometrie-Beschränkungen (`minimumSize` vs. 800x800 Virtual Screen) und synchrone `QSettings`-Synchronisation.
+
 ### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-18, Phase 4(2) Workspace-Snapshot-Export & PWA Web Companion)
 - **Workspace-Snapshot-Export (`core/workspace_export.py`):** Neues Kernmodul für den sicheren, redigierten Export des gesamten Arbeitsbereichs (`dokuzen-workspace-v1.json`).
   - Strikte Datenschutz-Redaction: Entfernt alle lokalen absoluten Pfade (`C:\...`), interne Dateisystemstrukturen, Rohdokumente und Zugangsdaten/Passwörter.
