@@ -323,15 +323,34 @@ class DocumentListPanel(QWidget, LoggerMixin):
             event.acceptProposedAction()
     
     def dropEvent(self, event):
-        """Verarbeitet gedroppte Dateien."""
-        files = []
+        """Verarbeitet gedroppte Dateien und Ordner mit Smart-Ingest-Unterstützung."""
+        paths = []
         for url in event.mimeData().urls():
             if url.isLocalFile():
-                files.append(url.toLocalFile())
+                paths.append(url.toLocalFile())
         
-        if files:
-            success, failed = self._library.add_documents(files)
-            self.refresh()
+        if paths:
+            from core.ingest import FormatDetector
+            detector = FormatDetector()
+            has_folder = any(Path(p).is_dir() for p in paths)
+            has_convertible = any(
+                detector.is_convertible_to_pdf(p) and not p.lower().endswith(".pdf")
+                for p in paths if Path(p).is_file()
+            )
+            if has_folder or has_convertible:
+                from gui.dialogs.smart_ingest_dialog import SmartIngestDialog
+                dialog = SmartIngestDialog(
+                    self,
+                    library_manager=self._library,
+                    initial_paths=paths,
+                    initial_theme=self._library.themes.get_current_theme()
+                )
+                dialog.ingest_finished.connect(lambda _: self.refresh())
+                dialog.exec()
+            else:
+                success, failed = self._library.add_documents(paths)
+                self.refresh()
+
     
     # === Public API ===
     

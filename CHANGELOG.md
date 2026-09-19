@@ -30,6 +30,24 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-19, Phase 4(3) Smart Ingest Dropzone mit automatischer Formaterkennung & Multi-Format-Routing)
+- **Smart Ingest Core-Engine (`core/ingest/`):**
+  - Neues modulares Kernpaket für mehrformatigen Datei- und Ordnerimport (`models.py`, `detector.py`, `scanner.py`, `service.py`, `__init__.py`).
+  - `FormatDetector`: Automatische Formaterkennung über Dateiendung und Magic-Byte-Sniffing (PDF, Microsoft Office DOCX/XLSX, Raster- und Vektorbilder, Markdown, Plaintext, HTML, CSV/Tabellen, Code) inkl. SHA-256 Duplikatserkennung.
+  - `FolderScanner`: Rekursives Scannen von Verzeichnisbäumen mit Tiefenbegrenzung (`max_depth`) und Filterung von Entwicklungsordnern (`.git`, `__pycache__`, `venv`, `node_modules`, `_archive`), temporären Office-Dateien (`~$*`, `*.tmp`) und System-Metadaten (`Thumbs.db`, `desktop.ini`).
+  - `SmartIngestService`: Zentrale Orchestrierung zur Batch-Aufbereitung, Duplikatsprüfung gegen aktive Bibliotheken, automatischer Konvertierung nach PDF via `FormatConverter` und direktem Import in die DokuZen-Bibliothek.
+- **Benutzeroberfläche & Dialoge (`gui/widgets/dropzone.py`, `gui/dialogs/smart_ingest_dialog.py`):**
+  - Neues `SmartDropzoneWidget`: Visuell ansprechende Dropzone mit gestricheltem Rahmen, Status-Highlights bei Drag-Over, Format-Chips (`[PDF]`, `[Office/Word]`, `[Bilder]`, `[Text & Markdown]`, `[Ordner]`) und barrierefreier Tastaturnavigation (Leertaste/Enter öffnet Dateidialog).
+  - Neuer `SmartIngestDialog`: Interaktiver Import-Manager mit Themen-Auswahl, Tabellenübersicht der Kandidaten (Dateiname, erkanntes Format, wählbare Ingest-Aktion via ComboBox, Dateigröße, Status), Optionen für automatische PDF-Konvertierung, Duplikatsüberspringen und rekursives Scannen sowie Live-Fortschrittsanzeige.
+  - Integration in `MainWindow`: Neuer Menüeintrag `Datei -> Smart Ingest (Dropzone)...` (Tastenkürzel `Ctrl+Shift+I`), Symbolleisten-Button, Drag-and-Drop-Weiterleitung beliebiger Dateitypen oder Ordner an die Smart Ingest Pipeline.
+  - Integration in `DocumentListPanel`: Erweiterung von `dropEvent`, sodass Ordner oder Nicht-PDFs nahtlos an den Smart Ingest Dialog übergeben werden.
+- **Lokalisierung (I18N):**
+  - 50 neue Übersetzungsschlüssel in allen 6 unterstützten Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) in `locales/translations.json` hinterlegt (Gesamtkatalog auf 266 Einträge erweitert).
+- **Testabdeckung & Qualitätsnachweis:**
+  - 16 neue Tests in `tests/test_smart_ingest.py` und `tests/test_smart_dropzone_and_dialog.py` sowie Dialog-Smoke-Test in `tests/test_dialog_smoke.py`.
+  - Gesamttestsuite: 408 Tests bestanden, 1 übersprungen, 26 Subtests bestanden (100% grün).
+  - Code-Qualität: 0 Ruff-Lints (`ruff check .` sauber), Python-Bytecode-Kompilierung fehlerfrei (`compileall`), Windows Store Readiness Prüfung erfolgreich (`check_store_readiness.py`).
+
 ### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-19, Pfad B Marketing, Discoverability, Visual Architecture & Metadata Contract)
 - **Marketing & Discoverability Contract (Pfad B):**
   - GitHub-Themenanreicherung auf 20/20 optimierte Schlagwörter (`desktop-app`, `document-processing`, `local-first`, `ocr`, `offline-first`, `pdf`, `pdf-tools`, `pyside6`, `python`, `redaction`, `windows`, `document-management`, `open-bricks`, `pdf-editor`, `pdf-merger`, `pikepdf`, `pymupdf`, `pytesseract`, `zero-egress`, `doc-bricks`).

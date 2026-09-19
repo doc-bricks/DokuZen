@@ -271,7 +271,7 @@ STATTDESSEN:
     (Falls je EINE Engine gewünscht: andere Richtung — DokuZens Engine zum Superset-Modul
      ausbauen, dann beide nutzen; eigenes großes Projekt, hier bewusst NICHT gewählt.)
 
-[-] Phase 4: TextBrain-Unique-Features nach DokuZen spiegeln [TEILWEISE ERFÜLLT]
+[x] Phase 4: TextBrain-Unique-Features nach DokuZen spiegeln [ERFÜLLT 2026-09-19]
     Nur die produktiv sinnvollen Alleinstellungen übertragen:
     [x] (1) Clipboard-to-File mit Heading-Erkennung + Auto-Benennung (Quelle: textbrain/core/clipboard.py)
         Erledigt 2026-09-12 (Gemini/antigravity via software-high-end):
@@ -294,6 +294,16 @@ STATTDESSEN:
           `manifest.webmanifest`, `sw.js`, `sample_workspace.json`, App-Icons) für offline Browser-Nutzung.
         - Testabdeckung: 13 neue Tests in `tests/test_workspace_export.py`, `tests/test_export_action.py`
           und `tests/test_web_companion.py` (Gesamtsuite: 388 bestanden, 1 übersprungen, 26 Subtests, 100% grün).
+    [x] (3) Smart Ingest Dropzone mit automatischer Formaterkennung & Routing -- DONE 2026-09-19 (Gemini Antigravity via software-high-end)
+        - Neues Kernpaket `core/ingest/` (`models.py`, `detector.py`, `scanner.py`, `service.py`, `__init__.py`).
+        - Robuste Formaterkennung (Extension-Mapping + Magic-Byte-Sniffing für PDF, Office, Bilder, Markdown/Text, Tabellen/CSV, Web/HTML, Code).
+        - Rekursiver Ordner-Scanner mit konfigurierbaren Ignore-Filtern (`.git`, `__pycache__`, `node_modules`, `venv`, `~$*`, `*.tmp`, `Thumbs.db`).
+        - Neuer UI-Dialog `SmartIngestDialog` (`gui/dialogs/smart_ingest_dialog.py`) und responsive `SmartDropzoneWidget` (`gui/widgets/dropzone.py`).
+        - Integration in `MainWindow` (Menü Datei -> "Smart Ingest (Dropzone)...", Shortcut `Ctrl+Shift+I`, Toolbar-Button, Drag-and-Drop)
+          und `DocumentListPanel` (automatische Weiterleitung von Ordnern und konvertierbaren Dateien an den Smart Ingest Dialog).
+        - Mehrsprachigkeit: 50 neue Übersetzungsschlüssel in allen 6 Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) in `locales/translations.json`.
+        - Testabdeckung: 16 neue Tests in `tests/test_smart_ingest.py`, `tests/test_smart_dropzone_and_dialog.py` und Smoke-Test
+          in `tests/test_dialog_smoke.py` (Gesamtsuite: 408 bestanden, 1 übersprungen, 26 Subtests, 100% grün, 0 Ruff-Lints).
     NICHT übertragen: PDF-Unlock via Geburtstags-Bruteforce — Nische + rechtlich heikel,
     bleibt optional nur in TextBrain (unlocker.py).
 

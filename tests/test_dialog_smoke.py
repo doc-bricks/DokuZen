@@ -21,6 +21,7 @@ from gui.dialogs.redaction_dialog import RedactionDialog
 from gui.dialogs.settings_dialog import SettingsDialog
 from gui.dialogs.signature_overlay_dialog import SignatureOverlayDialog
 from gui.dialogs.text_pool_dialog import TextPoolDialog
+from gui.dialogs.smart_ingest_dialog import SmartIngestDialog
 
 
 class DialogSmokeTest(unittest.TestCase):
@@ -178,6 +179,15 @@ class DialogSmokeTest(unittest.TestCase):
         self.assertFalse(dialog._check_numbers.isChecked())
         self.assertEqual(dialog._list_widget.count(), 0)
         self.assertEqual(dialog._check_bookmarks.accessibleName(), "Lesezeichen erstellen")
+        dialog.close()
+
+    def test_smart_ingest_dialog_instantiates(self):
+        dialog = SmartIngestDialog()
+        self.assertIsNotNone(dialog)
+        self.assertTrue(dialog.chk_auto_convert.isChecked())
+        self.assertTrue(dialog.chk_skip_dupes.isChecked())
+        self.assertTrue(dialog.chk_recursive.isChecked())
+        self.assertEqual(dialog.table.rowCount(), 0)
         dialog.close()
 
 

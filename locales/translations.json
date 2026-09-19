@@ -1726,5 +1726,405 @@
     "zh": "导出工作区时出错",
     "ja": "ワークスペースのエクスポート中にエラーが発生しました",
     "ru": "Ошибка при экспорте рабочей области"
+  },
+  "Smart Ingest (Dropzone)...": {
+    "de": "Smart Ingest (Dropzone)...",
+    "en": "Smart Ingest (Dropzone)...",
+    "es": "Ingest inteligente (Dropzone)...",
+    "zh": "智能摄取 (拖放区)...",
+    "ja": "スマートインジェスト (ドロップゾーン)...",
+    "ru": "Умный импорт (Dropzone)..."
+  },
+  "Smart Ingest": {
+    "de": "Smart Ingest",
+    "en": "Smart Ingest",
+    "es": "Ingest inteligente",
+    "zh": "智能摄取",
+    "ja": "スマートインジェスト",
+    "ru": "Умный импорт"
+  },
+  "Dateien und Ordner mit automatischer Formaterkennung importieren (Ctrl+Shift+I)": {
+    "de": "Dateien und Ordner mit automatischer Formaterkennung importieren (Ctrl+Shift+I)",
+    "en": "Import files and folders with automatic format detection (Ctrl+Shift+I)",
+    "es": "Importar archivos y carpetas con detección automática de formato (Ctrl+Shift+I)",
+    "zh": "通过自动格式识别导入文件和文件夹 (Ctrl+Shift+I)",
+    "ja": "自動フォーマット認識でファイルやフォルダーをインポート (Ctrl+Shift+I)",
+    "ru": "Импорт файлов и папок с автоматическим распознаванием формата (Ctrl+Shift+I)"
+  },
+  "Smart Ingest Dropzone": {
+    "de": "Smart Ingest Dropzone",
+    "en": "Smart Ingest Dropzone",
+    "es": "Zona de colocación de ingest inteligente",
+    "zh": "智能摄取拖放区",
+    "ja": "スマートインジェスト ドロップゾーン",
+    "ru": "Зона умного импорта"
+  },
+  "Ziehen Sie Dateien oder Ordner hierher oder drücken Sie die Eingabetaste zum Durchsuchen.": {
+    "de": "Ziehen Sie Dateien oder Ordner hierher oder drücken Sie die Eingabetaste zum Durchsuchen.",
+    "en": "Drag files or folders here or press Enter to browse.",
+    "es": "Arrastre archivos o carpetas aquí o presione Enter para explorar.",
+    "zh": "将文件或文件夹拖到此处，或按回车键进行浏览。",
+    "ja": "ファイルまたはフォルダーをここにドラッグするか、Enterキーを押して参照します。",
+    "ru": "Перетащите файлы или папки сюда или нажмите Enter для обзора."
+  },
+  "Dateien oder Ordner hierher ziehen": {
+    "de": "Dateien oder Ordner hierher ziehen",
+    "en": "Drag files or folders here",
+    "es": "Arrastre archivos o carpetas aquí",
+    "zh": "将文件或文件夹拖到此处",
+    "ja": "ファイルまたはフォルダーをここにドラッグ",
+    "ru": "Перетащите файлы или папки сюда"
+  },
+  "Oder klicken / Eingabe drücken zum Durchsuchen": {
+    "de": "Oder klicken / Eingabe drücken zum Durchsuchen",
+    "en": "Or click / press Enter to browse",
+    "es": "O haga clic / presione Enter para explorar",
+    "zh": "或点击 / 按回车键浏览",
+    "ja": "またはクリック / Enterを押して参照",
+    "ru": "Или нажмите / Enter для выбора"
+  },
+  "Office/Word": {
+    "de": "Office/Word",
+    "en": "Office/Word",
+    "es": "Office/Word",
+    "zh": "Office/Word",
+    "ja": "Office/Word",
+    "ru": "Office/Word"
+  },
+  "Bilder": {
+    "de": "Bilder",
+    "en": "Images",
+    "es": "Imágenes",
+    "zh": "图片",
+    "ja": "画像",
+    "ru": "Изображения"
+  },
+  "Text & Markdown": {
+    "de": "Text & Markdown",
+    "en": "Text & Markdown",
+    "es": "Texto y Markdown",
+    "zh": "文本与Markdown",
+    "ja": "テキスト & Markdown",
+    "ru": "Текст и Markdown"
+  },
+  "Ordner": {
+    "de": "Ordner",
+    "en": "Folder",
+    "es": "Carpeta",
+    "zh": "文件夹",
+    "ja": "フォルダー",
+    "ru": "Папка"
+  },
+  "Dateien auswählen...": {
+    "de": "Dateien auswählen...",
+    "en": "Select files...",
+    "es": "Seleccionar archivos...",
+    "zh": "选择文件...",
+    "ja": "ファイルを選択...",
+    "ru": "Выбрать файлы..."
+  },
+  "Ordner auswählen...": {
+    "de": "Ordner auswählen...",
+    "en": "Select folder...",
+    "es": "Seleccionar carpeta...",
+    "zh": "选择文件夹...",
+    "ja": "フォルダーを選択...",
+    "ru": "Выбрать папку..."
+  },
+  "Dateien für Smart Ingest auswählen": {
+    "de": "Dateien für Smart Ingest auswählen",
+    "en": "Select files for Smart Ingest",
+    "es": "Seleccionar archivos para Ingest inteligente",
+    "zh": "选择智能摄取文件",
+    "ja": "スマートインジェスト用ファイルを選択",
+    "ru": "Выбрать файлы для умного импорта"
+  },
+  "Alle unterstützten Dateien (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;PDF-Dokumente (*.pdf);;Alle Dateien (*.*)": {
+    "de": "Alle unterstützten Dateien (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;PDF-Dokumente (*.pdf);;Alle Dateien (*.*)",
+    "en": "All supported files (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;PDF Documents (*.pdf);;All Files (*.*)",
+    "es": "Todos los archivos compatibles (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;Documentos PDF (*.pdf);;Todos los archivos (*.*)",
+    "zh": "所有支持的文件 (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;PDF文档 (*.pdf);;所有文件 (*.*)",
+    "ja": "サポートされているすべてのファイル (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;PDFドキュメント (*.pdf);;すべてのファイル (*.*)",
+    "ru": "Все поддерживаемые файлы (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;Документы PDF (*.pdf);;Все файлы (*.*)"
+  },
+  "Ordner für Smart Ingest auswählen": {
+    "de": "Ordner für Smart Ingest auswählen",
+    "en": "Select folder for Smart Ingest",
+    "es": "Seleccionar carpeta para Ingest inteligente",
+    "zh": "选择智能摄取文件夹",
+    "ja": "スマートインジェスト用フォルダーを選択",
+    "ru": "Выбрать папку для умного импорта"
+  },
+  "Smart Ingest & Formaterkennung": {
+    "de": "Smart Ingest & Formaterkennung",
+    "en": "Smart Ingest & Format Detection",
+    "es": "Ingest inteligente y detección de formato",
+    "zh": "智能摄取与格式识别",
+    "ja": "スマートインジェスト & フォーマット検出",
+    "ru": "Умный импорт и распознавание форматов"
+  },
+  "Dokumente erkennen, vorbereiten und importieren": {
+    "de": "Dokumente erkennen, vorbereiten und importieren",
+    "en": "Detect, prepare and import documents",
+    "es": "Detectar, preparar e importar documentos",
+    "zh": "识别、准备并导入文档",
+    "ja": "ドキュメントの検出・準備・インポート",
+    "ru": "Распознавание, подготовка и импорт документов"
+  },
+  "Zielthema:": {
+    "de": "Zielthema:",
+    "en": "Target Topic:",
+    "es": "Tema de destino:",
+    "zh": "目标主题:",
+    "ja": "対象トピック:",
+    "ru": "Целевая тема:"
+  },
+  "Format": {
+    "de": "Format",
+    "en": "Format",
+    "es": "Formato",
+    "zh": "格式",
+    "ja": "形式",
+    "ru": "Формат"
+  },
+  "Aktion": {
+    "de": "Aktion",
+    "en": "Action",
+    "es": "Acción",
+    "zh": "操作",
+    "ja": "アクション",
+    "ru": "Действие"
+  },
+  "Ordner hinzufügen...": {
+    "de": "Ordner hinzufügen...",
+    "en": "Add Folder...",
+    "es": "Añadir carpeta...",
+    "zh": "添加文件夹...",
+    "ja": "フォルダーを追加...",
+    "ru": "Добавить папку..."
+  },
+  "Auswahl entfernen": {
+    "de": "Auswahl entfernen",
+    "en": "Remove Selection",
+    "es": "Eliminar selección",
+    "zh": "移除选中项",
+    "ja": "選択を削除",
+    "ru": "Удалить выбранное"
+  },
+  "0 Dateien bereit": {
+    "de": "0 Dateien bereit",
+    "en": "0 files ready",
+    "es": "0 archivos listos",
+    "zh": "0 个文件就绪",
+    "ja": "0 個のファイルが準備完了",
+    "ru": "0 файлов готово"
+  },
+  "Nicht-PDFs automatisch in PDF konvertieren": {
+    "de": "Nicht-PDFs automatisch in PDF konvertieren",
+    "en": "Automatically convert non-PDFs to PDF",
+    "es": "Convertir automáticamente archivos que no sean PDF a PDF",
+    "zh": "自动将非PDF文件转换为PDF",
+    "ja": "PDF以外のファイルを自動的にPDFに変換",
+    "ru": "Автоматически конвертировать не-PDF в PDF"
+  },
+  "Duplikate überspringen": {
+    "de": "Duplikate überspringen",
+    "en": "Skip duplicates",
+    "es": "Omitir duplicados",
+    "zh": "跳过重复项",
+    "ja": "重複をスキップ",
+    "ru": "Пропускать дубликаты"
+  },
+  "Ordner rekursiv durchsuchen": {
+    "de": "Ordner rekursiv durchsuchen",
+    "en": "Search folders recursively",
+    "es": "Buscar carpetas recursivamente",
+    "zh": "递归搜索文件夹",
+    "ja": "フォルダーを再帰的に検索",
+    "ru": "Рекурсивный поиск в папках"
+  },
+  "Import starten": {
+    "de": "Import starten",
+    "en": "Start Import",
+    "es": "Iniciar importación",
+    "zh": "开始导入",
+    "ja": "インポート開始",
+    "ru": "Начать импорт"
+  },
+  "Direkt importieren": {
+    "de": "Direkt importieren",
+    "en": "Import directly",
+    "es": "Importar directamente",
+    "zh": "直接导入",
+    "ja": "直接インポート",
+    "ru": "Прямой импорт"
+  },
+  "In PDF konvertieren": {
+    "de": "In PDF konvertieren",
+    "en": "Convert to PDF",
+    "es": "Convertir a PDF",
+    "zh": "转换为PDF",
+    "ja": "PDFに変換",
+    "ru": "Конвертировать в PDF"
+  },
+  "Überspringen (Duplikat)": {
+    "de": "Überspringen (Duplikat)",
+    "en": "Skip (Duplicate)",
+    "es": "Omitir (Duplicado)",
+    "zh": "跳过 (重复项)",
+    "ja": "スキップ (重複)",
+    "ru": "Пропустить (дубликат)"
+  },
+  "Office / Word": {
+    "de": "Office / Word",
+    "en": "Office / Word",
+    "es": "Office / Word",
+    "zh": "Office / Word",
+    "ja": "Office / Word",
+    "ru": "Office / Word"
+  },
+  "Text / Markdown": {
+    "de": "Text / Markdown",
+    "en": "Text / Markdown",
+    "es": "Texto / Markdown",
+    "zh": "文本 / Markdown",
+    "ja": "テキスト / Markdown",
+    "ru": "Текст / Markdown"
+  },
+  "Tabelle / CSV": {
+    "de": "Tabelle / CSV",
+    "en": "Spreadsheet / CSV",
+    "es": "Hoja de cálculo / CSV",
+    "zh": "电子表格 / CSV",
+    "ja": "スプレッドシート / CSV",
+    "ru": "Таблица / CSV"
+  },
+  "HTML-Webseite": {
+    "de": "HTML-Webseite",
+    "en": "HTML Webpage",
+    "es": "Página web HTML",
+    "zh": "HTML网页",
+    "ja": "HTMLウェブページ",
+    "ru": "Веб-страница HTML"
+  },
+  "Code / Daten": {
+    "de": "Code / Daten",
+    "en": "Code / Data",
+    "es": "Código / Datos",
+    "zh": "代码 / 数据",
+    "ja": "コード / データ",
+    "ru": "Код / Данные"
+  },
+  "Unbekannt": {
+    "de": "Unbekannt",
+    "en": "Unknown",
+    "es": "Desconocido",
+    "zh": "未知",
+    "ja": "不明",
+    "ru": "Неизвестно"
+  },
+  "Datei(en) gelistet": {
+    "de": "Datei(en) gelistet",
+    "en": "file(s) listed",
+    "es": "archivo(s) listado(s)",
+    "zh": "个文件已列出",
+    "ja": "件のファイルが一覧表示",
+    "ru": "файл(ов) в списке"
+  },
+  "Alle unterstützten Dateien (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;Alle Dateien (*.*)": {
+    "de": "Alle unterstützten Dateien (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;Alle Dateien (*.*)",
+    "en": "All supported files (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;All Files (*.*)",
+    "es": "Todos los archivos compatibles (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;Todos los archivos (*.*)",
+    "zh": "所有支持的文件 (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;所有文件 (*.*)",
+    "ja": "サポートされているすべてのファイル (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;すべてのファイル (*.*)",
+    "ru": "Все поддерживаемые файлы (*.pdf *.docx *.doc *.txt *.md *.png *.jpg *.jpeg *.tiff *.bmp *.xlsx *.csv *.html);;Все файлы (*.*)"
+  },
+  "Verarbeitung läuft...": {
+    "de": "Verarbeitung läuft...",
+    "en": "Processing in progress...",
+    "es": "Procesamiento en curso...",
+    "zh": "正在处理...",
+    "ja": "処理中...",
+    "ru": "Выполняется обработка..."
+  },
+  "Konvertiert & importiert": {
+    "de": "Konvertiert & importiert",
+    "en": "Converted & imported",
+    "es": "Convertido e importado",
+    "zh": "已转换并导入",
+    "ja": "変換してインポート完了",
+    "ru": "Конвертировано и импортировано"
+  },
+  "Erfolgreich importiert": {
+    "de": "Erfolgreich importiert",
+    "en": "Successfully imported",
+    "es": "Importado con éxito",
+    "zh": "成功导入",
+    "ja": "インポートに成功しました",
+    "ru": "Успешно импортировано"
+  },
+  "Abgeschlossen": {
+    "de": "Abgeschlossen",
+    "en": "Completed",
+    "es": "Completado",
+    "zh": "已完成",
+    "ja": "完了",
+    "ru": "Завершено"
+  },
+  "Duplikat": {
+    "de": "Duplikat",
+    "en": "Duplicate",
+    "es": "Duplicado",
+    "zh": "重复项",
+    "ja": "重複",
+    "ru": "Дубликат"
+  },
+  "Übersprungen": {
+    "de": "Übersprungen",
+    "en": "Skipped",
+    "es": "Omitido",
+    "zh": "已跳过",
+    "ja": "スキップされました",
+    "ru": "Пропущено"
+  },
+  "importiert": {
+    "de": "importiert",
+    "en": "imported",
+    "es": "importado",
+    "zh": "已导入",
+    "ja": "インポート済み",
+    "ru": "импортировано"
+  },
+  "konvertiert": {
+    "de": "konvertiert",
+    "en": "converted",
+    "es": "convertido",
+    "zh": "已转换",
+    "ja": "変換済み",
+    "ru": "конвертировано"
+  },
+  "Nicht unterstützt": {
+    "de": "Nicht unterstützt",
+    "en": "Not supported",
+    "es": "No compatible",
+    "zh": "不支持",
+    "ja": "サポートされていません",
+    "ru": "Не поддерживается"
+  },
+  "PDF-Dokument": {
+    "de": "PDF-Dokument",
+    "en": "PDF Document",
+    "es": "Documento PDF",
+    "zh": "PDF 文档",
+    "ja": "PDF ドキュメント",
+    "ru": "Документ PDF"
+  },
+  "Dateiname": {
+    "de": "Dateiname",
+    "en": "File Name",
+    "es": "Nombre de archivo",
+    "zh": "文件名",
+    "ja": "ファイル名",
+    "ru": "Имя файла"
   }
 }

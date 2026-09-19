@@ -117,6 +117,11 @@ class MainWindow(QMainWindow, LoggerMixin):
         self._action_import_folder.triggered.connect(self._on_import_folder)
         self._menu_file.addAction(self._action_import_folder)
         
+        self._action_smart_ingest = QAction(tr("Smart Ingest (Dropzone)..."), self)
+        self._action_smart_ingest.setShortcut(QKeySequence("Ctrl+Shift+I"))
+        self._action_smart_ingest.triggered.connect(self._on_smart_ingest)
+        self._menu_file.addAction(self._action_smart_ingest)
+        
         self._menu_file.addSeparator()
         
         self._action_export_pdf = QAction(tr("Sammel-PDF exportieren..."), self)
@@ -268,6 +273,14 @@ class MainWindow(QMainWindow, LoggerMixin):
         self._btn_import.setToolTip(tr("Dateien zur Bibliothek hinzufügen (Ctrl+I)"))
         self._btn_import.triggered.connect(self._on_import)
         toolbar.addAction(self._btn_import)
+
+        # Smart Ingest Button
+        self._btn_smart_ingest = QAction(tr("Smart Ingest"), self)
+        self._btn_smart_ingest.setToolTip(
+            tr("Dateien und Ordner mit automatischer Formaterkennung importieren (Ctrl+Shift+I)")
+        )
+        self._btn_smart_ingest.triggered.connect(self._on_smart_ingest)
+        toolbar.addAction(self._btn_smart_ingest)
         
         # Neues Thema
         self._btn_new_theme = QAction(tr("Neues Thema"), self)
@@ -373,6 +386,8 @@ class MainWindow(QMainWindow, LoggerMixin):
             self._menu_file.setTitle(t("&Datei"))
             self._action_import.setText(t("&Importieren..."))
             self._action_import_folder.setText(t("Ordner importieren..."))
+            if hasattr(self, "_action_smart_ingest"):
+                self._action_smart_ingest.setText(t("Smart Ingest (Dropzone)..."))
             self._action_export_pdf.setText(t("Sammel-PDF exportieren..."))
             if hasattr(self, "_action_export_workspace"):
                 self._action_export_workspace.setText(t("Arbeitsbereich exportieren..."))
@@ -418,6 +433,12 @@ class MainWindow(QMainWindow, LoggerMixin):
         if hasattr(self, "_btn_import"):
             self._btn_import.setText(t("Importieren"))
             self._btn_import.setToolTip(t("Dateien zur Bibliothek hinzufügen (Ctrl+I)"))
+        if hasattr(self, "_btn_smart_ingest"):
+            self._btn_smart_ingest.setText(t("Smart Ingest"))
+            self._btn_smart_ingest.setToolTip(
+                t("Dateien und Ordner mit automatischer Formaterkennung importieren (Ctrl+Shift+I)")
+            )
+        if hasattr(self, "_btn_new_theme"):
             self._btn_new_theme.setText(t("Neues Thema"))
             self._btn_new_theme.setToolTip(t("Neues Thema erstellen (Ctrl+N)"))
             self._btn_refresh.setText(t("Aktualisieren"))
@@ -478,6 +499,29 @@ class MainWindow(QMainWindow, LoggerMixin):
                 self._update_statusbar()
             else:
                 self._statusbar.showMessage(tr("Keine unterstützten Dateien gefunden"), 3000)
+
+    def _on_smart_ingest(self, initial_paths: Optional[List[str]] = None):
+        """Öffnet den Smart-Ingest-Dialog mit automatischer Formaterkennung."""
+        from gui.dialogs.smart_ingest_dialog import SmartIngestDialog
+        dialog = SmartIngestDialog(
+            self,
+            library_manager=self._library,
+            initial_paths=initial_paths,
+            initial_theme=self._library.themes.get_current_theme()
+        )
+        dialog.ingest_finished.connect(self._on_smart_ingest_finished)
+        dialog.exec()
+
+    def _on_smart_ingest_finished(self, summary):
+        """Reagiert auf den Abschluss eines Smart-Ingest-Laufs."""
+        self._document_panel.refresh()
+        self._update_statusbar()
+        self._statusbar.showMessage(
+            f"{summary.added_count} {tr('Datei(en) importiert')}, "
+            f"{summary.converted_count} {tr('konvertiert')}, "
+            f"{summary.skipped_count} {tr('übersprungen')}",
+            4000
+        )
     
     def _on_export_pdf(self):
         """Exportiert Sammel-PDF aus ausgewählten oder allen Dokumenten des Themas."""
@@ -925,16 +969,27 @@ class MainWindow(QMainWindow, LoggerMixin):
             event.acceptProposedAction()
     
     def dropEvent(self, event):
-        """Drop-Event für Dateien."""
-        files = []
+        """Drop-Event für Dateien und Ordner mit Smart-Ingest-Unterstützung."""
+        paths = []
         for url in event.mimeData().urls():
             if url.isLocalFile():
-                files.append(url.toLocalFile())
+                paths.append(url.toLocalFile())
         
-        if files:
-            success, failed = self._library.add_documents(files)
-            self._statusbar.showMessage(
-                f"{success} {tr('Datei(en) importiert')}, {failed} {tr('übersprungen')}", 3000
+        if paths:
+            from core.ingest import FormatDetector
+            detector = FormatDetector()
+            has_folder = any(Path(p).is_dir() for p in paths)
+            has_convertible = any(
+                detector.is_convertible_to_pdf(p) and not p.lower().endswith(".pdf")
+                for p in paths if Path(p).is_file()
             )
-            self._document_panel.refresh()
-            self._update_statusbar()
+            if has_folder or has_convertible:
+                self._on_smart_ingest(initial_paths=paths)
+            else:
+                success, failed = self._library.add_documents(paths)
+                self._statusbar.showMessage(
+                    f"{success} {tr('Datei(en) importiert')}, {failed} {tr('übersprungen')}", 3000
+                )
+                self._document_panel.refresh()
+                self._update_statusbar()
+

@@ -15,6 +15,7 @@ from .pyinstaller_dialog import PyInstallerDialog
 from .pdf_pages_dialog import PDFPagesDialog
 from .code_analysis_dialog import CodeAnalysisDialog
 from .collection_export_dialog import CollectionExportDialog
+from .smart_ingest_dialog import SmartIngestDialog
 
 __all__ = [
     "ConvertDialog",
@@ -31,4 +32,5 @@ __all__ = [
     "PDFPagesDialog",
     "CodeAnalysisDialog",
     "CollectionExportDialog",
+    "SmartIngestDialog",
 ]
