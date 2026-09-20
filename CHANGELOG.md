@@ -30,6 +30,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Behoben / Fixed (2026-09-20, Bugsweep: Multi-Format Routing, PDF-Konvertierung & Pfadnormalisierung)
+- **Multi-Format Ingest Routing (`core/ingest/detector.py`, `core/library/manager.py`):**
+  - In `FormatDetector.is_convertible_to_pdf` stufte `ft in (FileType.OFFICE, ...)` Text-/Office-Formate wie `.odt`, `.rtf` und `.doc` fälschlich als konvertierbar ein; `determine_action` wies daraufhin `IngestAction.CONVERT_TO_PDF` zu, was beim Import mangels Konvertierungsunterstützung fehlschlug. Behoben durch Beschränkung auf tatsächliche Konverter-Formate.
+  - Nicht nach PDF konvertierbare Office-Dateien werden nun sauber als `IngestAction.ADD_DIRECT` in die Bibliothek geroutet.
+  - `LibraryManager.SUPPORTED_EXTENSIONS` um `.markdown`, `.htm`, `.tif` und `.webp` erweitert.
+- **Erweiterte Format-Konvertierung (`core/converter/formats.py`):**
+  - Unterstützung für `.markdown`, `.htm` und `.tif` im Format-Dispatcher ergänzt.
+- **Robuste Duplikatserkennung auf Windows (`core/ingest/detector.py`, `core/ingest/service.py`):**
+  - Duplikatsabgleich gegen `existing_paths` um `os.path.normcase()` ergänzt, wodurch Groß-/Kleinschreibungsunterschiede bei Laufwerksbuchstaben (`c:` vs. `C:`) und Pfadtrennzeichen unter Windows zuverlässig erkannt werden.
+- **Scanner-Optimierung (`core/ingest/scanner.py`):**
+  - Sofortiges Leeren von `dirs` bei `not recursive` oder Überschreiten von `max_depth`, um unnötige Unterordner-Descents abzufangen.
+- **Regressionstests:**
+  - 3 neue Tests in `tests/test_smart_ingest_regressions.py`; gesamte Suite wächst auf 411 bestanden, 1 übersprungen, 26 Subtests (100% grün).
+
 ### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-19, Phase 4(3) Smart Ingest Dropzone mit automatischer Formaterkennung & Multi-Format-Routing)
 - **Smart Ingest Core-Engine (`core/ingest/`):**
   - Neues modulares Kernpaket für mehrformatigen Datei- und Ordnerimport (`models.py`, `detector.py`, `scanner.py`, `service.py`, `__init__.py`).
