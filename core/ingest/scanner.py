@@ -92,9 +92,10 @@ class FolderScanner(LoggerMixin):
             # Zu ignorierende Verzeichnisse aus dirs entfernen (in-place für os.walk)
             dirs[:] = [d for d in dirs if not self.should_ignore_dir(d)]
 
-            if not recursive and current_depth > 0:
+            if not recursive:
                 dirs.clear()
-                continue
+            elif max_depth is not None and current_depth >= max_depth:
+                dirs.clear()
 
             for fname in files:
                 if self.should_ignore_file(fname):
