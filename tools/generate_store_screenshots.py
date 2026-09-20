@@ -12,11 +12,30 @@ Produces:
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 from pathlib import Path
 import tempfile
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
+
+if sys.platform == "win32" and "QT_QPA_FONTDIR" not in os.environ:
+    # The "offscreen" QPA platform has no font backend of its own: without a
+    # QT_QPA_FONTDIR, every Qt-drawn label (menus, buttons, dialogs) renders
+    # as tofu boxes, while PyMuPDF-rendered PDF content stays unaffected.
+    # Pointing QT_QPA_FONTDIR at the *whole* Windows Fonts folder "fixes" the
+    # tofu but makes Qt's font-family matching resolve "Segoe UI" to an
+    # unrelated cursive font, so only the Segoe UI family is copied into an
+    # isolated temp dir instead.
+    _fonts_dir = Path(os.environ.get("WINDIR", r"C:\Windows")) / "Fonts"
+    _segoe_files = [
+        f for f in ("segoeui.ttf", "segoeuib.ttf", "segoeuii.ttf") if (_fonts_dir / f).is_file()
+    ]
+    if _segoe_files:
+        _qt_font_dir = Path(tempfile.mkdtemp(prefix="dokuzen_qt_fonts_"))
+        for _f in _segoe_files:
+            shutil.copy2(_fonts_dir / _f, _qt_font_dir / _f)
+        os.environ["QT_QPA_FONTDIR"] = str(_qt_font_dir)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
