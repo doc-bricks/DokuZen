@@ -1,119 +1,407 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 680" width="2400" height="680">
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;800;900&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap');
-      
-      .title {
-        font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-weight: 900;
-        letter-spacing: -1.5px;
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap');
+
+      .brand-title {
+        font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 800;
+        letter-spacing: -2.5px;
       }
-      .subtitle {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      .brand-tagline {
+        font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         font-weight: 500;
-        letter-spacing: -0.2px;
-      }
-      .badge-text {
-        font-family: 'JetBrains Mono', monospace;
-        font-weight: 700;
-        font-size: 11px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-      }
-      .pill-text {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-weight: 700;
-        font-size: 11.5px;
         letter-spacing: 0.5px;
       }
-      .mono-code {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-      }
     </style>
-    
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#051214"/>
-      <stop offset="50%" stop-color="#0b2226"/>
-      <stop offset="100%" stop-color="#030c0e"/>
+
+    <!-- Canvas Background: Bright Rice Paper Wash -->
+    <linearGradient id="canvas-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#fbf8f1" />
+      <stop offset="75%" stop-color="#f7f1e2" />
+      <stop offset="100%" stop-color="#f5efe0" />
     </linearGradient>
-    <linearGradient id="title-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2dd4bf"/>
-      <stop offset="50%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#a7f3d0"/>
-    </linearGradient>
-    <radialGradient id="glow-teal" cx="320" cy="170" r="260" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#051214" stop-opacity="0"/>
+
+    <!-- Soft Teal Ambient Light Wash behind Window and Study -->
+    <radialGradient id="scene-ambient" cx="1660" cy="235" r="750" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#bfe8e6" stop-opacity="0.45" />
+      <stop offset="40%" stop-color="#d9f0ee" stop-opacity="0.22" />
+      <stop offset="80%" stop-color="#f2f8f6" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
     </radialGradient>
-    <linearGradient id="card-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#134e4a" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#042f2e" stop-opacity="0.8"/>
+
+    <!-- Garden View Atmosphere inside Moon Gate (Marumado) - Bright Daylight -->
+    <linearGradient id="garden-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f6fbfa" />
+      <stop offset="40%" stop-color="#e4f5f2" />
+      <stop offset="75%" stop-color="#cfe9e5" />
+      <stop offset="100%" stop-color="#bfe0da" />
     </linearGradient>
-    
+
+    <!-- Garden Sunlit Haze -->
+    <radialGradient id="garden-mist" cx="1660" cy="210" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6" />
+      <stop offset="50%" stop-color="#bfe6e2" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#e4f5f2" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Circular Window Clip Path (Center 1660, 218, r=198) -->
+    <clipPath id="window-clip">
+      <circle cx="1660" cy="218" r="198" />
+    </clipPath>
+
+    <!-- Low Wooden Desk (Kyozukue) Linear Gradients - Warm Oak -->
+    <linearGradient id="wood-top" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6b4c37" />
+      <stop offset="25%" stop-color="#7c5940" />
+      <stop offset="75%" stop-color="#825f45" />
+      <stop offset="100%" stop-color="#6a4a34" />
+    </linearGradient>
+    <linearGradient id="wood-front" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5a3f2d" />
+      <stop offset="100%" stop-color="#402c20" />
+    </linearGradient>
+
+    <!-- Scroll Paper Gradient (unchanged: already rice-paper cream) -->
+    <linearGradient id="scroll-paper" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ece4d2" />
+      <stop offset="6%" stop-color="#f9f5ec" />
+      <stop offset="85%" stop-color="#f6f0e4" />
+      <stop offset="100%" stop-color="#e8dec9" />
+    </linearGradient>
+
+    <!-- Scroll Silk Brocade Edge Borders (kept dark teal as accent framing) -->
+    <linearGradient id="scroll-brocade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#21373a" />
+      <stop offset="50%" stop-color="#325459" />
+      <stop offset="100%" stop-color="#1f3437" />
+    </linearGradient>
+
+    <!-- Monk's Robe Shading (kept dark ink tones for contrast) -->
+    <linearGradient id="robe-drape" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#223035" />
+      <stop offset="35%" stop-color="#192427" />
+      <stop offset="100%" stop-color="#0c1214" />
+    </linearGradient>
+    <linearGradient id="robe-sleeve" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d3e44" />
+      <stop offset="50%" stop-color="#1c272a" />
+      <stop offset="100%" stop-color="#11181a" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow Filter (lighter for bright canvas) -->
+    <filter id="zen-shadow" x="-5%" y="-10%" width="110%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#2a2015" flood-opacity="0.22" />
+    </filter>
   </defs>
-  
-  
-    <!-- Background -->
-    <rect width="1200" height="340" fill="url(#bg)"/>
-    <rect width="1200" height="340" fill="none" stroke="#14b8a6" stroke-width="2" stroke-opacity="0.2"/>
-    <circle cx="320" cy="170" r="260" fill="url(#glow-teal)"/>
-    
-    <!-- Zen Circles / Enso Geometry -->
-    <circle cx="260" cy="170" r="110" fill="none" stroke="#2dd4bf" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.3"/>
-    <circle cx="260" cy="170" r="85" fill="none" stroke="#5eead4" stroke-width="2" opacity="0.4"/>
-    <circle cx="260" cy="170" r="60" fill="none" stroke="#99f6e4" stroke-width="1" opacity="0.6"/>
-    
-    <!-- Stacked Document Cards (Glassmorphism) -->
-    <g transform="translate(180, 90)">
-      <!-- Back Card -->
-      <rect x="30" y="0" width="130" height="160" rx="12" fill="#042f2e" stroke="#14b8a6" stroke-width="1.5" opacity="0.6" transform="rotate(-8 95 80)"/>
-      <!-- Mid Card -->
-      <rect x="30" y="0" width="130" height="160" rx="12" fill="url(#card-grad)" stroke="#2dd4bf" stroke-width="1.5" opacity="0.8" transform="rotate(4 95 80)"/>
-      <!-- Front Card -->
-      <rect x="25" y="5" width="130" height="160" rx="12" fill="#0b2c2f" stroke="#5eead4" stroke-width="2"/>
-      <!-- Card Content: Document lines & Zen Lotus / Quill Icon -->
-      <line x1="45" y1="35" x2="135" y2="35" stroke="#5eead4" stroke-width="4" stroke-linecap="round"/>
-      <line x1="45" y1="55" x2="115" y2="55" stroke="#99f6e4" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-      <line x1="45" y1="72" x2="125" y2="72" stroke="#99f6e4" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-      <line x1="45" y1="89" x2="95" y2="89" stroke="#99f6e4" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-      
-      <!-- Zen Stone / Badge on card -->
-      <circle cx="90" cy="125" r="18" fill="#14b8a6" opacity="0.3"/>
-      <circle cx="90" cy="125" r="10" fill="#2dd4bf"/>
-      <circle cx="90" cy="125" r="4" fill="#ffffff"/>
-    </g>
-    
-  
-    <g transform="translate(480, 0)">
-      <!-- Ecosystem Badge -->
-      <g transform="translate(0, 58)">
-        <rect width="180" height="26" rx="6" fill="#134e4a" stroke="#2dd4bf" stroke-width="1"/>
-        <text x="90" y="17" text-anchor="middle" class="badge-text" fill="#5eead4">DOC-BRICKS SUITE</text>
+
+  <!-- Base Bright Canvas -->
+  <rect width="2400" height="680" fill="url(#canvas-bg)" />
+
+  <!-- Floor Plane / Tatami Horizon -->
+  <line x1="850" y1="510" x2="2400" y2="510" stroke="#d8cdb0" stroke-width="1.5" />
+  <rect x="850" y="511" width="1550" height="169" fill="#efe6d3" opacity="0.6" />
+
+  <!-- Ambient Light Wash Centered on the Study -->
+  <circle cx="1660" cy="235" r="750" fill="url(#scene-ambient)" />
+
+  <!-- ===================================================== -->
+  <!-- ZEN GARDEN THROUGH CIRCULAR MOON GATE (MARUMADO)      -->
+  <!-- ===================================================== -->
+  <g id="zen-garden-window">
+    <!-- Window Outer Architectural Rim (warm dark wood frame) -->
+    <circle cx="1660" cy="218" r="210" fill="none" stroke="#33281d" stroke-width="16" />
+    <circle cx="1660" cy="218" r="201" fill="none" stroke="#6b5a44" stroke-width="2" />
+    <circle cx="1660" cy="218" r="197" fill="none" stroke="#23190f" stroke-width="1.5" />
+
+    <!-- Inside the Garden (Strictly Clipped to Circular Window Opening) -->
+    <g clip-path="url(#window-clip)">
+      <!-- Garden Daylight Atmosphere -->
+      <circle cx="1660" cy="218" r="198" fill="url(#garden-sky)" />
+      <circle cx="1660" cy="195" r="198" fill="url(#garden-mist)" />
+
+      <!-- Distant Garden Ground Silhouette -->
+      <path d="M 1440 285 Q 1550 274 1660 282 T 1880 276 L 1880 430 L 1440 430 Z" fill="#a9c9c2" opacity="0.55" />
+
+      <!-- Minimalist Raked Gravel Lines (Karesansui) -->
+      <g stroke="#9c8f74" stroke-width="1.8" stroke-linecap="round" opacity="0.5">
+        <!-- Concentric Circular Ripples Around the Solitary Zen Stone -->
+        <path d="M 1500 322 C 1505 282 1615 282 1620 322" fill="none" stroke-dasharray="8 6" />
+        <path d="M 1482 335 C 1490 265 1630 265 1638 335" fill="none" stroke-dasharray="10 6" />
+        <path d="M 1465 349 C 1475 247 1648 247 1658 349" fill="none" stroke-dasharray="12 7" />
+        <path d="M 1450 365 C 1460 229 1665 229 1675 365" fill="none" stroke-dasharray="14 8" />
+        <!-- Horizontal Raked Gravel Striations -->
+        <line x1="1450" y1="381" x2="1870" y2="381" stroke-dasharray="14 6" />
+        <line x1="1450" y1="397" x2="1870" y2="397" stroke-dasharray="14 6" />
+        <line x1="1450" y1="413" x2="1870" y2="413" stroke-dasharray="14 6" />
       </g>
-      
-      <!-- Title -->
-      <text x="0" y="142" class="title" font-size="58" fill="url(#title-grad)">DokuZen</text>
-      
-      <!-- Subtitle -->
-      <text x="0" y="184" class="subtitle" font-size="20" fill="#ccfbf1">Distraction-Free Document, Text &amp; PDF Workshop Suite</text>
-      <text x="0" y="210" class="subtitle" font-size="14" fill="#99f6e4" opacity="0.8">22 modular tools: OCR, PDF merging, batch conversion, and redaction in one local app.</text>
-      
-      <!-- Feature Pills -->
-      <g transform="translate(0, 246)">
-        <g transform="translate(0, 0)">
-          <rect width="140" height="32" rx="8" fill="#042f2e" stroke="#2dd4bf" stroke-width="1.5"/>
-          <text x="70" y="20" text-anchor="middle" class="pill-text" fill="#a7f3d0">📄 PDF Workshop</text>
-        </g>
-        <g transform="translate(152, 0)">
-          <rect width="130" height="32" rx="8" fill="#042f2e" stroke="#2dd4bf" stroke-width="1.5"/>
-          <text x="65" y="20" text-anchor="middle" class="pill-text" fill="#a7f3d0">🔍 Tesseract OCR</text>
-        </g>
-        <g transform="translate(294, 0)">
-          <rect width="140" height="32" rx="8" fill="#042f2e" stroke="#2dd4bf" stroke-width="1.5"/>
-          <text x="70" y="20" text-anchor="middle" class="pill-text" fill="#a7f3d0">🔒 100% Local-First</text>
-        </g>
+
+      <!-- Solitary Zen Rock (Smooth River Boulder) -->
+      <path d="M 1526 338 C 1522 305 1548 288 1576 286 C 1604 284 1624 301 1626 338 C 1626 344 1528 344 1526 338 Z" fill="#7d7a6e" />
+      <path d="M 1540 304 C 1562 290 1590 288 1608 297 C 1586 292 1563 296 1540 304 Z" fill="#a89d85" />
+      <path d="M 1530 336 C 1550 340 1600 340 1622 336 C 1610 341 1542 341 1530 336 Z" fill="#4f4a3e" />
+
+      <!-- Bamboo Grove (Graceful Bamboo Framing the Left) -->
+      <g id="bamboo-grove">
+        <!-- Bamboo Culm 1 (Main Stalk) -->
+        <path d="M 1490 430 L 1490 318 M 1490 314 L 1490 208 M 1490 204 L 1490 108 M 1490 104 L 1490 20" stroke="#193337" stroke-width="7" stroke-linecap="round" />
+        <!-- Joints / Nodes -->
+        <line x1="1485" y1="316" x2="1495" y2="316" stroke="#315c63" stroke-width="2.5" />
+        <line x1="1485" y1="206" x2="1495" y2="206" stroke="#315c63" stroke-width="2.5" />
+        <line x1="1485" y1="106" x2="1495" y2="106" stroke="#315c63" stroke-width="2.5" />
+
+        <!-- Bamboo Culm 2 (Slender Secondary Stalk) -->
+        <path d="M 1515 430 L 1518 328 M 1518 324 L 1520 228 M 1520 224 L 1522 133 M 1522 129 L 1524 35" stroke="#224248" stroke-width="5" stroke-linecap="round" />
+        <line x1="1512" y1="326" x2="1524" y2="326" stroke="#37676e" stroke-width="2" />
+        <line x1="1514" y1="226" x2="1526" y2="226" stroke="#37676e" stroke-width="2" />
+        <line x1="1516" y1="131" x2="1528" y2="131" stroke="#37676e" stroke-width="2" />
+
+        <!-- Bamboo Foliage: Sumi-e Style Leaf Clusters -->
+        <!-- Upper Cluster (from node 106) -->
+        <path d="M 1492 106 Q 1514 111 1538 101 Q 1518 117 1492 106 Z" fill="#2d575c" />
+        <path d="M 1492 106 Q 1520 95 1546 84 Q 1524 103 1492 106 Z" fill="#3b7279" />
+        <path d="M 1492 106 Q 1506 124 1527 130 Q 1510 126 1492 106 Z" fill="#254a4f" />
+
+        <!-- Mid Cluster (from node 206) -->
+        <path d="M 1492 206 Q 1522 213 1552 202 Q 1530 220 1492 206 Z" fill="#2f5a60" />
+        <path d="M 1492 206 Q 1518 196 1548 185 Q 1526 202 1492 206 Z" fill="#3d757d" />
+        <path d="M 1492 206 Q 1510 226 1532 237 Q 1514 228 1492 206 Z" fill="#264c52" />
+
+        <!-- Cluster from node 131 on culm 2 -->
+        <path d="M 1523 131 Q 1550 139 1582 128 Q 1555 147 1523 131 Z" fill="#386a71" />
+        <path d="M 1523 131 Q 1555 122 1588 111 Q 1560 129 1523 131 Z" fill="#44828b" />
+        <path d="M 1523 131 Q 1543 152 1568 163 Q 1548 154 1523 131 Z" fill="#2b555a" />
+
+        <!-- Cluster from node 226 on culm 2 -->
+        <path d="M 1522 226 Q 1554 234 1588 223 Q 1560 244 1522 226 Z" fill="#33636a" />
+        <path d="M 1522 226 Q 1546 248 1570 257 Q 1549 252 1522 226 Z" fill="#274d53" />
+
+        <!-- Drifting Bamboo Leaves in Garden Breeze -->
+        <path d="M 1605 175 Q 1618 182 1630 178 Q 1618 186 1605 175 Z" fill="#36656c" opacity="0.7" />
+        <path d="M 1650 215 Q 1664 225 1674 220 Q 1662 228 1650 215 Z" fill="#2e595f" opacity="0.65" />
       </g>
     </g>
-    
+
+    <!-- Circular Window Inner Vignette / Rim Shading -->
+    <circle cx="1660" cy="218" r="198" fill="none" stroke="#2a2018" stroke-width="10" opacity="0.35" />
+  </g>
+
+  <!-- ===================================================== -->
+  <!-- LOW WOODEN WRITING TABLE (KYOZUKUE)                    -->
+  <!-- ===================================================== -->
+  <g id="kyozukue-desk" filter="url(#zen-shadow)">
+    <!-- Desk Soft Cast Shadow on Floor -->
+    <rect x="1170" y="495" width="940" height="28" rx="14" fill="#2a2015" opacity="0.22" />
+
+    <!-- Left Traditional Curved Bracket Leg -->
+    <path d="M 1225 448 L 1220 505 C 1220 516 1242 518 1260 511 C 1255 498 1255 470 1260 448 Z" fill="#4a3626" stroke="#6b543d" stroke-width="1.4" />
+
+    <!-- Right Traditional Bracket Leg -->
+    <path d="M 2050 448 L 2055 505 C 2055 516 2033 518 2015 511 C 2020 498 2020 470 2015 448 Z" fill="#4a3626" stroke="#6b543d" stroke-width="1.4" />
+
+    <!-- Table Apron Under Tabletop -->
+    <rect x="1200" y="445" width="875" height="18" fill="url(#wood-front)" />
+
+    <!-- Tabletop Main Surface Slab -->
+    <rect x="1160" y="415" width="950" height="32" rx="5" fill="url(#wood-top)" stroke="#8a6b4e" stroke-width="1.4" />
+
+    <!-- Polished Table Edge Bevel Highlights -->
+    <line x1="1163" y1="417" x2="2107" y2="417" stroke="#c9a876" stroke-width="1.8" stroke-linecap="round" />
+    <line x1="1163" y1="445" x2="2107" y2="445" stroke="#3a2c1e" stroke-width="1.4" stroke-linecap="round" />
+  </g>
+
+  <!-- ===================================================== -->
+  <!-- CELADON WATER DROPPER (SUITEKI) / BRUSH REST          -->
+  <!-- ===================================================== -->
+  <g id="celadon-suiteki" transform="translate(1195, 423)">
+    <!-- Small Ceramic Water Dropper in Muted Teal Glaze (accent, unchanged) -->
+    <ellipse cx="14" cy="11" rx="13" ry="8" fill="#1e3e41" stroke="#2d5e62" stroke-width="1" />
+    <ellipse cx="13" cy="9.5" rx="7" ry="3.5" fill="#326a6f" opacity="0.6" />
+    <circle cx="14" cy="7" r="2.2" fill="#152a2c" />
+    <line x1="24" y1="10" x2="28" y2="9" stroke="#2d5e62" stroke-width="1.5" stroke-linecap="round" />
+  </g>
+
+  <!-- ===================================================== -->
+  <!-- INK STONE (SUZURI) & SUMI STICK - KEPT DARK INK TONES -->
+  <!-- ===================================================== -->
+  <g id="suzuri-ink-stone" transform="translate(1245, 412)">
+    <!-- Carved Slate Stone Body -->
+    <rect x="15" y="3" width="84" height="26" rx="5" fill="#1a1410" stroke="#3a2f24" stroke-width="1.4" />
+    <!-- Sloping Ink Basin / Well (Umi) -->
+    <path d="M 24 7 Q 56 5 90 7 Q 88 23 56 24 Q 26 23 24 7 Z" fill="#0a0806" />
+    <!-- Glossy Black Ink Pool -->
+    <ellipse cx="48" cy="15" rx="20" ry="7" fill="#020202" />
+    <!-- Light Sheen on Wet Ink (teal accent) -->
+    <ellipse cx="46" cy="14" rx="12" ry="2.5" fill="#2d7e83" opacity="0.35" />
+
+    <!-- Sumi Ink Stick Resting Angled Across Left Corner -->
+    <g transform="rotate(-18 30 12)">
+      <rect x="2" y="6" width="48" height="9" rx="1.8" fill="#1c1712" stroke="#3d342a" stroke-width="1.2" />
+      <!-- Muted Teal Crest Band on Ink Stick (accent) -->
+      <rect x="5" y="7" width="5.5" height="7" rx="0.6" fill="#2d7e83" />
+      <!-- Matte Sumi End Texture -->
+      <line x1="44" y1="7.5" x2="49" y2="7.5" stroke="#4a3d30" stroke-width="1.2" />
+    </g>
+  </g>
+
+  <!-- ===================================================== -->
+  <!-- UNROLLED CALLIGRAPHY SCROLL & ABSTRACT MANTRA STROKES -->
+  <!-- ===================================================== -->
+  <g id="calligraphy-scroll">
+    <!-- Rolled Left Cylinder of Scroll (Makimono Roll) - Kept Dark Ink Tones -->
+    <g id="scroll-roller-left">
+      <!-- Dark Turned Wood / Bone Roller Pegs (Jiku) -->
+      <rect x="1358" y="399" width="7" height="10" rx="2" fill="#3a2f24" stroke="#1d1710" stroke-width="1.2" />
+      <rect x="1358" y="453" width="7" height="10" rx="2" fill="#3a2f24" stroke="#1d1710" stroke-width="1.2" />
+      <!-- Rolled Washi Paper Cylinder (rice-paper cream, unchanged) -->
+      <rect x="1362" y="403" width="22" height="56" rx="6" fill="#e5dbca" stroke="#b8ab95" stroke-width="1.2" />
+      <line x1="1379" y1="405" x2="1379" y2="457" stroke="#aa9c84" stroke-width="1.8" />
+    </g>
+
+    <!-- The Flat Unrolled Paper Sheet -->
+    <g id="scroll-flat-paper">
+      <!-- Paper Soft Shadow on Table -->
+      <path d="M 1382 459 L 1948 459 C 1960 459 1966 462 1960 468 L 1382 468 Z" fill="#2a2015" opacity="0.2" />
+
+      <!-- Silk Brocade Upper Border Ribbon -->
+      <path d="M 1382 410 L 1945 410 C 1954 410 1958 412 1956 416 L 1382 416 Z" fill="url(#scroll-brocade)" opacity="0.75" />
+
+      <!-- Main Parchment Paper Surface -->
+      <path d="M 1382 414 L 1945 414 C 1956 414 1960 418 1956 456 L 1382 456 Z" fill="url(#scroll-paper)" stroke="#cfc3ae" stroke-width="1" />
+
+      <!-- Silk Brocade Lower Border Ribbon -->
+      <path d="M 1382 454 L 1956 454 C 1958 456 1956 459 1954 459 L 1382 459 Z" fill="url(#scroll-brocade)" opacity="0.75" />
+
+      <!-- Traditional Sleek Paper Weight (Bunchin) on Left End -->
+      <rect x="1405" y="411" width="38" height="7" rx="2" fill="#241c14" stroke="#4a3d2e" stroke-width="1.2" />
+      <line x1="1407" y1="413" x2="1441" y2="413" stroke="#6b5a44" stroke-width="1" />
+    </g>
+
+    <!-- ABSTRACT GESTURAL BRUSH STROKES (MANTRA - STRICTLY NO REAL CHARACTERS) -->
+    <g id="abstract-brush-strokes" opacity="0.95">
+      <!-- Cluster 1: Sweeping opening flourish & energetic sumi droplets -->
+      <path d="M 1465 422 C 1478 430 1480 442 1468 450 C 1460 443 1461 432 1463 425 Z" fill="#121516" />
+      <circle cx="1486" cy="427" r="3" fill="#121516" />
+      <path d="M 1482 438 Q 1492 444 1488 448 Q 1478 446 1482 438 Z" fill="#23292c" />
+
+      <!-- Cluster 2: Open Ensō-inspired arch & rhythmic horizontal wave -->
+      <path d="M 1545 433 C 1548 420 1572 418 1586 428 C 1596 435 1592 447 1578 448 C 1566 448 1559 441 1563 435" fill="none" stroke="#101314" stroke-width="4.2" stroke-linecap="round" />
+      <path d="M 1552 447 Q 1580 444 1602 442" stroke="#1e2426" stroke-width="3" stroke-linecap="round" />
+      <circle cx="1604" cy="425" r="2.2" fill="#1a2022" />
+
+      <!-- Cluster 3: Bold meditative vertical slash & undulating cadence -->
+      <path d="M 1658 420 C 1664 429 1659 440 1652 450 C 1648 443 1651 431 1655 420 Z" fill="#101314" />
+      <path d="M 1672 426 Q 1692 446 1715 430 Q 1698 435 1682 426 Z" fill="#191f21" />
+      <!-- Translucent ink wash accent -->
+      <path d="M 1694 439 Q 1710 445 1725 440" stroke="#314246" stroke-width="3.5" stroke-linecap="round" opacity="0.6" />
+
+      <!-- Cluster 4: Rhythmic ascending cadence of three zen marks -->
+      <path d="M 1765 431 Q 1775 425 1781 435" stroke="#121516" stroke-width="3.8" stroke-linecap="round" />
+      <path d="M 1788 433 Q 1798 422 1806 438" stroke="#121516" stroke-width="4.2" stroke-linecap="round" />
+      <path d="M 1815 428 Q 1828 442 1840 427" stroke="#191f21" stroke-width="3.2" stroke-linecap="round" />
+
+      <!-- Cluster 5: Active fresh wet stroke being drawn by the brush! -->
+      <path d="M 1862 436 C 1872 426 1888 425 1896 433" stroke="#080a0b" stroke-width="5" stroke-linecap="round" />
+      <!-- Fresh wet ink sheen where brush touches paper -->
+      <circle cx="1896" cy="433" r="3.8" fill="#050708" />
+      <circle cx="1895" cy="432" r="1.4" fill="#38686f" opacity="0.75" />
+    </g>
+  </g>
+
+  <!-- ===================================================== -->
+  <!-- THE ZEN MONK (MINDFUL CALLIGRAPHER) - KEPT DARK INK   -->
+  <!-- ===================================================== -->
+  <g id="zen-monk">
+    <!-- Monk Lower Robe (Draped Seated in Seiza on Floor) -->
+    <path d="M 1980 515 C 1950 515 1925 500 1945 480 C 1970 455 2015 455 2075 475 C 2125 490 2185 495 2200 515 C 2190 522 2050 522 1980 515 Z" fill="url(#robe-drape)" stroke="#27363b" stroke-width="1.4" />
+
+    <!-- Monk Back and Torso Robe (Graceful Mindful Arch Leaning Forward) -->
+    <path d="M 1985 285 C 2025 305 2070 345 2100 400 C 2125 440 2145 480 2115 495 C 2080 500 2040 480 2000 465 C 1975 415 1962 360 1985 285 Z" fill="url(#robe-drape)" />
+    <!-- Flowing Robe Folds / Fabric Lines -->
+    <path d="M 2020 315 C 2055 350 2078 405 2095 460" fill="none" stroke="#2d3d43" stroke-width="2.8" stroke-linecap="round" />
+    <path d="M 2000 370 C 2028 405 2050 445 2068 480" fill="none" stroke="#25353a" stroke-width="2.2" stroke-linecap="round" />
+
+    <!-- Inner Collar (Shitagi) & Overlapping Monk Robe at Neck -->
+    <path d="M 1960 290 L 1978 322 L 1966 332 L 1950 298 Z" fill="#2d3e44" />
+    <path d="M 1950 298 L 1966 332 L 1954 358 L 1934 312 Z" fill="#182326" stroke="#314349" stroke-width="1.2" />
+
+    <!-- Monk's Shaved Head & Serene Focused Profile -->
+    <g id="monk-head">
+      <!-- Skull Base Silhouette -->
+      <path d="M 1948 288 C 1936 278 1931 266 1933 254 C 1937 232 1954 216 1978 216 C 2000 216 2015 230 2015 248 C 2015 262 2006 274 1994 285 C 1978 290 1960 290 1948 288 Z" fill="#80786d" />
+      <!-- Serene Facial Contour: Brow, Gentle Nose, Downcast Meditative Eyes -->
+      <path d="M 1944 246 C 1937 251 1931 258 1929 263 C 1931 265 1937 266 1935 271 C 1932 276 1938 279 1942 283 C 1946 286 1953 288 1958 289" fill="none" stroke="#686054" stroke-width="2.2" stroke-linecap="round" />
+      <!-- Downcast Eye Line in Deep Calm Concentration -->
+      <path d="M 1941 258 Q 1947 262 1953 259" fill="none" stroke="#484136" stroke-width="1.8" stroke-linecap="round" />
+      <!-- Serene Stylized Ear Contour -->
+      <path d="M 1972 254 C 1975 249 1982 250 1982 258 C 1982 265 1976 270 1970 268" fill="none" stroke="#635b50" stroke-width="2" stroke-linecap="round" />
+      <!-- Rim Light from Moon Window on Crown of Head -->
+      <path d="M 1948 228 C 1964 218 1988 218 2004 227" fill="none" stroke="#41656b" stroke-width="3" stroke-linecap="round" opacity="0.75" />
+    </g>
+
+    <!-- Left Arm & Hand (Resting Flat to Stabilize Scroll) -->
+    <g id="monk-left-arm">
+      <!-- Left Upper Sleeve Draping Forward -->
+      <path d="M 1942 315 C 1908 340 1868 370 1840 395 C 1852 410 1888 406 1916 382 C 1938 365 1952 335 1942 315 Z" fill="url(#robe-sleeve)" stroke="#29393e" stroke-width="1.4" />
+      <!-- Left Hand Resting Calmly on Upper Margin of Parchment -->
+      <path d="M 1812 418 C 1820 413 1838 413 1848 417 C 1844 423 1826 424 1812 418 Z" fill="#7d7568" stroke="#585044" stroke-width="1" />
+    </g>
+
+    <!-- Right Arm, Wide Flowing Calligrapher's Sleeve, Hand & Brush -->
+    <g id="monk-right-arm">
+      <!-- Broad Draped Sode Sleeve -->
+      <path d="M 1975 310 C 1945 335 1905 360 1875 382 C 1884 418 1930 426 1958 406 C 1985 385 1998 342 1975 310 Z" fill="url(#robe-sleeve)" stroke="#2c3e44" stroke-width="1.4" />
+      <!-- Sleeve Draping Folds -->
+      <path d="M 1948 340 C 1928 365 1905 388 1892 410" fill="none" stroke="#384e55" stroke-width="2.2" stroke-linecap="round" />
+      <path d="M 1970 355 C 1955 380 1940 398 1928 412" fill="none" stroke="#25353a" stroke-width="1.8" stroke-linecap="round" />
+
+      <!-- Forearm Poised over Scroll -->
+      <path d="M 1875 382 L 1866 397 C 1871 402 1880 402 1885 397 L 1894 384 Z" fill="#7a7266" />
+
+      <!-- The Calligraphy Brush (Fude) - Shaft & Bamboo Nodes -->
+      <g id="calligraphy-brush">
+        <!-- Bamboo Shaft (Angled with Poised Precision Toward Paper) -->
+        <line x1="1856" y1="335" x2="1895" y2="420" stroke="#42392e" stroke-width="4.2" stroke-linecap="round" />
+        <!-- Bamboo Segment Rims -->
+        <line x1="1866" y1="358" x2="1871" y2="359" stroke="#685a49" stroke-width="1.8" />
+        <line x1="1879" y1="386" x2="1884" y2="387" stroke="#685a49" stroke-width="1.8" />
+        <!-- Ferrule (Brush Hair Joint) -->
+        <rect x="1891" y="414" width="5.5" height="7" rx="1.2" fill="#202a2d" stroke="#36474d" stroke-width="1" />
+        <!-- Fine Sable / Hair Tip Tapering Directly to Active Ink Mark on Paper -->
+        <path d="M 1892 420 Q 1897 428 1896 433 Q 1894 427 1897 420 Z" fill="#0a0d0e" />
+      </g>
+
+      <!-- Calligrapher's Poised Hand Wrapping Around the Bamboo Brush (Two-Finger Grip) -->
+      <g id="calligrapher-hand">
+        <!-- Main hand body / knuckles -->
+        <path d="M 1874 394 C 1868 398 1870 407 1878 408 C 1884 408 1888 404 1886 397 Z" fill="#8d8577" stroke="#5d5548" stroke-width="1" />
+        <!-- Index finger curled forward across the shaft -->
+        <path d="M 1878 397 C 1884 396 1891 397 1892 401 C 1891 404 1884 404 1880 401 Z" fill="#968e7f" stroke="#5d5548" stroke-width="0.8" />
+        <!-- Middle finger supporting below -->
+        <path d="M 1877 402 C 1883 402 1890 403 1891 407 C 1889 409 1883 409 1878 406 Z" fill="#877f71" stroke="#5d5548" stroke-width="0.8" />
+        <!-- Thumb pressing firmly on shaft -->
+        <path d="M 1874 395 C 1876 392 1882 393 1884 397 C 1882 400 1876 400 1874 395 Z" fill="#999182" stroke="#5d5548" stroke-width="0.8" />
+      </g>
+    </g>
+  </g>
+
+  <!-- ===================================================== -->
+  <!-- TYPOGRAPHY: DOKUZEN WORDMARK & EXACT TAGLINE          -->
+  <!-- ===================================================== -->
+  <g id="brand-typography" transform="translate(180, 0)">
+    <!-- Wordmark "DokuZen" (Dark Ink on Bright Canvas, Highly Legible at 900px) -->
+    <text x="0" y="325" class="brand-title" font-size="108">
+      <tspan fill="#151a1a">Doku</tspan><tspan fill="#1f8a90">Zen</tspan>
+    </text>
+
+    <!-- Exactly Authorized Tagline from Brief -->
+    <text x="4" y="386" class="brand-tagline" font-size="31" fill="#4a4540">Local-first document management, done with care</text>
+
+    <!-- Meditative Horizontal Teal Accent Line -->
+    <line x1="4" y1="426" x2="240" y2="426" stroke="#2d7e83" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
+  </g>
+
+  <!-- Subtle 1px Frame Around Outer Boundary -->
+  <rect width="2400" height="680" fill="none" stroke="#d9cbb0" stroke-width="1.5" stroke-opacity="0.5" />
 </svg>
