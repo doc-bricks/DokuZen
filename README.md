@@ -399,6 +399,11 @@ DokuZen includes complete Microsoft Windows Store (MSIX) packaging infrastructur
 - **Assets**: 1080p store screenshots in `screenshots/store/` and high-DPI icon assets (44x44, 50x50, 150x150, 310x150, 310x310)
 - **Validation**: Automated preflight validation script via `tools/check_store_readiness.py`
 
+Packaging provenance is explicit: the active `1.0.1.0` Store package uses the
+established executable filename `DokuZen-Pro-1.0.0-win64.exe`. The manifest in
+`store_package/DokuZen Pro/` is historical and is not an active package input;
+the readiness gate targets `store_package/DokuZen/AppxManifest.xml` directly.
+
 ---
 
 <a id="linux-bundle"></a>

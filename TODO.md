@@ -10,8 +10,17 @@ der Review-Nachweis.
   synchronisieren -- DONE 2026-09-10 (core.__version__ = "1.0.1", main.py --version,
   About-Dialog, config/settings.json, tools/build_linux_bundle.py, AppStream
   metainfo, packaging README, README badges & text, tests/test_metadata.py Parity-Gating).
-- [ ] #373 Aktive Store-Vorbereitung und historische DokuZen-Pro-Artefakte
-  abgleichen.
+- [x] #373 Aktive Store-Vorbereitung und historische DokuZen-Pro-Artefakte
+  abgleichen -- DONE 2026-09-20 (TASKPLAN #2184).
+  - Aktiver Vertrag ist `store_package/DokuZen/AppxManifest.xml` mit
+    `Geiger.DokuZen`/`1.0.1.0`; der etablierte Executable-Name
+    `DokuZen-Pro-1.0.0-win64.exe` bleibt ausdrücklich als Legacy-Schema
+    dokumentiert.
+  - `store_package/DokuZen Pro/AppxManifest.xml` ist als historisch abgegrenzt;
+    der Readiness-Checker verwendet keinen rekursiven Glob mehr, sondern den
+    kanonischen aktiven Manifestpfad und prüft Versions-/Executable-Parität.
+  - Dokumentation, Build-Hinweis und Store-Tests synchronisiert; kein Binary-
+    Rename, kein Löschvorgang, kein neuer Build, kein WACK- oder Store-Upload.
 - [x] #374 GitHub-Actions auf verifizierte unveränderliche SHAs pinnen -- DONE in b9f9f5f.
 - [x] #375 TW-DZ-13 Sammel-PDF-Export (Collection / Binder PDF) mit Lesezeichen, Seitennummerierung und Dialog -- DONE 2026-09-16 (core/pdf/collection.py, CollectionExportDialog, MainWindow & DocumentList Context Menu, 37 neue Übersetzungen, 375 Tests 100% grün).
 

@@ -21,9 +21,11 @@ from PIL import Image
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 from tools.check_store_readiness import (
+    ACTIVE_MANIFEST_RELATIVE,
     FORBIDDEN_TRADEMARK_KEYWORDS,
     REQUIRED_DOCUMENTS,
     REQUIRED_ICONS,
+    REQUIRED_RELEASE_STAGING,
     REQUIRED_SCREENSHOTS,
     check_store_repository,
     parse_keywords_from_listing,
@@ -46,8 +48,8 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         self.assertTrue(data.get("support_url", "").startswith("https://"))
 
     def test_appx_manifest_xml_structure_and_identity(self):
-        manifest_file = PROJECT_ROOT / "store_package" / "DokuZen" / "AppxManifest.xml"
-        self.assertTrue(manifest_file.exists(), "AppxManifest.xml is missing under store_package/DokuZen/")
+        manifest_file = PROJECT_ROOT / ACTIVE_MANIFEST_RELATIVE
+        self.assertTrue(manifest_file.exists(), f"AppxManifest.xml is missing under {ACTIVE_MANIFEST_RELATIVE}")
 
         root = ET.fromstring(manifest_file.read_text(encoding="utf-8"))
         ns = {
@@ -62,6 +64,7 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         self.assertIsNotNone(identity, "Identity element missing in AppxManifest.xml")
         self.assertEqual(identity.attrib.get("Name"), "Geiger.DokuZen")
         self.assertEqual(identity.attrib.get("Publisher"), "CN=52596601-BAB4-4F3F-B182-E8F3F273B202")
+        self.assertEqual(identity.attrib.get("Version"), "1.0.1.0")
 
         caps = root.find("appx:Capabilities", ns)
         if caps is None:
@@ -75,6 +78,50 @@ class TestWindowsStoreReadiness(unittest.TestCase):
             app = root.find(".//{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Application")
         self.assertIsNotNone(app, "Application element missing in AppxManifest.xml")
         self.assertEqual(app.attrib.get("Executable"), "DokuZen-Pro-1.0.0-win64.exe")
+
+        props = root.find("appx:Properties", ns)
+        if props is None:
+            props = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Properties")
+        self.assertIsNotNone(props, "Properties element missing in AppxManifest.xml")
+        logo_el = props.find("appx:Logo", ns)
+        if logo_el is None:
+            logo_el = props.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Logo")
+        self.assertIsNotNone(logo_el, "Logo element missing in Properties")
+        self.assertIn(logo_el.text, ("icons\\StoreLogo.png", "icons/StoreLogo.png"))
+
+    def test_store_packaging_provenance_is_explicit_and_legacy_manifest_is_not_active(self):
+        self.assertEqual(
+            ACTIVE_MANIFEST_RELATIVE.as_posix(),
+            "store_package/DokuZen/AppxManifest.xml",
+        )
+        legacy_manifest = PROJECT_ROOT / "store_package" / "DokuZen Pro" / "AppxManifest.xml"
+        self.assertTrue(legacy_manifest.exists(), "historical DokuZen Pro manifest is missing")
+        prep = (PROJECT_ROOT / "WINDOWS_STORE_PREP.md").read_text(encoding="utf-8").lower()
+        self.assertIn("historisch", prep)
+        self.assertIn("store_package/dokuzen/appxmanifest.xml", prep)
+        self.assertIn("store_package/dokuzen pro/appxmanifest.xml", prep)
+        self.assertIn("dokuzen-pro-1.0.0-win64.exe", prep)
+
+    def test_release_staging_materials_completeness(self):
+        staging_dir = PROJECT_ROOT / "releases" / "windowsstore"
+        self.assertTrue(staging_dir.exists(), "releases/windowsstore directory missing")
+
+        for fname in REQUIRED_RELEASE_STAGING:
+            fpath = staging_dir / fname
+            self.assertTrue(fpath.exists(), f"Missing staging file {fname}")
+            self.assertGreater(fpath.stat().st_size, 0, f"Staging file {fname} is empty")
+
+        store_logo = staging_dir / "StoreLogo.png"
+        with Image.open(store_logo) as img:
+            self.assertEqual(img.size, (50, 50), "StoreLogo.png in staging must be 50x50")
+
+        staging_screenshots = staging_dir / "screenshots"
+        self.assertTrue(staging_screenshots.exists(), "screenshots/ directory missing in staging")
+        for ss_name in REQUIRED_SCREENSHOTS:
+            ss_file = staging_screenshots / ss_name
+            self.assertTrue(ss_file.exists(), f"Staging screenshot {ss_name} missing")
+            with Image.open(ss_file) as img:
+                self.assertEqual(img.size, (1920, 1080), f"Staging screenshot {ss_name} must be 1920x1080")
 
     def test_store_tile_icons_exist_and_have_correct_dimensions(self):
         icon_dir = PROJECT_ROOT / "store_package" / "DokuZen" / "icons"

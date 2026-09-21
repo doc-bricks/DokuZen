@@ -399,6 +399,12 @@ DokuZen beinhaltet die vollständige Microsoft Windows Store Paketierungs-Infras
 - **Grafiken**: 1080p Store-Screenshots in `screenshots/store/` und hochauflösende App-Symbole (44x44, 50x50, 150x150, 310x150, 310x310)
 - **Validierung**: Automatisierte Qualitätsprüfung über `tools/check_store_readiness.py`
 
+Die Packaging-Provenienz ist ausdrücklich getrennt: Das aktive `1.0.1.0`-
+Store-Paket verwendet bewusst den etablierten Executable-Namen
+`DokuZen-Pro-1.0.0-win64.exe`. Das Manifest unter `store_package/DokuZen Pro/`
+ist historisch und kein aktiver Paketeingang; der Readiness-Gatekeeper prüft
+direkt `store_package/DokuZen/AppxManifest.xml`.
+
 ---
 
 <a id="linux-bundle"></a>

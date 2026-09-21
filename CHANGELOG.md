@@ -3,6 +3,15 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+- Store-Provenienz für 1.0.1.0 präzisiert: Das aktive Manifest ist
+  `store_package/DokuZen/AppxManifest.xml`; der etablierte
+  `DokuZen-Pro-1.0.0-win64.exe`-Name bleibt als historisches Executable-Schema
+  ausdrücklich erhalten. Das frühere Manifest unter `store_package/DokuZen Pro/`
+  ist historisch und wird vom Readiness-Gate nicht mehr per Glob-Auswahl erfasst.
+
 ## [1.0.1] - 2026-08-23
 
 ### Fixed

@@ -1,6 +1,6 @@
 # Windows Store — Vorbereitung DokuZen
 
-Stand: 2026-09-10
+Stand: 2026-09-20
 
 ---
 
@@ -16,6 +16,26 @@ Stand: 2026-09-10
 
 Publisher-Identität identisch mit ExplorerPro (gleiches Microsoft Partner Center
 Konto). Werte verbatim aus `store_package.json` übernehmen.
+
+## Aktiver und historischer Packaging-Vertrag
+
+Der aktive Store-Pfad ist eindeutig:
+
+- Aktives Manifest: `store_package/DokuZen/AppxManifest.xml`
+- Aktive Store-Identität und Paketversion: `Geiger.DokuZen`, `1.0.1.0`
+- Aktiver Executable-Vertrag: `DokuZen-Pro-1.0.0-win64.exe`
+- Der Executable-Name ist ein bewusst beibehaltenes historisches Release-
+  Namensschema. Das 1.0.1.0-MSIX verwendet dieses bestehende Binary-Schema;
+  eine Umbenennung ist nicht durch diesen Eintrag autorisiert.
+- `store_package/DokuZen Pro/AppxManifest.xml` ist das historische 1.0.0-
+  Manifest und nicht der aktive Store-Eingang. Der Readiness-Gatekeeper prüft
+  ausschließlich den oben genannten kanonischen Pfad und wählt keine
+  verschachtelte Manifestdatei per Glob aus.
+
+`build_exe.bat` bleibt deshalb bis zu einer ausdrücklich bestätigten neuen
+Executable-Linie auf `VERSION=1.0.0` gepinnt. Eine künftige Änderung muss
+Buildscript, `store_package.json`, aktives Manifest, Tests, MSIX-Inhalt und
+Hash-/Provenienz-Dokumentation gemeinsam aktualisieren.
 
 ---
 

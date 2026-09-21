@@ -27,6 +27,15 @@ DokuZen ist als modulares 3-Panel-Desktop-System aufgebaut:
 6. **Windows Store Bridge (`store_package/` & `tools/`):** MSIX Packaging Manifest, Store Assets & Automatisierter Preflight Gatekeeper.
 7. **Linux Packaging (`packaging/linux/` & `tools/build_linux_bundle.py`):** Portable PyInstaller-onedir tarball with Freedesktop/AppStream metadata and CI artifact workflow.
 
+### Packaging provenance
+
+The active Store input is `store_package/DokuZen/AppxManifest.xml` with
+identity `Geiger.DokuZen` and version `1.0.1.0`. The Store package intentionally
+retains the established executable filename `DokuZen-Pro-1.0.0-win64.exe`.
+`store_package/DokuZen Pro/AppxManifest.xml` is historical only; readiness
+validation addresses the canonical active manifest directly and never selects
+an AppxManifest by recursive glob order.
+
 ---
 
 ## 🌐 Ecosystem & Sibling Tools
