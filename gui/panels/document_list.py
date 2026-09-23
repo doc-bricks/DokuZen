@@ -254,6 +254,12 @@ class DocumentListPanel(QWidget, LoggerMixin):
         action_export_pdf.triggered.connect(lambda: self._export_as_collection_pdf(paths))
         menu.addAction(action_export_pdf)
 
+        # PDF annotieren (wenn genau eine PDF ausgewählt ist)
+        if len(paths) == 1 and paths[0].lower().endswith(".pdf"):
+            action_annotate = QAction(tr("PDF annotieren..."), menu)
+            action_annotate.triggered.connect(lambda: self._annotate_pdf(paths[0]))
+            menu.addAction(action_annotate)
+
         menu.addSeparator()
 
         # Gelesen/Ungelesen markieren
@@ -314,6 +320,14 @@ class DocumentListPanel(QWidget, LoggerMixin):
             current_theme=current_theme,
         )
         dialog.exec()
+
+    def _annotate_pdf(self, path: str):
+        """Öffnet den PDF-Annotationen-Dialog für die ausgewählte PDF-Datei."""
+        from gui.dialogs.pdf_annotation_dialog import PDFAnnotationDialog
+        dialog = PDFAnnotationDialog(self, pdf_path=path)
+        dialog.annotations_changed.connect(lambda _: self.refresh())
+        dialog.exec()
+        self.refresh()
     
     # === Drag & Drop ===
     

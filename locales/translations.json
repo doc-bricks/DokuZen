@@ -715,8 +715,8 @@
     "de": "Schriftgröße:",
     "en": "Font Size:",
     "es": "Tamaño de fuente:",
-    "zh": "字体大小:",
-    "ja": "フォントサイズ:",
+    "zh": "字号：",
+    "ja": "フォントサイズ：",
     "ru": "Размер шрифта:"
   },
   "Schriftart:": {
@@ -2126,5 +2126,949 @@
     "zh": "文件名",
     "ja": "ファイル名",
     "ru": "Имя файла"
+  },
+  "PDF-Annotationen verwalten": {
+    "de": "PDF-Annotationen verwalten",
+    "en": "Manage PDF Annotations",
+    "es": "Gestionar anotaciones PDF",
+    "zh": "管理PDF注释",
+    "ja": "PDF注釈を管理",
+    "ru": "Управление аннотациями PDF"
+  },
+  "PDF annotieren...": {
+    "de": "PDF annotieren...",
+    "en": "Annotate PDF...",
+    "es": "Anotar PDF...",
+    "zh": "注释PDF...",
+    "ja": "PDFに注釈を付ける...",
+    "ru": "Аннотировать PDF..."
+  },
+  "PDF annotieren": {
+    "de": "PDF annotieren",
+    "en": "Annotate PDF",
+    "es": "Anotar PDF",
+    "zh": "注释PDF",
+    "ja": "PDFに注釈を付ける",
+    "ru": "Аннотировать PDF"
+  },
+  "PyMuPDF ist nicht verfügbar. PDF-Annotationen erfordern PyMuPDF.": {
+    "de": "PyMuPDF ist nicht verfügbar. PDF-Annotationen erfordern PyMuPDF.",
+    "en": "PyMuPDF is not available. PDF annotations require PyMuPDF.",
+    "es": "PyMuPDF no está disponible. Las anotaciones PDF requieren PyMuPDF.",
+    "zh": "PyMuPDF不可用。PDF注释需要PyMuPDF。",
+    "ja": "PyMuPDFは利用できません。PDF注釈にはPyMuPDFが必要です。",
+    "ru": "PyMuPDF недоступен. Для аннотаций PDF требуется PyMuPDF."
+  },
+  "Originaldatei direkt aktualisieren": {
+    "de": "Originaldatei direkt aktualisieren",
+    "en": "Update original file directly",
+    "es": "Actualizar archivo original directamente",
+    "zh": "直接更新原始文件",
+    "ja": "元のファイルを直接更新",
+    "ru": "Обновить исходный файл напрямую"
+  },
+  "In neue Datei speichern": {
+    "de": "In neue Datei speichern",
+    "en": "Save to new file",
+    "es": "Guardar en un nuevo archivo",
+    "zh": "保存到新文件",
+    "ja": "新しいファイルに保存",
+    "ru": "Сохранить в новый файл"
+  },
+  "Ausgabe-PDF auswählen …": {
+    "de": "Ausgabe-PDF auswählen …",
+    "en": "Select output PDF …",
+    "es": "Seleccionar PDF de salida …",
+    "zh": "选择输出PDF …",
+    "ja": "出力PDFを選択 …",
+    "ru": "Выберите выходной PDF …"
+  },
+  "Eingabe-PDF auswählen": {
+    "de": "Eingabe-PDF auswählen",
+    "en": "Select input PDF",
+    "es": "Seleccionar PDF de entrada",
+    "zh": "选择输入PDF",
+    "ja": "入力PDFを選択",
+    "ru": "Выбрать входной PDF"
+  },
+  "Ausgabe-PDF festlegen": {
+    "de": "Ausgabe-PDF festlegen",
+    "en": "Set output PDF",
+    "es": "Establecer PDF de salida",
+    "zh": "设置输出PDF",
+    "ja": "出力PDFを設定",
+    "ru": "Указать выходной PDF"
+  },
+  "Vorhandene Annotationen": {
+    "de": "Vorhandene Annotationen",
+    "en": "Existing Annotations",
+    "es": "Anotaciones existentes",
+    "zh": "现有注释",
+    "ja": "既存の注釈",
+    "ru": "Существующие аннотации"
+  },
+  "Nur aktuelle Seite anzeigen": {
+    "de": "Nur aktuelle Seite anzeigen",
+    "en": "Show current page only",
+    "es": "Mostrar solo la página actual",
+    "zh": "仅显示当前页面",
+    "ja": "現在のページのみを表示",
+    "ru": "Показывать только текущую страницу"
+  },
+  "Ausgewählte löschen": {
+    "de": "Ausgewählte löschen",
+    "en": "Delete selected",
+    "es": "Eliminar seleccionados",
+    "zh": "删除所选",
+    "ja": "選択項目を削除",
+    "ru": "Удалить выбранные"
+  },
+  "Alle auf dieser Seite löschen": {
+    "de": "Alle auf dieser Seite löschen",
+    "en": "Delete all on this page",
+    "es": "Eliminar todas en esta página",
+    "zh": "删除此页面上的所有内容",
+    "ja": "このページのすべてを削除",
+    "ru": "Удалить все на этой странице"
+  },
+  "Alle im Dokument löschen": {
+    "de": "Alle im Dokument löschen",
+    "en": "Delete all in document",
+    "es": "Eliminar todas en el documento",
+    "zh": "删除文档中的所有内容",
+    "ja": "ドキュメント内のすべてを削除",
+    "ru": "Удалить все в документе"
+  },
+  "Annotation hinzufügen": {
+    "de": "Annotation hinzufügen",
+    "en": "Add Annotation",
+    "es": "Añadir anotación",
+    "zh": "添加注释",
+    "ja": "注釈を追加",
+    "ru": "Добавить аннотацию"
+  },
+  "Text-Marker": {
+    "de": "Text-Marker",
+    "en": "Text Highlighter",
+    "es": "Resaltador de texto",
+    "zh": "文本高亮",
+    "ja": "テキストマーカー",
+    "ru": "Текстовый маркер"
+  },
+  "Marker-Typ:": {
+    "de": "Marker-Typ:",
+    "en": "Highlighter Type:",
+    "es": "Tipo de resaltador:",
+    "zh": "高亮类型：",
+    "ja": "マーカーの種類：",
+    "ru": "Тип маркера:"
+  },
+  "Highlight (Gelb)": {
+    "de": "Highlight (Gelb)",
+    "en": "Highlight (Yellow)",
+    "es": "Resaltar (Amarillo)",
+    "zh": "高亮（黄色）",
+    "ja": "ハイライト（黄）",
+    "ru": "Выделение (Желтый)"
+  },
+  "Unterstreichen": {
+    "de": "Unterstreichen",
+    "en": "Underline",
+    "es": "Subrayar",
+    "zh": "下划线",
+    "ja": "下線",
+    "ru": "Подчеркивание"
+  },
+  "Durchstreichen": {
+    "de": "Durchstreichen",
+    "en": "Strikeout",
+    "es": "Tachar",
+    "zh": "删除线",
+    "ja": "取り消し線",
+    "ru": "Зачеркивание"
+  },
+  "Wellenlinie": {
+    "de": "Wellenlinie",
+    "en": "Squiggly",
+    "es": "Línea ondulada",
+    "zh": "波浪线",
+    "ja": "波線",
+    "ru": "Волнистая линия"
+  },
+  "Suchtext (auf Seite markieren):": {
+    "de": "Suchtext (auf Seite markieren):",
+    "en": "Search text (highlight on page):",
+    "es": "Texto de búsqueda (resaltar en la página):",
+    "zh": "搜索文本（在页面上高亮）：",
+    "ja": "検索テキスト（ページ上でハイライト）：",
+    "ru": "Поисковый текст (выделить на странице):"
+  },
+  "Suchtext im Dokument eingeben …": {
+    "de": "Suchtext im Dokument eingeben …",
+    "en": "Enter search text in document …",
+    "es": "Introducir texto de búsqueda en el documento …",
+    "zh": "在文档中输入搜索文本 …",
+    "ja": "ドキュメント内の検索テキストを入力 …",
+    "ru": "Введите текст для поиска в документе …"
+  },
+  "Oder manuelle Koordinaten:": {
+    "de": "Oder manuelle Koordinaten:",
+    "en": "Or manual coordinates:",
+    "es": "O coordenadas manuales:",
+    "zh": "或手动坐标：",
+    "ja": "または手動座標：",
+    "ru": "Или ручные координаты:"
+  },
+  "Inhalt / Notiz:": {
+    "de": "Inhalt / Notiz:",
+    "en": "Content / Note:",
+    "es": "Contenido / Nota:",
+    "zh": "内容 / 备注：",
+    "ja": "内容 / ノート：",
+    "ru": "Содержимое / Заметка:"
+  },
+  "Notiz": {
+    "de": "Notiz",
+    "en": "Note",
+    "es": "Nota",
+    "zh": "便签",
+    "ja": "ノート",
+    "ru": "Заметка"
+  },
+  "Position (X, Y):": {
+    "de": "Position (X, Y):",
+    "en": "Position (X, Y):",
+    "es": "Posición (X, Y):",
+    "zh": "位置 (X, Y)：",
+    "ja": "位置 (X, Y)：",
+    "ru": "Позиция (X, Y):"
+  },
+  "Notiztext:": {
+    "de": "Notiztext:",
+    "en": "Note Text:",
+    "es": "Texto de nota:",
+    "zh": "便签文本：",
+    "ja": "ノートテキスト：",
+    "ru": "Текст заметки:"
+  },
+  "Freitext": {
+    "de": "Freitext",
+    "en": "Free Text",
+    "es": "Texto libre",
+    "zh": "自由文本",
+    "ja": "フリーテキスト",
+    "ru": "Свободный текст"
+  },
+  "Position & Größe:": {
+    "de": "Position & Größe:",
+    "en": "Position & Size:",
+    "es": "Posición y tamaño:",
+    "zh": "位置与大小：",
+    "ja": "位置とサイズ：",
+    "ru": "Положение и размер:"
+  },
+  "Freitext eingeben …": {
+    "de": "Freitext eingeben …",
+    "en": "Enter free text …",
+    "es": "Introducir texto libre …",
+    "zh": "输入自由文本 …",
+    "ja": "フリーテキストを入力 …",
+    "ru": "Введите свободный текст …"
+  },
+  "Textfarbe:": {
+    "de": "Textfarbe:",
+    "en": "Text Color:",
+    "es": "Color de texto:",
+    "zh": "文本颜色：",
+    "ja": "文字色：",
+    "ru": "Цвет текста:"
+  },
+  "Rahmen anzeigen": {
+    "de": "Rahmen anzeigen",
+    "en": "Show Border",
+    "es": "Mostrar borde",
+    "zh": "显示边框",
+    "ja": "枠線を表示",
+    "ru": "Показать рамку"
+  },
+  "Stempel": {
+    "de": "Stempel",
+    "en": "Stamp",
+    "es": "Sello",
+    "zh": "印章",
+    "ja": "スタンプ",
+    "ru": "Штамп"
+  },
+  "Stempel-Typ:": {
+    "de": "Stempel-Typ:",
+    "en": "Stamp Type:",
+    "es": "Tipo de sello:",
+    "zh": "印章类型：",
+    "ja": "スタンプの種類：",
+    "ru": "Тип штампа:"
+  },
+  "Position / Platzierung:": {
+    "de": "Position / Platzierung:",
+    "en": "Position / Placement:",
+    "es": "Posición / Colocación:",
+    "zh": "位置 / 放置：",
+    "ja": "位置 / 配置：",
+    "ru": "Положение / Размещение:"
+  },
+  "Genehmigt": {
+    "de": "Genehmigt",
+    "en": "Approved",
+    "es": "Aprobado",
+    "zh": "已批准",
+    "ja": "承認済み",
+    "ru": "Одобрено"
+  },
+  "Vertraulich": {
+    "de": "Vertraulich",
+    "en": "Confidential",
+    "es": "Confidencial",
+    "zh": "机密",
+    "ja": "機密",
+    "ru": "Конфиденциально"
+  },
+  "Entwurf": {
+    "de": "Entwurf",
+    "en": "Draft",
+    "es": "Borrador",
+    "zh": "草案",
+    "ja": "下書き",
+    "ru": "Черновик"
+  },
+  "Final": {
+    "de": "Final",
+    "en": "Final",
+    "es": "Final",
+    "zh": "定稿",
+    "ja": "確定",
+    "ru": "Окончательный"
+  },
+  "Abgelehnt": {
+    "de": "Abgelehnt",
+    "en": "Rejected",
+    "es": "Rechazado",
+    "zh": "已拒绝",
+    "ja": "却下",
+    "ru": "Отклонено"
+  },
+  "Streng geheim": {
+    "de": "Streng geheim",
+    "en": "Top Secret",
+    "es": "Alto secreto",
+    "zh": "绝密",
+    "ja": "極秘",
+    "ru": "Совершенно секретно"
+  },
+  "Zur Prüfung": {
+    "de": "Zur Prüfung",
+    "en": "For Comment",
+    "es": "Para comentarios",
+    "zh": "待审核",
+    "ja": "確認用",
+    "ru": "На рассмотрение"
+  },
+  "Abgelaufen": {
+    "de": "Abgelaufen",
+    "en": "Expired",
+    "es": "Caducado",
+    "zh": "已过期",
+    "ja": "期限切れ",
+    "ru": "Истекший"
+  },
+  "Oben rechts": {
+    "de": "Oben rechts",
+    "en": "Top Right",
+    "es": "Arriba a la derecha",
+    "zh": "右上角",
+    "ja": "右上",
+    "ru": "Вверху справа"
+  },
+  "Oben links": {
+    "de": "Oben links",
+    "en": "Top Left",
+    "es": "Arriba a la izquierda",
+    "zh": "左上角",
+    "ja": "左上",
+    "ru": "Вверху слева"
+  },
+  "Mitte": {
+    "de": "Mitte",
+    "en": "Center",
+    "es": "Centro",
+    "zh": "居中",
+    "ja": "中央",
+    "ru": "По центру"
+  },
+  "Unten rechts": {
+    "de": "Unten rechts",
+    "en": "Bottom Right",
+    "es": "Abajo a la derecha",
+    "zh": "右下角",
+    "ja": "右下",
+    "ru": "Внизу справа"
+  },
+  "Unten links": {
+    "de": "Unten links",
+    "en": "Bottom Left",
+    "es": "Abajo a la izquierda",
+    "zh": "左下角",
+    "ja": "左下",
+    "ru": "Внизу слева"
+  },
+  "Benutzerdefiniert": {
+    "de": "Benutzerdefiniert",
+    "en": "Custom",
+    "es": "Personalizado",
+    "zh": "自定义",
+    "ja": "カスタム",
+    "ru": "Пользовательский"
+  },
+  "Formen": {
+    "de": "Formen",
+    "en": "Shapes",
+    "es": "Formas",
+    "zh": "形状",
+    "ja": "図形",
+    "ru": "Фигуры"
+  },
+  "Form:": {
+    "de": "Form:",
+    "en": "Shape:",
+    "es": "Forma:",
+    "zh": "形状：",
+    "ja": "図形：",
+    "ru": "Форма:"
+  },
+  "Rechteck": {
+    "de": "Rechteck",
+    "en": "Rectangle",
+    "es": "Rectángulo",
+    "zh": "矩形",
+    "ja": "長方形",
+    "ru": "Прямоугольник"
+  },
+  "Kreis": {
+    "de": "Kreis",
+    "en": "Circle",
+    "es": "Círculo",
+    "zh": "圆形",
+    "ja": "円",
+    "ru": "Круг"
+  },
+  "Linie": {
+    "de": "Linie",
+    "en": "Line",
+    "es": "Línea",
+    "zh": "线条",
+    "ja": "直線",
+    "ru": "Линия"
+  },
+  "Linienbreite:": {
+    "de": "Linienbreite:",
+    "en": "Line Width:",
+    "es": "Ancho de línea:",
+    "zh": "线宽：",
+    "ja": "線の太さ：",
+    "ru": "Толщина линии:"
+  },
+  "Linienfarbe:": {
+    "de": "Linienfarbe:",
+    "en": "Line Color:",
+    "es": "Color de línea:",
+    "zh": "线条颜色：",
+    "ja": "線の色：",
+    "ru": "Цвет линии:"
+  },
+  "Füllfarbe:": {
+    "de": "Füllfarbe:",
+    "en": "Fill Color:",
+    "es": "Color de relleno:",
+    "zh": "填充颜色：",
+    "ja": "塗りつぶしの色：",
+    "ru": "Цвет заливки:"
+  },
+  "Keine (Transparent)": {
+    "de": "Keine (Transparent)",
+    "en": "None (Transparent)",
+    "es": "Ninguno (Transparente)",
+    "zh": "无（透明）",
+    "ja": "なし（透明）",
+    "ru": "Нет (Прозрачный)"
+  },
+  "Hellgelb": {
+    "de": "Hellgelb",
+    "en": "Light Yellow",
+    "es": "Amarillo claro",
+    "zh": "浅黄色",
+    "ja": "明るい黄",
+    "ru": "Светло-желтый"
+  },
+  "Hellblau": {
+    "de": "Hellblau",
+    "en": "Light Blue",
+    "es": "Azul claro",
+    "zh": "浅蓝色",
+    "ja": "明るい青",
+    "ru": "Светло-синий"
+  },
+  "Hellrot": {
+    "de": "Hellrot",
+    "en": "Light Red",
+    "es": "Rojo claro",
+    "zh": "浅红色",
+    "ja": "明るい赤",
+    "ru": "Светло-красный"
+  },
+  "Hellgrün": {
+    "de": "Hellgrün",
+    "en": "Light Green",
+    "es": "Verde claro",
+    "zh": "浅绿色",
+    "ja": "明るい緑",
+    "ru": "Светло-зеленый"
+  },
+  "Lila": {
+    "de": "Lila",
+    "en": "Purple",
+    "es": "Púrpura",
+    "zh": "紫色",
+    "ja": "紫",
+    "ru": "Фиолетовый"
+  },
+  "Annotation erfolgreich hinzugefügt": {
+    "de": "Annotation erfolgreich hinzugefügt",
+    "en": "Annotation added successfully",
+    "es": "Anotación añadida con éxito",
+    "zh": "注释添加成功",
+    "ja": "注釈が正常に追加されました",
+    "ru": "Аннотация успешно добавлена"
+  },
+  "Annotation(en) erfolgreich gelöscht": {
+    "de": "Annotation(en) erfolgreich gelöscht",
+    "en": "Annotation(s) deleted successfully",
+    "es": "Anotación(es) eliminada(s) con éxito",
+    "zh": "注释删除成功",
+    "ja": "注釈が正常に削除されました",
+    "ru": "Аннотация(и) успешно удалена(ы)"
+  },
+  "Keine Annotation ausgewählt.": {
+    "de": "Keine Annotation ausgewählt.",
+    "en": "No annotation selected.",
+    "es": "No se ha seleccionado ninguna anotación.",
+    "zh": "未选择任何注释。",
+    "ja": "注釈が選択されていません。",
+    "ru": "Аннотация не выбрана."
+  },
+  "Wollen Sie wirklich alle Annotationen auf dieser Seite löschen?": {
+    "de": "Wollen Sie wirklich alle Annotationen auf dieser Seite löschen?",
+    "en": "Do you really want to delete all annotations on this page?",
+    "es": "¿Realmente desea eliminar todas las anotaciones de esta página?",
+    "zh": "您确定要删除此页面上的所有注释吗？",
+    "ja": "このページのすべての注釈を本当に削除しますか？",
+    "ru": "Вы действительно хотите удалить все аннотации на этой странице?"
+  },
+  "Wollen Sie wirklich alle Annotationen im gesamten Dokument löschen?": {
+    "de": "Wollen Sie wirklich alle Annotationen im gesamten Dokument löschen?",
+    "en": "Do you really want to delete all annotations in the entire document?",
+    "es": "¿Realmente desea eliminar todas las anotaciones de todo el documento?",
+    "zh": "您确定要删除整个文档中的所有注释吗？",
+    "ja": "ドキュメント全体のすべての注釈を本当に削除しますか？",
+    "ru": "Вы действительно хотите удалить все аннотации во всем документе?"
+  },
+  "Annotationen": {
+    "de": "Annotationen",
+    "en": "Annotations",
+    "es": "Anotaciones",
+    "zh": "注释",
+    "ja": "注釈",
+    "ru": "Аннотации"
+  },
+  "Eingabe-PDF": {
+    "de": "Eingabe-PDF",
+    "en": "Input PDF",
+    "es": "PDF de entrada",
+    "zh": "输入PDF",
+    "ja": "入力PDF",
+    "ru": "Входной PDF"
+  },
+  "Ausgabe-PDF": {
+    "de": "Ausgabe-PDF",
+    "en": "Output PDF",
+    "es": "PDF de salida",
+    "zh": "输出PDF",
+    "ja": "出力PDF",
+    "ru": "Выходной PDF"
+  },
+  "Zielseite": {
+    "de": "Zielseite",
+    "en": "Target Page",
+    "es": "Página de destino",
+    "zh": "目标页面",
+    "ja": "対象ページ",
+    "ru": "Целевая страница"
+  },
+  "PDF auswählen …": {
+    "de": "PDF auswählen …",
+    "en": "Select PDF …",
+    "es": "Seleccionar PDF …",
+    "zh": "选择PDF …",
+    "ja": "PDFを選択 …",
+    "ru": "Выбрать PDF …"
+  },
+  "Pfad zur zu annotierenden PDF-Datei.": {
+    "de": "Pfad zur zu annotierenden PDF-Datei.",
+    "en": "Path to the PDF file to annotate.",
+    "es": "Ruta al archivo PDF que se anotará.",
+    "zh": "要注释的PDF文件路径。",
+    "ja": "注釈を付けるPDFファイルへのパス。",
+    "ru": "Путь к файлу PDF для аннотирования."
+  },
+  "PDF-Datei auswählen": {
+    "de": "PDF-Datei auswählen",
+    "en": "Select PDF file",
+    "es": "Seleccionar archivo PDF",
+    "zh": "选择PDF文件",
+    "ja": "PDFファイルを選択",
+    "ru": "Выбрать файл PDF"
+  },
+  "Öffnet Dateidialog zur Auswahl einer PDF-Datei.": {
+    "de": "Öffnet Dateidialog zur Auswahl einer PDF-Datei.",
+    "en": "Opens file dialog to select a PDF file.",
+    "es": "Abre el cuadro de diálogo para seleccionar un archivo PDF.",
+    "zh": "打开文件对话框以选择PDF文件。",
+    "ja": "PDFファイルを選択するためのファイルダイアログを開きます。",
+    "ru": "Открывает диалог для выбора файла PDF."
+  },
+  "Zielseite für Annotationen (1-basiert).": {
+    "de": "Zielseite für Annotationen (1-basiert).",
+    "en": "Target page for annotations (1-based).",
+    "es": "Página de destino para las anotaciones (base 1).",
+    "zh": "注释目标页面（从1开始）。",
+    "ja": "注釈の対象ページ（1開始）。",
+    "ru": "Целевая страница для аннотаций (с 1)."
+  },
+  "Wählt die aktive Seite im Dokument aus.": {
+    "de": "Wählt die aktive Seite im Dokument aus.",
+    "en": "Selects the active page in the document.",
+    "es": "Selecciona la página activa en el documento.",
+    "zh": "选择文档中的活动页面。",
+    "ja": "ドキュメント内のアクティブなページを選択します。",
+    "ru": "Выбирает активную страницу в документе."
+  },
+  "Änderungen direkt in die Quelldatei schreiben.": {
+    "de": "Änderungen direkt in die Quelldatei schreiben.",
+    "en": "Write changes directly to source file.",
+    "es": "Escribir cambios directamente en el archivo de origen.",
+    "zh": "直接将更改写入源文件。",
+    "ja": "変更をソースファイルに直接書き込みます。",
+    "ru": "Записывать изменения прямо в исходный файл."
+  },
+  "In-Place speichern": {
+    "de": "In-Place speichern",
+    "en": "Save in-place",
+    "es": "Guardar en el sitio",
+    "zh": "原位保存",
+    "ja": "インプレース保存",
+    "ru": "Сохранить на месте"
+  },
+  "Schreibt Annotationen direkt in die geöffnete PDF-Datei.": {
+    "de": "Schreibt Annotationen direkt in die geöffnete PDF-Datei.",
+    "en": "Writes annotations directly into the opened PDF file.",
+    "es": "Escribe anotaciones directamente en el archivo PDF abierto.",
+    "zh": "直接将注释写入已打开的PDF文件中。",
+    "ja": "開いているPDFファイルに直接注釈を書き込みます。",
+    "ru": "Записывает аннотации прямо в открытый файл PDF."
+  },
+  "Annotationen in eine neue separate PDF-Datei schreiben.": {
+    "de": "Annotationen in eine neue separate PDF-Datei schreiben.",
+    "en": "Write annotations into a new separate PDF file.",
+    "es": "Escribir anotaciones en un archivo PDF nuevo e independiente.",
+    "zh": "将注释写入新的单独PDF文件中。",
+    "ja": "新しい別のPDFファイルに注釈を書き込みます。",
+    "ru": "Записать аннотации в новый отдельный файл PDF."
+  },
+  "Erstellt eine neue Datei mit den hinzugefügten Annotationen.": {
+    "de": "Erstellt eine neue Datei mit den hinzugefügten Annotationen.",
+    "en": "Creates a new file with the added annotations.",
+    "es": "Crea un archivo nuevo con las anotaciones añadidas.",
+    "zh": "使用添加的注释创建新文件。",
+    "ja": "追加された注釈を含む新しいファイルを作成します。",
+    "ru": "Создает новый файл с добавленными аннотациями."
+  },
+  "Zielpfad für die neue annotierte PDF-Datei.": {
+    "de": "Zielpfad für die neue annotierte PDF-Datei.",
+    "en": "Target path for the new annotated PDF file.",
+    "es": "Ruta de destino para el nuevo archivo PDF anotado.",
+    "zh": "新注释PDF文件的目标路径。",
+    "ja": "新しい注釈付きPDFファイルの保存先パス。",
+    "ru": "Целевой путь для нового аннотированного файла PDF."
+  },
+  "Pfad der neuen Zieldatei.": {
+    "de": "Pfad der neuen Zieldatei.",
+    "en": "Path of the new target file.",
+    "es": "Ruta del nuevo archivo de destino.",
+    "zh": "新目标文件的路径。",
+    "ja": "新しいターゲットファイルのパス。",
+    "ru": "Путь к новому целевому файлу."
+  },
+  "Ausgabepfad wählen": {
+    "de": "Ausgabepfad wählen",
+    "en": "Select output path",
+    "es": "Seleccionar ruta de salida",
+    "zh": "选择输出路径",
+    "ja": "出力パスを選択",
+    "ru": "Выбрать путь вывода"
+  },
+  "Öffnet Dateidialog zum Festlegen des Ausgabepfads.": {
+    "de": "Öffnet Dateidialog zum Festlegen des Ausgabepfads.",
+    "en": "Opens file dialog to specify output path.",
+    "es": "Abre el cuadro de diálogo para especificar la ruta de salida.",
+    "zh": "打开文件对话框以指定输出路径。",
+    "ja": "出力パスを指定するためのファイルダイアログを開きます。",
+    "ru": "Открывает диалог для указания пути вывода."
+  },
+  "Filtert die Tabelle auf die aktuell ausgewählte Seite.": {
+    "de": "Filtert die Tabelle auf die aktuell ausgewählte Seite.",
+    "en": "Filters table to the currently selected page.",
+    "es": "Filtra la tabla a la página seleccionada actualmente.",
+    "zh": "将表格筛选为当前选定的页面。",
+    "ja": "テーブルを現在選択されているページに絞り込みます。",
+    "ru": "Фильтрует таблицу по текущей выбранной странице."
+  },
+  "Nur aktuelle Seite filtern": {
+    "de": "Nur aktuelle Seite filtern",
+    "en": "Filter current page only",
+    "es": "Filtrar solo página actual",
+    "zh": "仅筛选当前页面",
+    "ja": "現在のページのみをフィルター",
+    "ru": "Фильтровать только текущую страницу"
+  },
+  "Beschränkt die Anzeige der Annotationen auf die aktive Seite.": {
+    "de": "Beschränkt die Anzeige der Annotationen auf die aktive Seite.",
+    "en": "Restricts the display of annotations to the active page.",
+    "es": "Restringe la visualización de anotaciones a la página activa.",
+    "zh": "将注释的显示限制为活动页面。",
+    "ja": "注釈の表示をアクティブなページに限定します。",
+    "ru": "Ограничивает отображение аннотаций активной страницей."
+  },
+  "Liste der im Dokument vorhandenen Annotationen.": {
+    "de": "Liste der im Dokument vorhandenen Annotationen.",
+    "en": "List of annotations present in the document.",
+    "es": "Lista de anotaciones presentes en el documento.",
+    "zh": "文档中现有注释的列表。",
+    "ja": "ドキュメント内に存在する注釈の一覧。",
+    "ru": "Список существующих в документе аннотаций."
+  },
+  "Löscht die markierte Annotation aus dem Dokument.": {
+    "de": "Löscht die markierte Annotation aus dem Dokument.",
+    "en": "Deletes the selected annotation from the document.",
+    "es": "Elimina la anotación seleccionada del documento.",
+    "zh": "从文档中删除所选注释。",
+    "ja": "選択した注釈をドキュメントから削除します。",
+    "ru": "Удаляет выбранную аннотацию из документа."
+  },
+  "Ausgewählte Annotation löschen": {
+    "de": "Ausgewählte Annotation löschen",
+    "en": "Delete selected annotation",
+    "es": "Eliminar anotación seleccionada",
+    "zh": "删除选中的注释",
+    "ja": "選択した注釈を削除",
+    "ru": "Удалить выбранную аннотацию"
+  },
+  "Entfernt die in der Tabelle ausgewählte Annotation.": {
+    "de": "Entfernt die in der Tabelle ausgewählte Annotation.",
+    "en": "Removes the annotation selected in the table.",
+    "es": "Elimina la anotación seleccionada en la tabla.",
+    "zh": "移除在表格中选择的注释。",
+    "ja": "テーブルで選択された注釈を削除します。",
+    "ru": "Удаляет аннотацию, выбранную в таблице."
+  },
+  "Löscht alle Annotationen auf der aktuell ausgewählten Seite.": {
+    "de": "Löscht alle Annotationen auf der aktuell ausgewählten Seite.",
+    "en": "Deletes all annotations on the currently selected page.",
+    "es": "Elimina todas las anotaciones de la página actualmente seleccionada.",
+    "zh": "删除当前选定页面上的所有注释。",
+    "ja": "現在選択されているページのすべての注釈を削除します。",
+    "ru": "Удаляет все аннотации на текущей выбранной странице."
+  },
+  "Alle Annotationen der Seite löschen": {
+    "de": "Alle Annotationen der Seite löschen",
+    "en": "Delete all annotations on page",
+    "es": "Eliminar todas las anotaciones de la página",
+    "zh": "删除页面上的所有注释",
+    "ja": "ページのすべての注釈を削除",
+    "ru": "Удалить все аннотации на странице"
+  },
+  "Löscht sämtliche Annotationen aus dem gesamten Dokument.": {
+    "de": "Löscht sämtliche Annotationen aus dem gesamten Dokument.",
+    "en": "Deletes all annotations from the entire document.",
+    "es": "Elimina todas las anotaciones de todo el documento.",
+    "zh": "从整个文档中删除所有注释。",
+    "ja": "ドキュメント全体からすべての注釈を削除します。",
+    "ru": "Удаляет абсолютно все аннотации из документа."
+  },
+  "Alle Annotationen im Dokument löschen": {
+    "de": "Alle Annotationen im Dokument löschen",
+    "en": "Delete all annotations in document",
+    "es": "Eliminar todas las anotaciones del documento",
+    "zh": "删除文档中的所有注释",
+    "ja": "ドキュメント内のすべての注釈を削除",
+    "ru": "Удалить все аннотации в документе"
+  },
+  "Wählt die Art der Textmarkierung aus.": {
+    "de": "Wählt die Art der Textmarkierung aus.",
+    "en": "Selects the type of text marking.",
+    "es": "Selecciona el tipo de resaltado de texto.",
+    "zh": "选择文本标记的类型。",
+    "ja": "テキストマーカーの種類を選択します。",
+    "ru": "Выбирает тип выделения текста."
+  },
+  "Marker-Typ": {
+    "de": "Marker-Typ",
+    "en": "Marker Type",
+    "es": "Tipo de marcador",
+    "zh": "标记类型",
+    "ja": "マーカーの種類",
+    "ru": "Тип маркера"
+  },
+  "Grün": {
+    "de": "Grün",
+    "en": "Green",
+    "es": "Verde",
+    "zh": "绿色",
+    "ja": "緑",
+    "ru": "Зеленый"
+  },
+  "Farbe des Markers.": {
+    "de": "Farbe des Markers.",
+    "en": "Color of the marker.",
+    "es": "Color del marcador.",
+    "zh": "标记的颜色。",
+    "ja": "マーカーの色。",
+    "ru": "Цвет маркера."
+  },
+  "Marker-Farbe": {
+    "de": "Marker-Farbe",
+    "en": "Marker Color",
+    "es": "Color de marcador",
+    "zh": "标记颜色",
+    "ja": "マーカーの色",
+    "ru": "Цвет маркера"
+  },
+  "Wählt die Farbe für die Markierung.": {
+    "de": "Wählt die Farbe für die Markierung.",
+    "en": "Selects the color for the marking.",
+    "es": "Selecciona el color para el marcado.",
+    "zh": "选择标记的颜色。",
+    "ja": "マーカーの色を選択します。",
+    "ru": "Выбирает цвет для выделения."
+  },
+  "Suchtext für Markierung": {
+    "de": "Suchtext für Markierung",
+    "en": "Search text for marking",
+    "es": "Texto de búsqueda para marcado",
+    "zh": "标记的搜索文本",
+    "ja": "マーカー用の検索テキスト",
+    "ru": "Поисковый текст для разметки"
+  },
+  "Optionaler Notiztext zum Marker": {
+    "de": "Optionaler Notiztext zum Marker",
+    "en": "Optional note text for the marker",
+    "es": "Texto de nota opcional para el marcador",
+    "zh": "标记的可选附注文本",
+    "ja": "マーカー用のオプションのメモテキスト",
+    "ru": "Необязательный текст заметки к маркеру"
+  },
+  "Marker-Kommentar": {
+    "de": "Marker-Kommentar",
+    "en": "Marker Comment",
+    "es": "Comentario del marcador",
+    "zh": "标记注释",
+    "ja": "マーカーのコメント",
+    "ru": "Комментарий маркера"
+  },
+  "Zusätzlicher Textinhalt für die Markierung.": {
+    "de": "Zusätzlicher Textinhalt für die Markierung.",
+    "en": "Additional text content for the marking.",
+    "es": "Contenido de texto adicional para el marcado.",
+    "zh": "标记的附加文本内容。",
+    "ja": "マーカーの追加テキストコンテンツ。",
+    "ru": "Дополнительный текстовый комментарий к разметке."
+  },
+  "Name des Autors für die Notiz.": {
+    "de": "Name des Autors für die Notiz.",
+    "en": "Author name for the note.",
+    "es": "Nombre del autor de la nota.",
+    "zh": "便签的作者姓名。",
+    "ja": "ノートの作成者名。",
+    "ru": "Имя автора заметки."
+  },
+  "Wählt den Standard-Stempeltext.": {
+    "de": "Wählt den Standard-Stempeltext.",
+    "en": "Selects standard stamp text.",
+    "es": "Selecciona el texto del sello estándar.",
+    "zh": "选择标准印章文本。",
+    "ja": "標準スタンプのテキストを選択します。",
+    "ru": "Выбирает стандартный текст штампа."
+  },
+  "Wählt die vordefinierte Position des Stempels.": {
+    "de": "Wählt die vordefinierte Position des Stempels.",
+    "en": "Selects the predefined position of the stamp.",
+    "es": "Selecciona la posición predefinida del sello.",
+    "zh": "选择印章的预设位置。",
+    "ja": "スタンプの事前定義された位置を選択します。",
+    "ru": "Выбирает предустановленную позицию штампа."
+  },
+  "Wählt zwischen Rechteck, Kreis oder Linie.": {
+    "de": "Wählt zwischen Rechteck, Kreis oder Linie.",
+    "en": "Selects between rectangle, circle, or line.",
+    "es": "Selecciona entre rectángulo, círculo o línea.",
+    "zh": "在矩形、圆形或线条之间选择。",
+    "ja": "長方形、円、または直線から選択します。",
+    "ru": "Выбирает между прямоугольником, кругом или линией."
+  },
+  "Wendet die oben konfigurierte Annotation auf das Dokument an.": {
+    "de": "Wendet die oben konfigurierte Annotation auf das Dokument an.",
+    "en": "Applies the annotation configured above to the document.",
+    "es": "Aplica la anotación configurada arriba al documento.",
+    "zh": "将上方配置的注释应用于文档。",
+    "ja": "上記で設定した注釈をドキュメントに適用します。",
+    "ru": "Применяет настроенную выше аннотацию к документу."
+  },
+  "Fügt die konfigurierte Annotation zur gewählten Seite hinzu.": {
+    "de": "Fügt die konfigurierte Annotation zur gewählten Seite hinzu.",
+    "en": "Adds the configured annotation to the selected page.",
+    "es": "Añade la anotación configurada a la página seleccionada.",
+    "zh": "将配置的注释添加到选定页面。",
+    "ja": "設定した注釈を選択したページに追加します。",
+    "ru": "Добавляет настроенную аннотацию на выбранную страницу."
+  },
+  "Schließt den Dialog.": {
+    "de": "Schließt den Dialog.",
+    "en": "Closes the dialog.",
+    "es": "Cierra el cuadro de diálogo.",
+    "zh": "关闭对话框。",
+    "ja": "ダイアログを閉じます。",
+    "ru": "Закрывает диалог."
+  },
+  "Schließt das Dialogfenster.": {
+    "de": "Schließt das Dialogfenster.",
+    "en": "Closes the dialog window.",
+    "es": "Cierra la ventana de diálogo.",
+    "zh": "关闭对话框窗口。",
+    "ja": "ダイアログウィンドウを閉じます。",
+    "ru": "Закрывает диалоговое окно."
+  },
+  "Bestätigen": {
+    "de": "Bestätigen",
+    "en": "Confirm",
+    "es": "Confirmar",
+    "zh": "确认",
+    "ja": "確認",
+    "ru": "Подтвердить"
   }
 }

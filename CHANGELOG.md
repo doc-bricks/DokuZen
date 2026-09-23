@@ -5,6 +5,29 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-09-23, TW-DZ-14 PDF-Annotationen-Dialog, Kontextmenü & CLI)
+- **PDF-Annotationen-Dialog (`gui/dialogs/pdf_annotation_dialog.py`):**
+  - Vollständiger, interaktiver Dialog zur Erstellung und Verwaltung von PDF-Annotationen (ersetzt den bisherigen QMessageBox-Platzhalter).
+  - Unterstützt Datei- und Seitenwahl mit automatischer Maß- und Seitenanzeige, In-Place-Aktualisierung sowie Speichern in eine neue Zieldatei.
+  - Tabellarische Anzeige aller im Dokument vorhandenen Annotationen (Typ, Seite, Inhalt/Autor, Bounding Box) mit Einzellöschung, seitenweiser Löschung und Gesamtdokument-Bereinigung.
+  - 5 spezialisierte Annotations-Karten:
+    1. Text-Marker: Hervorheben (Gelb), Unterstreichen, Durchstreichen, Wellenlinie per manueller Bounding Box oder automatischer Seitensuche.
+    2. Notiz: Platzierbare Sticky Notes mit Autor- und Kommentarfeldern.
+    3. Freitext: Frei positionierbare Textboxen mit Schriftgrößen-, Farb- und Rahmensteuerung.
+    4. Stempel: Standardstempel (Genehmigt, Vertraulich, Entwurf, Final, etc.) mit vordefinierten Eck-/Zentrierungs-Positionen.
+    5. Formen: Rechteck, Kreis und Linie mit einstellbarer Linienbreite, Strich- und Füllfarbe.
+- **GUI-Integration & Kontextmenü (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menüpunkt `PDF-Werkzeuge -> PDF annotieren...` öffnet den neuen Dialog direkt mit der im Dokumentenbereich ausgewählten PDF.
+  - Kontextmenü der Dokumententabelle um `PDF annotieren...` bei Einzelauswahl einer PDF-Datei erweitert.
+- **CLI-Startoption (`main.py`):**
+  - `--annotate <PDF>` startet DokuZen direkt mit dem Annotationen-Dialog für die angegebene Datei.
+- **Lokalisierung & Barrierefreiheit (`locales/translations.json`):**
+  - 45 neue Übersetzungskeys in allen 6 unterstützten Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) mit 100% Parität.
+  - Barrierefreie Zugänglichkeit (Tooltips, Accessible Name und Accessible Description) für alle UI-Elemente.
+- **Testabdeckung (`tests/test_pdf_annotation_dialog.py`, `tests/test_dialog_smoke.py`, `tests/test_cli_startup.py`):**
+  - 9 neue Unit-Tests für Dialoglebenszyklus, Annotationstabelle, Markierungen, Löschoperationen und Barrierefreiheit.
+  - Gesamtsuite wächst auf 424 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün).
+
 ### Changed
 - Store-Provenienz für 1.0.1.0 präzisiert: Das aktive Manifest ist
   `store_package/DokuZen/AppxManifest.xml`; der etablierte

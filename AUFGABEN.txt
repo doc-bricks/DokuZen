@@ -414,3 +414,11 @@ ihren Namen, sie ist in store_package.json als executable referenziert.
     - Lokalisierung: 37 neue Übersetzungs-Einträge in allen 6 Sprachen (de, en, es, zh, ja, ru) in locales/translations.json gepflegt.
     - Tests & Verifikation: Neue Suite tests/test_pdf_collection.py (9 Tests) + tests/test_dialog_smoke.py erweitert (1 Test); Gesamte Testsuite von 365 auf 375 bestandene Tests gesteigert (100% grün, 0 Fehler bei ruff check .).
 
+[x] TW-DZ-14 PDF-Annotationen-Dialog, UI-Wiring und CLI-Integration -- DONE 2026-09-23
+    - Problemstellung: Menüpunkt 'PDF-Werkzeuge -> PDF annotieren...' öffnete lediglich ein QMessageBox-Placeholder-Popup ohne eigentliche Annotationsfunktionalität (Nutzerhinweis U1).
+    - Dialog: gui/dialogs/pdf_annotation_dialog.py mit PDFAnnotationDialog implementiert. Unterstützt Dokumentenauswahl, Seitenwechsel, In-Place vs. Neue Datei, tabellarische Anzeige aller vorhandenen Annotationen (mit Typ, Seite, Inhalt/Autor, Bounding Box), selektive und seitenweise Löschung, sowie 5 Annotations-Tabs (Text-Marker inkl. Volltextsuche, Sticky-Note-Kommentare, Freitext-Overlays, Stempel mit Preset-Positionen, geometrische Formen wie Rechteck/Kreis/Linie).
+    - GUI- & Kontextmenü-Anbindung: gui/main_window.py _on_pdf_annotate öffnet nun direkt den PDFAnnotationDialog mit der selektierten PDF. gui/panels/document_list.py bietet 'PDF annotieren...' im Kontextmenü bei Einzelauswahl einer PDF an.
+    - CLI-Integration: main.py um Startoption --annotate erweitert (parse_cli_args, build_startup_command, apply_startup_command) und an MainWindow.startup_annotate_path angebunden.
+    - Lokalisierung & Barrierefreiheit: Tier-2 6-Sprachen-Parität (de, en, es, zh, ja, ru) in locales/translations.json gepflegt (45 neue Übersetzungskeys ohne leere Einträge). Vollständige Tooltips, accessibleName und accessibleDescription für sämtliche interaktiven UI-Elemente.
+    - Tests & Verifikation: tests/test_pdf_annotation_dialog.py (9 Unit-Tests), tests/test_dialog_smoke.py (1 Rauchtest), tests/test_cli_startup.py (CLI-Starttest) und test_i18n.py erfolgreich verifiziert; gesamte Testsuite auf 424 bestandene Tests, 1 übersprungen, 26 Subtests gesteigert (100% grün, ruff 0 Fehler, compileall 0 Fehler).
+

@@ -747,6 +747,18 @@ class MainWindow(QMainWindow, LoggerMixin):
         dialog._tabs.setCurrentIndex(0)
         dialog.exec()
         self._on_refresh()
+
+    def startup_annotate_path(self, path: str) -> None:
+        """Startet den PDF-Annotationen-Dialog direkt mit einer PDF."""
+        resolved = self._resolve_startup_path(path)
+        if not resolved:
+            return
+        self.startup_open_path(resolved)
+        from gui.dialogs.pdf_annotation_dialog import PDFAnnotationDialog
+
+        dialog = PDFAnnotationDialog(self, pdf_path=resolved)
+        dialog.exec()
+        self._on_refresh()
     
     def _on_library_changed(self, event: str, *args):
         """Reagiert auf Bibliotheks-Änderungen."""
@@ -894,17 +906,16 @@ class MainWindow(QMainWindow, LoggerMixin):
         dialog.exec()
     
     def _on_pdf_annotate(self):
-        """Öffnet PDF-Annotationen (Info-Dialog)."""
-        QMessageBox.information(
-            self,
-            tr("PDF-Annotationen"),
-            f"{tr('PDF-Annotationen können über die Vorschau hinzugefügt werden:')}\n\n"
-            f"• {tr('Rechtsklick auf PDF → Annotieren')}\n"
-            f"• {tr('Marker, Kommentare, Stempel')}\n"
-            f"• {tr('Freitext-Overlays')}\n"
-            f"• {tr('Formen (Rechteck, Kreis, Linie)')}\n\n"
-            f"{tr('Oder nutzen Sie die PDF-Werkstatt für erweiterte Optionen.')}"
-        )
+        """Öffnet PDF-Annotationen-Dialog."""
+        from gui.dialogs.pdf_annotation_dialog import PDFAnnotationDialog
+
+        selected = self._document_panel.get_selected_paths()
+        pdf_files = [f for f in selected if f.lower().endswith(".pdf")]
+        initial_pdf = pdf_files[0] if pdf_files else None
+
+        dialog = PDFAnnotationDialog(self, pdf_path=initial_pdf)
+        dialog.exec()
+        self._on_refresh()
 
     def _on_signature_overlay(self):
         """Öffnet den Signatur-Overlay-Dialog."""

@@ -17,6 +17,7 @@ from gui.dialogs.collection_export_dialog import CollectionExportDialog
 from gui.dialogs.convert_dialog import ConvertDialog
 from gui.dialogs.ocr_dialog import OCRDialog
 from gui.dialogs.pdf_marker_dialog import PDFMarkerDialog, PageThumbnail
+from gui.dialogs.pdf_annotation_dialog import PDFAnnotationDialog
 from gui.dialogs.redaction_dialog import RedactionDialog
 from gui.dialogs.settings_dialog import SettingsDialog
 from gui.dialogs.signature_overlay_dialog import SignatureOverlayDialog
@@ -188,6 +189,15 @@ class DialogSmokeTest(unittest.TestCase):
         self.assertTrue(dialog.chk_skip_dupes.isChecked())
         self.assertTrue(dialog.chk_recursive.isChecked())
         self.assertEqual(dialog.table.rowCount(), 0)
+        dialog.close()
+
+    def test_pdf_annotation_dialog_instantiates(self):
+        dialog = PDFAnnotationDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "PDF-Annotationen verwalten")
+        self.assertTrue(dialog._radio_inplace.isChecked())
+        self.assertEqual(dialog._table_annots.columnCount(), 5)
+        self.assertEqual(dialog._tab_widget.count(), 5)
         dialog.close()
 
 
