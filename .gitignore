@@ -37,11 +37,47 @@ _archiv/
 _FINAL_BACKUP_*/
 _codex_artifacts/
 _Vorschläge/
-*_WORKSTATION-LG*
-*-WORKSTATION-LG*
+# Multi-Host Cloud-Sync & Konfliktkopien
+* (kopie)*
+* (Kopie)*
+* (copy)*
+* (Copy)*
+*conflicted copy*
 *.conflict
 *.sync-conflict-*
+*_WORKSTATION*
+*-WORKSTATION*
+*-WORKSTATION.*
+*-WORKSTATION-LG*
+*_WORKSTATION-LG*
+*-WORKSTATION-LG.*
+*-ASUS*
+*-ASUS-GEI*
+*-LAPTOP*
+*-Mac Studio*
+*-MacBook*
+*.orig
+*.rej
+
+# Kanonisches Lock-System & Token Guards
+LOCK
+LOCK.*
 LOCK*.txt
+LOCK.user.*
+LOCK.until.*
+LOCK.condition.*
+LOCK.permissions.json
+.automation-lock
+uv.lock
+!package-lock.json
+
+# Test- & Coverage-Caches
+.pytest_temp/
+.pytest_tmp*/
+.hypothesis/
+.turbo/
+.nyc_output/
+.tox/
 .env
 *.env
 *.tmp

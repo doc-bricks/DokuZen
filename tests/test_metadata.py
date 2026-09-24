@@ -66,6 +66,7 @@ def test_required_documentation_files():
         "README.md",
         "README_de.md",
         "LICENSE",
+        "NOTICE",
         "CHANGELOG.md",
         "llms.txt",
         "CONTRIBUTING.md",
@@ -95,7 +96,8 @@ def test_llms_txt_structure():
     assert "doc-bricks" in content
     assert "open-bricks" in content
     assert "Last-checked:" in content or "Last-checked:**" in content
-    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19"])
+    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24"])
+    assert "NOTICE" in content
     assert "PySide6" in content
     assert "PyMuPDF" in content
     assert "AGPL-3.0" in content
@@ -119,6 +121,8 @@ def test_readme_badges_and_bilingual_parity():
         assert "SECURITY.md" in content
         assert "source-platform-smoke.yml" in content
         assert f"version-{project_version}-blue.svg" in content
+        assert "pytest-424" in content
+        assert "NOTICE" in content
 
     # Language switcher presence
     assert "[Deutsch](README_de.md)" in readme_en
@@ -376,3 +380,121 @@ def test_statutory_liability_notice():
     assert "521 BGB" in readme_en
     assert "521 BGB" in readme_de
     assert "Haftungsbeschränkung bei unentgeltlicher Bereitstellung" in readme_de
+
+
+def test_canonical_root_notice_attribution():
+    """Verify presence, copyright holder, umbrella reference, and license in root NOTICE."""
+    notice_path = ROOT / "NOTICE"
+    assert notice_path.exists(), "NOTICE file must exist in repo root"
+    content = notice_path.read_text(encoding="utf-8")
+
+    assert "DokuZen" in content
+    assert "Lukas Geiger" in content
+    assert "doc-bricks" in content
+    assert "open-bricks" in content
+    assert "AGPL-3.0" in content
+    assert "THIRD_PARTY_LICENSES.md" in content
+
+
+def test_ci_lifecycle_and_hardening_workflows():
+    """Verify that CI lifecycle workflows (welcome, stale, smoke, bundle) have timeouts, permissions, and concurrency."""
+    workflows_dir = ROOT / ".github" / "workflows"
+
+    # welcome.yml
+    welcome_path = workflows_dir / "welcome.yml"
+    assert welcome_path.exists(), "welcome.yml must exist"
+    w_content = welcome_path.read_text(encoding="utf-8")
+    assert "actions/first-interaction@v3" in w_content
+    assert "timeout-minutes: 5" in w_content
+    assert "cancel-in-progress: true" in w_content
+    assert "issues: write" in w_content
+    assert "pull-requests: write" in w_content
+
+    # stale.yml
+    stale_path = workflows_dir / "stale.yml"
+    assert stale_path.exists(), "stale.yml must exist"
+    s_content = stale_path.read_text(encoding="utf-8")
+    assert "actions/stale@v9" in s_content
+    assert 'cron: "30 1 * * *"' in s_content
+    assert "timeout-minutes: 10" in s_content
+    assert "cancel-in-progress: true" in s_content
+    assert "issues: write" in s_content
+    assert "pull-requests: write" in s_content
+    assert "exempt-issue-labels:" in s_content
+
+    # source-platform-smoke.yml
+    smoke_path = workflows_dir / "source-platform-smoke.yml"
+    assert smoke_path.exists(), "source-platform-smoke.yml must exist"
+    sm_content = smoke_path.read_text(encoding="utf-8")
+    assert "permissions:" in sm_content
+    assert "contents: read" in sm_content
+    assert "timeout-minutes: 15" in sm_content
+    assert "cancel-in-progress: true" in sm_content
+
+    # linux-bundle.yml
+    bundle_path = workflows_dir / "linux-bundle.yml"
+    assert bundle_path.exists(), "linux-bundle.yml must exist"
+    b_content = bundle_path.read_text(encoding="utf-8")
+    assert "permissions:" in b_content
+    assert "contents: read" in b_content
+    assert "timeout-minutes: 15" in b_content
+    assert "cancel-in-progress: true" in b_content
+
+
+def test_gitignore_multi_host_and_lock_guards():
+    """Ensure .gitignore protects against multi-host conflict files, canonical locks, and test caches."""
+    gitignore_path = ROOT / ".gitignore"
+    assert gitignore_path.exists(), ".gitignore must exist"
+    content = gitignore_path.read_text(encoding="utf-8")
+
+    # Multi-host sync patterns
+    assert "*-WORKSTATION*" in content
+    assert "*-ASUS*" in content
+    assert "*-Mac Studio*" in content
+    assert "*-MacBook*" in content
+    assert "*conflicted copy*" in content
+
+    # Canonical lock system
+    assert "LOCK.user.*" in content
+    assert "LOCK.until.*" in content
+    assert "LOCK.condition.*" in content
+    assert "LOCK.permissions.json" in content
+    assert ".automation-lock" in content
+    assert "!package-lock.json" in content
+
+    # Test & coverage caches
+    assert ".pytest_temp/" in content
+    assert ".hypothesis/" in content
+    assert ".turbo/" in content
+
+
+def test_pyproject_pep621_notice_and_pytest_hardening():
+    """Verify pyproject.toml PEP 621 license-files, Notice URL, 20 saturated keywords, and pytest options."""
+    pyproject_path = ROOT / "pyproject.toml"
+    assert pyproject_path.exists(), "pyproject.toml must exist"
+
+    with open(pyproject_path, "rb") as f:
+        data = tomllib.load(f)
+
+    project = data.get("project", {})
+    license_files = project.get("license-files", [])
+    assert "NOTICE" in license_files
+    assert "THIRD_PARTY_LICENSES.md" in license_files
+
+    urls = project.get("urls", {})
+    assert "Notice" in urls
+    assert urls["Notice"].endswith("/NOTICE")
+
+    keywords = project.get("keywords", [])
+    assert len(keywords) == 20
+    assert "desktop-app" in keywords
+    assert "document-processing" in keywords
+    assert "local-first" in keywords
+    assert "zero-egress" in keywords
+
+    pytest_conf = data.get("tool", {}).get("pytest", {}).get("ini_options", {})
+    assert pytest_conf.get("minversion") == "7.0"
+    assert "--basetemp=.pytest_temp" in pytest_conf.get("addopts", "")
+    norecursedirs = pytest_conf.get("norecursedirs", [])
+    assert ".pytest_temp" in norecursedirs
+    assert ".git" in norecursedirs

@@ -2,14 +2,15 @@
 
 **Status:** Production Direct Runtime Dependency Inventory  
 **Audited:** 2026-08-24 (via PyPI JSON metadata & OSV/GHSA vulnerability scan)  
-**Re-Verified:** 2026-09-19 (Pfad B Architectural Parity Audit)  
+**Re-Verified:** 2026-09-24 (Pfad A Turnus-Hygiene & CI Lifecycle Audit)
 **Primary Project License:** [AGPL-3.0-or-later](LICENSE)  
+**Attribution & Copyright:** [NOTICE](NOTICE)
 
 ---
 
 ## 1. Scope & Distribution Guarantees
 
-This document specifies DokuZen's direct Python runtime dependencies as declared in [`pyproject.toml`](pyproject.toml) and [`requirements.txt`](requirements.txt).
+This document specifies DokuZen's direct Python runtime dependencies as declared in [`pyproject.toml`](pyproject.toml) and [`requirements.txt`](requirements.txt). Attribution and copyright notices are declared in [`NOTICE`](NOTICE).
 
 ### Strict Distribution Invariants:
 1. **Source Code Availability**: DokuZen is distributed under the GNU Affero General Public License v3.0 or later ([AGPL-3.0-or-later](LICENSE)). All binary releases (Windows MSIX, portable Linux bundles) preserve reciprocal copyleft compliance.

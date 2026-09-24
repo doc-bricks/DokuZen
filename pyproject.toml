@@ -9,6 +9,7 @@ description = "Dokumenten- und Dateiverwaltungssuite (22 Text-, PDF- und Datei-T
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "AGPL-3.0-or-later"}
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]
 authors = [
     {name = "open-bricks / doc-bricks"}
 ]
@@ -20,7 +21,19 @@ keywords = [
     "pdf-merger",
     "pdf-redaction",
     "doc-bricks",
-    "open-bricks"
+    "open-bricks",
+    "desktop-app",
+    "document-processing",
+    "local-first",
+    "offline-first",
+    "pdf",
+    "pdf-editor",
+    "pikepdf",
+    "pymupdf",
+    "pytesseract",
+    "zero-egress",
+    "python",
+    "windows"
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -59,11 +72,15 @@ Umbrella = "https://github.com/open-bricks"
 "Third-Party Licenses" = "https://github.com/doc-bricks/DokuZen/blob/main/THIRD_PARTY_LICENSES.txt"
 "Marketing Log" = "https://github.com/doc-bricks/DokuZen/blob/main/MARKETING-LOG.txt"
 "LLM Ready" = "https://github.com/doc-bricks/DokuZen/blob/main/llms.txt"
+Notice = "https://github.com/doc-bricks/DokuZen/blob/main/NOTICE"
 
 [tool.pytest.ini_options]
+minversion = "7.0"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 pythonpath = ["."]
+addopts = "-ra -v --basetemp=.pytest_temp"
+norecursedirs = [".git", ".pytest_cache", ".pytest_temp", "__pycache__", "build", "dist", ".venv", "venv", "_archive"]
 
 [tool.ruff]
 target-version = "py310"

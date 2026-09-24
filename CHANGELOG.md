@@ -5,6 +5,36 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-09-24, Pfad A Repository Hygiene, CI Matrix & Multi-Host Lock Defense)
+- **CI Lifecycle Workflows (`.github/workflows/welcome.yml`, `.github/workflows/stale.yml`):**
+  - Neu bereitgestellter `welcome.yml` Workflow mit `actions/first-interaction@v3`, `timeout-minutes: 5`, Concurrency `cancel-in-progress: true` und least-privilege Berechtigungen (`issues: write`, `pull-requests: write`).
+  - Neu bereitgestellter `stale.yml` Workflow mit `actions/stale@v9`, täglichem Cron `30 1 * * *`, `timeout-minutes: 10`, Concurrency `cancel-in-progress: true`, least-privilege Berechtigungen und Ausnahmelabels (`pinned`, `security`, `proposal`, `feature`, `rfc`).
+- **CI Workflow-Härtung (`.github/workflows/source-platform-smoke.yml`, `.github/workflows/linux-bundle.yml`):**
+  - Top-level least-privilege `permissions: contents: read` für beide Workflows.
+  - Job-Level `timeout-minutes: 15` für Test- und Bundle-Jobs zur Vermeidung von Runner-Hängern.
+  - Concurrency-Schutz `cancel-in-progress: true` in `linux-bundle.yml`.
+- **Kanonische Open-Source NOTICE-Datei (`NOTICE`):**
+  - Formale Attributionsdatei im Repo-Root angelegt (Copyright (c) 2024-2026 Lukas Geiger, doc-bricks Team unter dem open-bricks Umbrella, AGPL-3.0-or-later, Querverweis auf `THIRD_PARTY_LICENSES.md`).
+- **PEP 621 Standardisierung & Packaging (`pyproject.toml`):**
+  - PEP 639 `license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]`.
+  - Registrierung der kanonischen `Notice`-URL in `[project.urls]`.
+  - Sättigung der `keywords` auf 20 kuratierte Themenbegriffe synchronisiert mit den GitHub-Topics.
+  - Pytest-Härtung in `[tool.pytest.ini_options]` mit `minversion = "7.0"`, `addopts = "-ra -v --basetemp=.pytest_temp"` und `norecursedirs` (Vermeidung von Deadlocks auf Windows).
+- **Multi-Host Cloud-Sync & Lock-Schutz (`.gitignore`):**
+  - Erweiterung um Multi-Host Cloud-Sync-Konfliktmuster (`* (kopie)*`, `* (Kopie)*`, `* (copy)*`, `* (Copy)*`, `*conflicted copy*`, `*-ASUS*`, `*-ASUS-GEI*`, `*-LAPTOP*`, `*-Mac Studio*`, `*-MacBook*`, `*-WORKSTATION*`, `*-WORKSTATION.*`, `*-WORKSTATION-LG.*`, `*.orig`, `*.rej`).
+  - Kanonisches Lock-System geschützt (`LOCK`, `LOCK.*`, `LOCK*.txt`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `LOCK.permissions.json`, `.automation-lock`).
+  - Package-Lock-Disziplin (`uv.lock`, `!package-lock.json`) und Test-Caches (`.pytest_temp/`, `.pytest_tmp*/`, `.hypothesis/`, `.turbo/`, `.nyc_output/`, `.tox/`).
+- **Level 1 SBOM Drittanbieter-Lizenzaudit (`THIRD_PARTY_LICENSES.md`):**
+  - Re-Audit Stand 2026-09-24 mit unprivileged `RunAsInvoker` Non-Elevation-Modus, Zero-Copyleft-Isolation und Querverweis auf `NOTICE`.
+- **Dokumentations-, Badge- & Kontext-Parität (`README.md`, `README_de.md`, `llms.txt`, `MARKETING-LOG.txt`):**
+  - Aktualisierung der Pytest-Status-Badges auf 424 passed | 100% grün.
+  - Hinzufügen des Attribution-NOTICE-Badges.
+  - Synchronisation von `llms.txt` Stand 2026-09-24 mit 424 Tests Baseline und Lifecycle-Workflows.
+  - Ergänzung von Abschnitt 7 in `MARKETING-LOG.txt`.
+- **Automatisierte Vertragstest-Erweiterung (`tests/test_metadata.py`):**
+  - 6 neue/erweiterte Contract-Tests für kanonische NOTICE-Attribution, CI-Lifecycle-Workflows & Timeouts/Concurrency/Permissions, erweiterte .gitignore Multi-Host/Lock-Muster, pyproject Notice-URL & Pytest-Optionen, THIRD_PARTY_LICENSES Recency und Badge-Parität.
+
+
 ### Added (2026-09-23, TW-DZ-14 PDF-Annotationen-Dialog, Kontextmenü & CLI)
 - **PDF-Annotationen-Dialog (`gui/dialogs/pdf_annotation_dialog.py`):**
   - Vollständiger, interaktiver Dialog zur Erstellung und Verwaltung von PDF-Annotationen (ersetzt den bisherigen QMessageBox-Platzhalter).

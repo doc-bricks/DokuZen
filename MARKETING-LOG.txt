@@ -132,3 +132,16 @@ INV-ARCH-10 State   | dokuzen-json  | Proprietary Cloud | Account Locked      | 
 - Linting Gatekeeper: ruff check clean (0 errors)
 - Bytecode Compilation: compileall verified
 - Security Contract: Zero network egress verified, unprivileged user mode certified.
+
+7. Pfad A Repository Hygiene, CI Lifecycle Workflows, Lock Defense & Contract Test Expansion
+---------------------------------------------------------------------------------------------
+Stand: 2026-09-24
+Status: 100% Verified & In Sync
+- CI Lifecycle Workflows: Provisioned .github/workflows/welcome.yml (actions/first-interaction@v3) and .github/workflows/stale.yml (actions/stale@v9) with least-privilege permissions (issues/pull-requests: write), concurrency control (cancel-in-progress: true), and execution timeouts (5m/10m).
+- CI Workflow Hardening: Hardened source-platform-smoke.yml and linux-bundle.yml with top-level permissions: contents: read, concurrency control, and job execution timeouts (15m).
+- Multi-Host Cloud-Sync & Lock Defense: Extended .gitignore with multi-host conflict copy wildcards (*-WORKSTATION*, *-ASUS*, *-Mac Studio*, *-MacBook*), canonical lock file patterns (LOCK.user.*, LOCK.until.*, LOCK.condition.*, .automation-lock), package lock preservation, and hermetic test cache isolation (.pytest_temp/).
+- Canonical Open-Source NOTICE Attribution: Created root NOTICE file (Copyright (c) 2024-2026 Lukas Geiger, doc-bricks Team under open-bricks umbrella) with AGPL-3.0-or-later licensing and THIRD_PARTY_LICENSES.md cross-reference.
+- PEP 621 Standardisation & Pytest Hardening: Registered license-files and Notice URL in pyproject.toml; 20 saturated keywords aligned with GitHub topics; hardened pytest options with minversion = "7.0", addopts = "-ra -v --basetemp=.pytest_temp", and norecursedirs.
+- Level 1 SBOM Third-Party License Re-Audit: Updated THIRD_PARTY_LICENSES.md Stand 2026-09-24 with unprivileged RunAsInvoker non-elevation certification and zero-copyleft runtime isolation.
+- Contract Test Expansion: Expanded tests/test_metadata.py with automated regression tests for NOTICE attribution, CI lifecycle workflows/timeouts/concurrency/permissions, gitignore multi-host/lock patterns, pyproject Notice-URL, and documentation parity.
+- Verification: 424 passed, 1 skipped (100% green in pytest), ruff clean (0 errors), python -m compileall clean (0 bytecode errors), git diff --check clean.
