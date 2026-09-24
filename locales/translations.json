@@ -3070,5 +3070,53 @@
     "zh": "确认",
     "ja": "確認",
     "ru": "Подтвердить"
+  },
+  "PDF-Seiten verwalten...": {
+    "de": "PDF-Seiten verwalten...",
+    "en": "Manage PDF Pages...",
+    "es": "Gestionar páginas PDF...",
+    "zh": "管理 PDF 页面...",
+    "ja": "PDFページを管理...",
+    "ru": "Управление страницами PDF..."
+  },
+  "PDF schwärzen...": {
+    "de": "PDF schwärzen...",
+    "en": "Redact PDF...",
+    "es": "Censurar PDF...",
+    "zh": "涂黑PDF...",
+    "ja": "PDF墨消し...",
+    "ru": "Редактировать PDF (скрыть)..."
+  },
+  "OCR-Texterkennung...": {
+    "de": "OCR-Texterkennung...",
+    "en": "OCR Text Recognition...",
+    "es": "Reconocimiento de texto OCR...",
+    "zh": "OCR文字识别...",
+    "ja": "OCRテキスト認識...",
+    "ru": "Распознавание текста (OCR)..."
+  },
+  "PDF-Signatur einbetten...": {
+    "de": "PDF-Signatur einbetten...",
+    "en": "Embed PDF Signature...",
+    "es": "Incrustar firma PDF...",
+    "zh": "嵌入 PDF 签名...",
+    "ja": "PDF署名を埋め込む...",
+    "ru": "Встроить подпись в PDF..."
+  },
+  "Ausgewählte PDFs zusammenführen...": {
+    "de": "Ausgewählte PDFs zusammenführen...",
+    "en": "Merge Selected PDFs...",
+    "es": "Combinar PDFs seleccionados...",
+    "zh": "合并选中的 PDF...",
+    "ja": "選択したPDFを結合...",
+    "ru": "Объединить выбранные PDF..."
+  },
+  "Aus Bibliothek entfernen": {
+    "de": "Aus Bibliothek entfernen",
+    "en": "Remove from library",
+    "es": "Eliminar de la biblioteca",
+    "zh": "从库中移除",
+    "ja": "ライブラリから削除",
+    "ru": "Удалить из библиотеки"
   }
 }

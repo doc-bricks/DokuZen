@@ -5,7 +5,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
-### Added (2026-09-24, Pfad A Repository Hygiene, CI Matrix & Multi-Host Lock Defense)
+### Added (2026-09-24, PDF-Werkzeuge Kontextmenü-Erweiterung, Dialog-Smoke-Vollständigkeit & Tree-Hygiene)
+- **Kontextmenü-Erweiterung für Dokumentenliste (`gui/panels/document_list.py`):**
+  - Herausfaktorisierung von `create_context_menu(paths)` zur sauberen, modalfreien Testbarkeit ohne UI-Blockaden.
+  - Einzelauswahl PDF: Direkte Werkzeugzugriffe auf Seitenverwaltung (`PDF-Seiten verwalten...`), Schwärzung (`PDF schwärzen...`), OCR-Texterkennung (`OCR-Texterkennung...`) und Signatur-Overlay (`PDF-Signatur einbetten...`).
+  - Mehrfachauswahl PDFs: Direkter Aufruf der PDF-Werkstatt zum Zusammenführen (`Ausgewählte PDFs zusammenführen...`).
+  - Robuste Pfadhärtung in `PDFPagesDialog._load_pdf` gegen ungültige/fehlende Dateipfade.
+- **Lokalisierung Tier-2 6-Sprachen-Parität (`locales/translations.json`):**
+  - Vollständige 6-Sprachen-Übersetzung (`de`, `en`, `es`, `zh`, `ja`, `ru`) für alle neuen Kontextmenü-Einträge sowie Behebung fehlender Übersetzungen für `Aus Bibliothek entfernen`.
+- **Test-Suite Ausbau & Dialog-Smoke-Vollständigkeit (`tests/test_dialog_smoke.py`, `tests/test_document_list_context_menu.py`):**
+  - Vollständige Instanziierungsprüfung für alle 17 DokuZen-Dialoge (von 10 auf 17 erweitert, 19 Tests in `test_dialog_smoke.py`).
+  - 9 dedizierte Unit-Tests für das erweiterte Kontextmenü der Dokumentenliste in `test_document_list_context_menu.py`.
+  - Gesamtsuite wächst auf 444 bestandene Tests, 1 übersprungen (100% grün).
+- **Source-Tree-Hygiene:**
+  - 4 historische `prefixbak`-Dateien aus dem aktiven Quellbaum entfernt und nach `_archive/` überführt.
 - **CI Lifecycle Workflows (`.github/workflows/welcome.yml`, `.github/workflows/stale.yml`):**
   - Neu bereitgestellter `welcome.yml` Workflow mit `actions/first-interaction@v3`, `timeout-minutes: 5`, Concurrency `cancel-in-progress: true` und least-privilege Berechtigungen (`issues: write`, `pull-requests: write`).
   - Neu bereitgestellter `stale.yml` Workflow mit `actions/stale@v9`, täglichem Cron `30 1 * * *`, `timeout-minutes: 10`, Concurrency `cancel-in-progress: true`, least-privilege Berechtigungen und Ausnahmelabels (`pinned`, `security`, `proposal`, `feature`, `rfc`).

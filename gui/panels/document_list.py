@@ -234,11 +234,10 @@ class DocumentListPanel(QWidget, LoggerMixin):
         self._library.set_sort(mode)
         self.refresh()
     
-    def _show_context_menu(self, position):
-        """Zeigt Kontextmenü für Dokumente."""
-        paths = self.get_selected_paths()
+    def create_context_menu(self, paths: List[str]) -> Optional[QMenu]:
+        """Erstellt das Kontextmenü für die übergebenen Dokumentpfade."""
         if not paths:
-            return
+            return None
         
         menu = QMenu(self)
 
@@ -254,11 +253,32 @@ class DocumentListPanel(QWidget, LoggerMixin):
         action_export_pdf.triggered.connect(lambda: self._export_as_collection_pdf(paths))
         menu.addAction(action_export_pdf)
 
-        # PDF annotieren (wenn genau eine PDF ausgewählt ist)
+        # PDF-Aktionen (wenn genau eine PDF ausgewählt ist)
         if len(paths) == 1 and paths[0].lower().endswith(".pdf"):
+            pdf_path = paths[0]
             action_annotate = QAction(tr("PDF annotieren..."), menu)
-            action_annotate.triggered.connect(lambda: self._annotate_pdf(paths[0]))
+            action_annotate.triggered.connect(lambda: self._annotate_pdf(pdf_path))
             menu.addAction(action_annotate)
+
+            action_pages = QAction(tr("PDF-Seiten verwalten..."), menu)
+            action_pages.triggered.connect(lambda: self._manage_pdf_pages(pdf_path))
+            menu.addAction(action_pages)
+
+            action_redact = QAction(tr("PDF schwärzen..."), menu)
+            action_redact.triggered.connect(lambda: self._redact_pdf(pdf_path))
+            menu.addAction(action_redact)
+
+            action_ocr = QAction(tr("OCR-Texterkennung..."), menu)
+            action_ocr.triggered.connect(lambda: self._ocr_pdf(pdf_path))
+            menu.addAction(action_ocr)
+
+            action_sign = QAction(tr("PDF-Signatur einbetten..."), menu)
+            action_sign.triggered.connect(lambda: self._sign_pdf(pdf_path))
+            menu.addAction(action_sign)
+        elif len(paths) >= 2 and all(p.lower().endswith(".pdf") for p in paths):
+            action_merge = QAction(tr("Ausgewählte PDFs zusammenführen..."), menu)
+            action_merge.triggered.connect(lambda: self._merge_selected_pdfs(paths))
+            menu.addAction(action_merge)
 
         menu.addSeparator()
 
@@ -277,6 +297,15 @@ class DocumentListPanel(QWidget, LoggerMixin):
         action_remove = QAction(tr("Aus Bibliothek entfernen"), menu)
         action_remove.triggered.connect(lambda: self._remove_documents(paths))
         menu.addAction(action_remove)
+
+        return menu
+
+    def _show_context_menu(self, position):
+        """Zeigt Kontextmenü für Dokumente."""
+        paths = self.get_selected_paths()
+        menu = self.create_context_menu(paths)
+        if not menu:
+            return
         
         menu.exec(self._table.mapToGlobal(position))
         # BUGSWEEP-32: Menü (und seine jetzt als Kinder gehaltenen QActions) freigeben — sonst
@@ -326,6 +355,43 @@ class DocumentListPanel(QWidget, LoggerMixin):
         from gui.dialogs.pdf_annotation_dialog import PDFAnnotationDialog
         dialog = PDFAnnotationDialog(self, pdf_path=path)
         dialog.annotations_changed.connect(lambda _: self.refresh())
+        dialog.exec()
+        self.refresh()
+
+    def _manage_pdf_pages(self, path: str):
+        """Öffnet die PDF-Seitenverwaltung für die ausgewählte PDF-Datei."""
+        from gui.dialogs.pdf_pages_dialog import PDFPagesDialog
+        dialog = PDFPagesDialog(self, pdf_path=path)
+        dialog.exec()
+        self.refresh()
+
+    def _redact_pdf(self, path: str):
+        """Öffnet den Schwärzungs-Dialog für die ausgewählte PDF-Datei."""
+        from gui.dialogs.redaction_dialog import RedactionDialog
+        dialog = RedactionDialog(self, initial_file=path)
+        dialog.exec()
+        self.refresh()
+
+    def _ocr_pdf(self, path: str):
+        """Öffnet den OCR-Dialog für die ausgewählte PDF-Datei."""
+        from gui.dialogs.ocr_dialog import OCRDialog
+        dialog = OCRDialog(self, initial_file=path)
+        dialog.exec()
+        self.refresh()
+
+    def _sign_pdf(self, path: str):
+        """Öffnet den Signatur-Overlay-Dialog für die ausgewählte PDF-Datei."""
+        from gui.dialogs.signature_overlay_dialog import SignatureOverlayDialog
+        dialog = SignatureOverlayDialog(self, pdf_path=path)
+        dialog.exec()
+        self.refresh()
+
+    def _merge_selected_pdfs(self, paths: List[str]):
+        """Öffnet die PDF-Werkstatt im Merge-Tab für die ausgewählten PDFs."""
+        from gui.dialogs.pdf_workshop import PDFWorkshopDialog
+        dialog = PDFWorkshopDialog(self, initial_files=paths)
+        if hasattr(dialog, "_tabs") and dialog._tabs is not None:
+            dialog._tabs.setCurrentIndex(0)
         dialog.exec()
         self.refresh()
     

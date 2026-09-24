@@ -13,16 +13,23 @@ from PySide6.QtCore import Qt
 from PySide6.QtTest import QTest
 from PySide6.QtWidgets import QApplication, QPushButton
 
+from gui.dialogs.code_analysis_dialog import CodeAnalysisDialog
 from gui.dialogs.collection_export_dialog import CollectionExportDialog
 from gui.dialogs.convert_dialog import ConvertDialog
+from gui.dialogs.form_builder_dialog import FormBuilderDialog
+from gui.dialogs.image_converter_dialog import ImageConverterDialog
 from gui.dialogs.ocr_dialog import OCRDialog
 from gui.dialogs.pdf_marker_dialog import PDFMarkerDialog, PageThumbnail
 from gui.dialogs.pdf_annotation_dialog import PDFAnnotationDialog
+from gui.dialogs.pdf_pages_dialog import PDFPagesDialog
+from gui.dialogs.pdf_workshop import PDFWorkshopDialog
+from gui.dialogs.pyinstaller_dialog import PyInstallerDialog
 from gui.dialogs.redaction_dialog import RedactionDialog
 from gui.dialogs.settings_dialog import SettingsDialog
 from gui.dialogs.signature_overlay_dialog import SignatureOverlayDialog
 from gui.dialogs.text_pool_dialog import TextPoolDialog
 from gui.dialogs.smart_ingest_dialog import SmartIngestDialog
+from gui.dialogs.sqlite_viewer_dialog import SQLiteViewerDialog
 
 
 class DialogSmokeTest(unittest.TestCase):
@@ -198,6 +205,48 @@ class DialogSmokeTest(unittest.TestCase):
         self.assertTrue(dialog._radio_inplace.isChecked())
         self.assertEqual(dialog._table_annots.columnCount(), 5)
         self.assertEqual(dialog._tab_widget.count(), 5)
+        dialog.close()
+
+    def test_code_analysis_dialog_instantiates(self):
+        dialog = CodeAnalysisDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "Python Code-Analyse")
+        dialog.close()
+
+    def test_form_builder_dialog_instantiates(self):
+        dialog = FormBuilderDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "Formular-Builder")
+        dialog.close()
+
+    def test_image_converter_dialog_instantiates(self):
+        dialog = ImageConverterDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "Bild-Werkzeuge")
+        dialog.close()
+
+    def test_pdf_pages_dialog_instantiates(self):
+        dialog = PDFPagesDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "PDF-Seiten verwalten")
+        dialog.close()
+
+    def test_pdf_workshop_dialog_instantiates(self):
+        dialog = PDFWorkshopDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "PDF-Werkstatt")
+        dialog.close()
+
+    def test_pyinstaller_dialog_instantiates(self):
+        dialog = PyInstallerDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "Python Kompilator")
+        dialog.close()
+
+    def test_sqlite_viewer_dialog_instantiates(self):
+        dialog = SQLiteViewerDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "SQLite Viewer")
         dialog.close()
 
 

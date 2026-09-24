@@ -337,7 +337,10 @@ TASKPLAN-Aufgaben:
 - [ ] TW-DZ-06 → 1024: AGPL-/GPL-/SBOM-Distribution-Gate klären.
 - [ ] TW-DZ-07 → 1025: Store-, Privacy- und Third-Party-Dokumente synchronisieren.
 - [ ] TW-DZ-08 → 1026: Source-Platform-CI und echte Linux-/macOS-Grenzen prüfen.
-- [ ] TW-DZ-09 → 1027: Runtime-/Build-Preflight definieren.
+- [x] TW-DZ-09 → 1027: Runtime-/Build-Preflight definieren. -- DONE 2026-09-24
+    - Build- und Runtime-Preflight ist als automatisiertes Gate in `tools/preflight.py` implementiert und fest in `build_exe.bat` integriert.
+    - Deckt Python-Version (>=3.10), Kern-Abhängigkeiten (PySide6, fitz, pikepdf, PIL, etc.), Plattformwerkzeuge und Verzeichnisstrukturen ab.
+    - Durch `tests/test_preflight.py` (5/5 Tests) vollständig getestet und abgesichert.
 - [x] TW-DZ-10 → 1028: GUI-CLI gegen Headless-/REST-Bedarf entscheiden. -- DONE 2026-08-11
     - Verifiziert: `python main.py --help` zeigt `--import`, `--open`, `--ocr`, `--redact` und `--merge`; die gezielten CLI-/Store-/Lizenztests bestehen mit 14/14 Tests und 26 Subtests.
     - Kein konkreter Headless-/Remote-Usecase belegt; README und Portierungsplan dokumentieren die vorhandene GUI-CLI, keine projektlokale REST-API und eine Erweiterung nur bei echtem Bedarf. Keine REST- oder Batch-API als Template ergänzt.
@@ -421,4 +424,13 @@ ihren Namen, sie ist in store_package.json als executable referenziert.
     - CLI-Integration: main.py um Startoption --annotate erweitert (parse_cli_args, build_startup_command, apply_startup_command) und an MainWindow.startup_annotate_path angebunden.
     - Lokalisierung & Barrierefreiheit: Tier-2 6-Sprachen-Parität (de, en, es, zh, ja, ru) in locales/translations.json gepflegt (45 neue Übersetzungskeys ohne leere Einträge). Vollständige Tooltips, accessibleName und accessibleDescription für sämtliche interaktiven UI-Elemente.
     - Tests & Verifikation: tests/test_pdf_annotation_dialog.py (9 Unit-Tests), tests/test_dialog_smoke.py (1 Rauchtest), tests/test_cli_startup.py (CLI-Starttest) und test_i18n.py erfolgreich verifiziert; gesamte Testsuite auf 424 bestandene Tests, 1 übersprungen, 26 Subtests gesteigert (100% grün, ruff 0 Fehler, compileall 0 Fehler).
+
+[x] TW-DZ-15 Kontextmenü-Erweiterung für PDF-Werkzeuge, 17/17 Dialog-Smoke-Abdeckung & Tree-Hygiene -- DONE 2026-09-24
+    - Problemstellung & U1-Bezug: Im Dokumentenlisten-Panel gab es bisher nur sehr eingeschränkte Kontextmenü-Aktionen (Öffnen, Sammel-PDF, Status, Löschen); Schnellzugriffe auf zentrale PDF-Werkzeuge (Seiten verwalten, Schwärzen, OCR, Signatur, Zusammenführen) fehlten. Zudem waren nicht alle 17 Dialoge im automatischen Smoke-Test abgedeckt.
+    - Kontextmenü-Erweiterung: `gui/panels/document_list.py` um direkte Schnellaktionen erweitert: Bei Einzelauswahl (`PDF-Seiten verwalten...`, `PDF schwärzen...`, `OCR-Texterkennung...`, `PDF-Signatur einbetten...`), bei Mehrfachauswahl (`Ausgewählte PDFs zusammenführen...`). `create_context_menu(paths)` zur sauberen, modalfreien Testbarkeit entkoppelt.
+    - Robuste Pfadhärtung: `gui/dialogs/pdf_pages_dialog.py` `_load_pdf` gegen ungültige Pfade gehärtet.
+    - Dialog-Smoke-Vollständigkeit: `tests/test_dialog_smoke.py` von 10 auf alle 17 vorhandenen DokuZen-Dialoge erweitert (19 Tests).
+    - Lokalisierung: Tier-2 6-Sprachen-Parität (`de`, `en`, `es`, `zh`, `ja`, `ru`) in `locales/translations.json` für alle neuen Menüschlüssel und Bereinigung von `Aus Bibliothek entfernen`.
+    - Source-Tree-Hygiene: 4 verwaiste Prefixbak-Dateien aus Juni 2026 sicher nach `_archive/` überführt.
+    - Verifikation: `tests/test_document_list_context_menu.py` (9 Tests) neu angelegt; Gesamte Suite wächst auf 444 bestandene Tests, 1 übersprungen (100% grün, ruff 0 Fehler, compileall 0 Fehler).
 
