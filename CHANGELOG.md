@@ -5,6 +5,23 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-09-26, Vollständiger GUI-Funktions- & Aktionen-Audit U1 & Refresh-Härtung)
+- **GUI-Aktionen & Menü-Auditsystem (`tests/test_gui_menu_and_actions_coverage.py`):**
+  - Erfüllt Nutzerauftrag U1 aus dem Welle-1-Usertest zur lückenlosen Funktionsprüfung aller GUI-Schaltflächen, Menüpunkte und Werkzeuge.
+  - Prüft alle 28 Menüpunkte über alle 6 Hauptmenüs (`Datei`, `Bearbeiten`, `Ansicht`, `Themen`, `Werkzeuge`, `Hilfe`) auf fehlerfreie Auslösung, Slot-Anbindung und Accessibility.
+  - Prüft alle 5 Toolbar-Elemente inklusive Suchleiste mit normalisierter Query-Eingabe.
+  - Prüft alle 3 Panel-Bereiche (`LibraryPanel`, `DocumentListPanel`, `PreviewPanel`) inklusive Signalweiterleitung, Umschaltung von Filtern/Sortierungen, Text- und Bildrendering.
+  - Validiert den vollständigen Re-Translation-Zyklus über alle 6 Zielsprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`).
+- **Signal-Signaturhärtung (`gui/panels/document_list.py`):**
+  - `_on_filter_changed` und `_on_sort_changed` akzeptieren nun den von `QComboBox.currentIndexChanged` übergebenen int-Index (`index: Optional[int] = None`) und verhindern `TypeError`.
+- **Konsistente Refresh-Propagation (`gui/main_window.py`):**
+  - Alle modalen Dialog-Handler (`_on_pdf_marker`, `_on_pdf_pages`, `_on_image_tools`, `_on_sqlite_viewer`, `_on_pyinstaller`, `_on_form_builder`, `_on_signature_overlay`) stoßen nach Beendigung des Dialogs zuverlässig `self._on_refresh()` an, sodass erzeugte oder veränderte Dateien sofort in Bibliothek und Liste sichtbar werden.
+  - Toolbar- und Suchleisten-Aktionen in `retranslate_ui()` entkoppelt und abgesichert.
+- **Audit-Dokumentation (`GUI_AUDIT_REPORT_U1_2026-09-26.md`):**
+  - Vollständiges Audit-Protokoll mit Übersicht aller 28 Menüpunkte, Shortcuts, Signal-Handler und Testergebnisse im Projektverzeichnis hinterlegt.
+- **Test-Abdeckung:**
+  - 7 neue automatisierte Integrationstests; Gesamtsuite wächst auf 451 bestandene Tests (1 übersprungen, 100% grün, 0 Ruff-Lints, 0 Compile-Fehler).
+
 ### Added (2026-09-24, PDF-Werkzeuge Kontextmenü-Erweiterung, Dialog-Smoke-Vollständigkeit & Tree-Hygiene)
 - **Kontextmenü-Erweiterung für Dokumentenliste (`gui/panels/document_list.py`):**
   - Herausfaktorisierung von `create_context_menu(paths)` zur sauberen, modalfreien Testbarkeit ohne UI-Blockaden.

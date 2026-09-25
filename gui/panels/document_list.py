@@ -222,13 +222,13 @@ class DocumentListPanel(QWidget, LoggerMixin):
             if path:
                 self.document_double_clicked.emit(path)
     
-    def _on_filter_changed(self):
+    def _on_filter_changed(self, index: Optional[int] = None):
         """Reagiert auf Filter-Änderung."""
         mode = self._filter_combo.currentData()
         self._library.set_filter(mode)
         self.refresh()
     
-    def _on_sort_changed(self):
+    def _on_sort_changed(self, index: Optional[int] = None):
         """Reagiert auf Sortier-Änderung."""
         mode = self._sort_combo.currentData()
         self._library.set_sort(mode)

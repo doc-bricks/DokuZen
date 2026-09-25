@@ -441,10 +441,16 @@ class MainWindow(QMainWindow, LoggerMixin):
         if hasattr(self, "_btn_new_theme"):
             self._btn_new_theme.setText(t("Neues Thema"))
             self._btn_new_theme.setToolTip(t("Neues Thema erstellen (Ctrl+N)"))
+        if hasattr(self, "_btn_refresh"):
             self._btn_refresh.setText(t("Aktualisieren"))
             self._btn_refresh.setToolTip(t("Ansicht aktualisieren (F5)"))
+        if hasattr(self, "_search_box"):
             self._search_box.setPlaceholderText(t("Suchen..."))
             self._search_box.setToolTip(t("Dokumente in der Bibliothek durchsuchen (Ctrl+F)"))
+            self._search_box.setAccessibleName(t("Dokumente durchsuchen"))
+            self._search_box.setAccessibleDescription(
+                t("Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren.")
+            )
             
         if hasattr(self, "_library_panel") and hasattr(self._library_panel, "retranslate_ui"):
             self._library_panel.retranslate_ui()
@@ -849,6 +855,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         dialog = FormBuilderDialog(self)
         dialog.exec()
+        self._on_refresh()
     
     def _on_pdf_marker(self):
         """Öffnet PDF-Marker."""
@@ -860,6 +867,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         dialog = PDFMarkerDialog(self, pdf_path=initial_pdf)
         dialog.exec()
+        self._on_refresh()
     
     def _on_image_tools(self):
         """Öffnet Bild-Werkzeuge."""
@@ -871,6 +879,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         dialog = ImageConverterDialog(self, initial_files=images if images else None)
         dialog.exec()
+        self._on_refresh()
     
     def _on_sqlite_viewer(self):
         """Öffnet SQLite-Viewer."""
@@ -882,6 +891,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         dialog = SQLiteViewerDialog(self, db_path=initial_db)
         dialog.exec()
+        self._on_refresh()
     
     def _on_pyinstaller(self):
         """Öffnet PyInstaller-Dialog."""
@@ -893,6 +903,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         dialog = PyInstallerDialog(self, script_path=initial_script)
         dialog.exec()
+        self._on_refresh()
     
     def _on_pdf_pages(self):
         """Öffnet PDF-Seitenverwaltung."""
@@ -904,6 +915,7 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         dialog = PDFPagesDialog(self, pdf_path=initial_pdf)
         dialog.exec()
+        self._on_refresh()
     
     def _on_pdf_annotate(self):
         """Öffnet PDF-Annotationen-Dialog."""
@@ -927,6 +939,7 @@ class MainWindow(QMainWindow, LoggerMixin):
 
         dialog = SignatureOverlayDialog(self, pdf_path=initial_pdf)
         dialog.exec()
+        self._on_refresh()
 
     def _on_about(self):
         """Zeigt About-Dialog."""
