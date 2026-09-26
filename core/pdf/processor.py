@@ -48,11 +48,11 @@ class PDFProcessor(LoggerMixin):
 
     def open(self, path: str, password: str = "") -> bool:
         """
-        Oeffnet eine PDF-Datei.
+        Öffnet eine PDF-Datei.
 
         Args:
             path: Pfad zur PDF-Datei
-            password: Passwort falls verschluesselt
+            password: Passwort falls verschlüsselt
 
         Returns:
             True bei Erfolg
@@ -61,7 +61,7 @@ class PDFProcessor(LoggerMixin):
         return self._reader.open(path, password)
 
     def close(self):
-        """Schliesst die aktuelle PDF."""
+        """Schließt die aktuelle PDF."""
         self._reader.close()
         self._path = None
 
@@ -77,17 +77,17 @@ class PDFProcessor(LoggerMixin):
 
     @property
     def is_encrypted(self) -> bool:
-        """Prüft ob PDF verschluesselt ist."""
+        """Prüft ob PDF verschlüsselt ist."""
         return self._reader.is_encrypted
 
     @property
     def needs_password(self) -> bool:
-        """Prüft ob Passwort benoetigt wird."""
+        """Prüft ob Passwort benötigt wird."""
         return self._reader.needs_password
 
     def get_info(self) -> Optional[PDFInfo]:
         """
-        Gibt vollstaendige PDF-Informationen zurück.
+        Gibt vollständige PDF-Informationen zurück.
 
         Returns:
             PDFInfo-Objekt oder None
@@ -124,7 +124,7 @@ class PDFProcessor(LoggerMixin):
 
         Args:
             page_num: Seitennummer (1-basiert)
-            dpi: Aufloesung
+            dpi: Auflösung
 
         Returns:
             PNG-Bytes oder None
@@ -137,7 +137,7 @@ class PDFProcessor(LoggerMixin):
 
         Args:
             query: Suchbegriff
-            case_sensitive: Gross-/Kleinschreibung beachten
+            case_sensitive: Groß-/Kleinschreibung beachten
 
         Returns:
             Liste von (Seitennummer, [Rechtecke])

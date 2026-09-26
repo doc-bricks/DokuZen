@@ -206,11 +206,11 @@ class EncodingFixer(LoggerMixin):
         
         # Dekodieren
         # BUGSWEEP-31 REVIEW-NOTIZ (NICHT auto-gefixt — Fach-/User-Entscheidung): errors='replace'
-        # ersetzt nicht dekodierbare Bytes durch U+FFFD; wird das Ergebnis (atomar) zurueckgeschrieben,
+        # ersetzt nicht dekodierbare Bytes durch U+FFFD; wird das Ergebnis (atomar) zurückgeschrieben,
         # ist der ersetzte Inhalt dauerhaft verloren. Es gibt KEINE Confidence-Schwelle vor dem
-        # Schreiben. Robuster waere: bei niedriger chardet-Confidence ODER >0 Replacement-Zeichen NICHT
-        # ueberschreiben, sondern warnen/abbrechen. Ändert das Reparatur-Verhalten -> bewusst belassen.
-        # (Auch: chars_fixed unten zaehlt die ERZEUGTEN U+FFFD = verlorene Zeichen, nicht "gefixte".)
+        # Schreiben. Robuster wäre: bei niedriger chardet-Confidence ODER >0 Replacement-Zeichen NICHT
+        # überschreiben, sondern warnen/abbrechen. Ändert das Reparatur-Verhalten -> bewusst belassen.
+        # (Auch: chars_fixed unten zählt die ERZEUGTEN U+FFFD = verlorene Zeichen, nicht "gefixte".)
         try:
             text = raw_data.decode(source_encoding, errors='replace')
         except Exception as e:
@@ -236,9 +236,9 @@ class EncodingFixer(LoggerMixin):
             )
         
         # Speichern
-        # BUGSWEEP-31 (FATAL): ohne output_path wird die ORIGINALDATEI in-place ueberschrieben;
-        # ein Crash/OneDrive-Lock mitten im write zerstoert sie unwiederbringlich. Atomar via
-        # tmp + os.replace -> entweder vollstaendig neu geschrieben oder Original unveraendert.
+        # BUGSWEEP-31 (FATAL): ohne output_path wird die ORIGINALDATEI in-place überschrieben;
+        # ein Crash/OneDrive-Lock mitten im write zerstört sie unwiederbringlich. Atomar via
+        # tmp + os.replace -> entweder vollständig neu geschrieben oder Original unverändert.
         out_path = output_path or filepath
         try:
             tmp_path = f"{out_path}.tmp"

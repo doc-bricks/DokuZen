@@ -350,10 +350,10 @@ class FileIndex(LoggerMixin):
 
                 # Prüfen ob bereits indiziert
                 existing = self._conn.execute(
-                    # Bugsweep 28 BUG-01 (KRITISCH): size_bytes ergaenzt — _save_version() liest unten
+                    # Bugsweep 28 BUG-01 (KRITISCH): size_bytes ergänzt — _save_version() liest unten
                     # existing['size_bytes']; ohne die Spalte warf sqlite3.Row IndexError bei JEDEM
-                    # Re-Index einer bekannten Datei -> vom bare-except verschluckt -> Dateiaenderungen
-                    # wurden NIE in den Index uebernommen (Versionierung lief nie).
+                    # Re-Index einer bekannten Datei -> vom bare-except verschluckt -> Dateiänderungen
+                    # wurden NIE in den Index übernommen (Versionierung lief nie).
                     "SELECT id, hash_sha256, modified_at, size_bytes FROM files WHERE path = ?",
                     (str(path),)
                 ).fetchone()
@@ -370,11 +370,11 @@ class FileIndex(LoggerMixin):
                 file_hash = self.calculate_hash(str(path))
 
                 # BUGSWEEP-30 (MITTEL): calculate_hash liefert bei IO-Fehler "" (leerer String).
-                # Ungeprueft gespeichert wuerde idx_files_hash mit Leerwerten gefuellt und
-                # find_duplicates/get_by_hash gruppierten ALLE Lese-Fehlschlaege als "Duplikate".
+                # Ungeprüft gespeichert würde idx_files_hash mit Leerwerten gefüllt und
+                # find_duplicates/get_by_hash gruppierten ALLE Lese-Fehlschläge als "Duplikate".
                 # -> ohne berechenbaren Hash nicht indizieren.
                 if not file_hash:
-                    self.logger.warning(f"Kein Hash berechenbar, ueberspringe: {file_path}")
+                    self.logger.warning(f"Kein Hash berechenbar, überspringe: {file_path}")
                     return None
 
                 # Metadaten sammeln

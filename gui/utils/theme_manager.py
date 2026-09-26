@@ -266,8 +266,8 @@ class ThemeManager(LoggerMixin):
                     data = json.load(f)
                 theme = Theme.from_dict(data)
                 # BUGSWEEP-32: from_dict crasht nicht mehr bei fehlendem "name" (gibt name="");
-                # solche unvollstaendigen Themes hier explizit ueberspringen, statt sie als
-                # Phantom-Theme unter dem leeren Key zu registrieren (mehrere wuerden kollidieren).
+                # solche unvollständigen Themes hier explizit überspringen, statt sie als
+                # Phantom-Theme unter dem leeren Key zu registrieren (mehrere würden kollidieren).
                 if not theme.name:
                     self.logger.warning(f"Theme ohne Namen übersprungen: {file}")
                     continue
