@@ -5,6 +5,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed (2026-09-28, Bugsweep Knowledge-Engine, Volltext-Indexierung, Such-Ranking & Tag-Filterung)
+- **Tag-Filter & Schnittmengen-Suche (`core/knowledge/search_engine.py`):**
+  - Behebt Fehler in `advanced_search` und `search`, bei dem strukturierte Tag-Filter (`query.tags`) im SQL-Query fehlten und ungetaggte Dateien zurückgegeben wurden. Tag-Filterung erfolgt nun atomar und direkt im SQL über `AND id IN (SELECT file_id FROM file_tags ...)`, sodass Text-, Tag- und Kategoriefilter korrekt als Schnittmenge evaluiert werden.
+- **Suchfeld-Erweiterung (`core/knowledge/search_engine.py`):**
+  - `SearchField.EXTENSION` und `SearchField.TAGS` werden nun voll in den Such-Bedingungen, der Treffer-Klassifizierung (`match_fields`), der Highlighting-Erstellung und der Relevanz-Scorung (`FIELD_WEIGHTS['extension']`) unterstützt.
+- **Resiliente Datums-Serialisierung (`core/knowledge/file_index.py`, `core/knowledge/search_engine.py`):**
+  - `FileMetadata.to_dict()` und `SearchResult.to_dict()` sichern `None`-Datumsangaben (`created_at`, `modified_at`, `indexed_at`) defensiv ab und verhindern `AttributeError: 'NoneType' object has no attribute 'isoformat'`.
+- **Datei-Entfernung & Kaskadierung (`core/knowledge/file_index.py`):**
+  - Neue Methode `FileIndex.remove_file(file_path)` implementiert mit kaskadierender Bereinigung von Einträgen in `file_tags` und `versions`. `PRAGMA foreign_keys = ON` in `_init_database` aktiviert.
+- **Watcher Auto-Bereinigung (`core/knowledge/watcher.py`):**
+  - `KnowledgeWatcher._handle_event` bindet `WatchEvent.DELETED` und `WatchEvent.MOVED` an `remove_file` an, sodass gelöschte oder verschobene Dateien nicht mehr als Geister-Einträge im Index verbleiben.
+- **Test-Abdeckung:**
+  - 7 neue hermetische Regressionstests in `tests/test_bugsweep_knowledge_engine_20260928.py`; Gesamtsuite wächst auf 458 bestandene Tests (1 übersprungen, 100% grün, 0 Lints, 0 Warnings).
+
 ### Added (2026-09-26, Vollständiger GUI-Funktions- & Aktionen-Audit U1 & Refresh-Härtung)
 - **GUI-Aktionen & Menü-Auditsystem (`tests/test_gui_menu_and_actions_coverage.py`):**
   - Erfüllt Nutzerauftrag U1 aus dem Welle-1-Usertest zur lückenlosen Funktionsprüfung aller GUI-Schaltflächen, Menüpunkte und Werkzeuge.

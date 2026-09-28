@@ -55,7 +55,7 @@ class SearchResult:
             'score': self.score,
             'category': self.metadata.category.value,
             'size_bytes': self.metadata.size_bytes,
-            'modified_at': self.metadata.modified_at.isoformat(),
+            'modified_at': self.metadata.modified_at.isoformat() if self.metadata.modified_at else None,
             'highlights': self.highlights,
             'match_fields': self.match_fields,
             'metadata': self.metadata.to_dict(),
@@ -169,6 +169,10 @@ class SearchEngine(LoggerMixin):
             if SearchField.ALL in query.fields or SearchField.PATH in query.fields:
                 text_conditions.append("lower(path) LIKE ?")
                 params.append(search_term)
+
+            if SearchField.ALL in query.fields or SearchField.EXTENSION in query.fields:
+                text_conditions.append("lower(extension) LIKE ?")
+                params.append(search_term)
             
             if SearchField.ALL in query.fields or SearchField.PDF_TITLE in query.fields:
                 text_conditions.append("lower(pdf_title) LIKE ?")
@@ -177,9 +181,30 @@ class SearchEngine(LoggerMixin):
             if SearchField.ALL in query.fields or SearchField.PDF_AUTHOR in query.fields:
                 text_conditions.append("lower(pdf_author) LIKE ?")
                 params.append(search_term)
+
+            if SearchField.ALL in query.fields or SearchField.TAGS in query.fields:
+                text_conditions.append("""id IN (
+                    SELECT file_id FROM file_tags ft
+                    JOIN tags t ON ft.tag_id = t.id
+                    WHERE lower(t.name) LIKE ?
+                )""")
+                params.append(search_term)
             
             if text_conditions:
                 sql_parts.append(f"AND ({' OR '.join(text_conditions)})")
+            elif query.fields and SearchField.ALL not in query.fields:
+                # Felder explizit angegeben aber keine Text-Bedingung zutreffend -> leere Treffer
+                sql_parts.append("AND 1=0")
+
+        # Tag-Filter
+        if query.tags:
+            placeholders = ','.join(['?' for _ in query.tags])
+            sql_parts.append(f"""AND id IN (
+                SELECT file_id FROM file_tags ft
+                JOIN tags t ON ft.tag_id = t.id
+                WHERE lower(t.name) IN ({placeholders})
+            )""")
+            params.extend([t.lower() for t in query.tags])
         
         # Kategorie-Filter
         if query.categories:
@@ -257,10 +282,15 @@ class SearchEngine(LoggerMixin):
                 highlights=highlights,
                 match_fields=match_fields
             ))
-        
-        # Tag-Suche (separat, da JOIN nötig)
-        if query.tags or (SearchField.ALL in query.fields and query.text):
-            results = self._add_tag_matches(results, query)
+
+        if query.tags:
+            tag_set = {t.lower() for t in query.tags}
+            for r in results:
+                if any(t.lower() in tag_set for t in r.metadata.tags):
+                    if 'tags' not in r.match_fields:
+                        r.match_fields.append('tags')
+                    if not query.text:
+                        r.score = max(r.score, self.FIELD_WEIGHTS['tags'])
         
         # Nach Score sortieren falls Relevanz gewählt
         if query.sort_by == SortOrder.RELEVANCE:
@@ -301,6 +331,13 @@ class SearchEngine(LoggerMixin):
         if query_lower in metadata.path.lower():
             score += self.FIELD_WEIGHTS['path']
         
+        # Extension-Match
+        if metadata.extension:
+            ext_clean = metadata.extension.lower().lstrip('.')
+            q_clean = query_lower.lstrip('.')
+            if query_lower in metadata.extension.lower() or (q_clean and q_clean == ext_clean):
+                score += self.FIELD_WEIGHTS.get('extension', 0.05)
+
         # Tag-Match
         for tag in metadata.tags:
             if query_lower in tag.lower():
@@ -334,10 +371,20 @@ class SearchEngine(LoggerMixin):
             path = Path(metadata.path)
             folder = path.parent.name
             highlights['path'] = f".../{folder}/{path.name}"
+
+        # Extension highlighten
+        if metadata.extension and query_lower in metadata.extension.lower():
+            highlights['extension'] = self._highlight_text(metadata.extension, query_text)
         
         # PDF-Titel
         if metadata.pdf_title and query_lower in metadata.pdf_title.lower():
             highlights['pdf_title'] = self._highlight_text(metadata.pdf_title, query_text)
+
+        # Tags highlighten
+        for tag in metadata.tags:
+            if query_lower in tag.lower():
+                highlights['tags'] = self._highlight_text(tag, query_text)
+                break
         
         return highlights
     
@@ -359,6 +406,11 @@ class SearchEngine(LoggerMixin):
             fields.append('name')
         if query_lower in metadata.path.lower():
             fields.append('path')
+        if metadata.extension:
+            ext_clean = metadata.extension.lower().lstrip('.')
+            q_clean = query_lower.lstrip('.')
+            if query_lower in metadata.extension.lower() or (q_clean and q_clean == ext_clean):
+                fields.append('extension')
         if metadata.pdf_title and query_lower in metadata.pdf_title.lower():
             fields.append('pdf_title')
         if metadata.pdf_author and query_lower in metadata.pdf_author.lower():
@@ -376,16 +428,16 @@ class SearchEngine(LoggerMixin):
         found_paths = {r.metadata.path for r in results}
         
         if query.tags:
-            # Suche nach spezifischen Tags
+            # Suche nach spezifischen Tags (case-insensitive)
             tag_sql = """
                 SELECT DISTINCT f.* FROM files f
                 JOIN file_tags ft ON f.id = ft.file_id
                 JOIN tags t ON ft.tag_id = t.id
-                WHERE t.name IN ({})
+                WHERE lower(t.name) IN ({})
             """.format(','.join(['?' for _ in query.tags]))
 
             with self._index._lock:  # BUGSWEEP-30
-                rows = self._index._conn.execute(tag_sql, query.tags).fetchall()
+                rows = self._index._conn.execute(tag_sql, [t.lower() for t in query.tags]).fetchall()
 
             for row in rows:
                 if row['path'] not in found_paths:
@@ -396,7 +448,7 @@ class SearchEngine(LoggerMixin):
                         match_fields=['tags']
                     ))
 
-        elif query.text and SearchField.ALL in query.fields:
+        elif query.text and (SearchField.ALL in query.fields or SearchField.TAGS in query.fields):
             # Freitext-Suche: Tag-Namen nach Suchbegriff durchsuchen
             tag_text_sql = """
                 SELECT DISTINCT f.* FROM files f

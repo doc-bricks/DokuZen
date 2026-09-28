@@ -71,9 +71,9 @@ class FileMetadata:
             'hash_sha256': self.hash_sha256,
             'category': self.category.value,
             'mime_type': self.mime_type,
-            'created_at': self.created_at.isoformat(),
-            'modified_at': self.modified_at.isoformat(),
-            'indexed_at': self.indexed_at.isoformat(),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'modified_at': self.modified_at.isoformat() if self.modified_at else None,
+            'indexed_at': self.indexed_at.isoformat() if self.indexed_at else None,
             'pdf_pages': self.pdf_pages,
             'pdf_has_text': self.pdf_has_text,
             'pdf_is_encrypted': self.pdf_is_encrypted,
@@ -203,6 +203,7 @@ class FileIndex(LoggerMixin):
         """Initialisiert die Datenbank."""
         self._conn = sqlite3.connect(self._db_path, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
+        self._conn.execute("PRAGMA foreign_keys = ON")
         
         # Tabellen erstellen
         self._conn.executescript("""
@@ -628,6 +629,39 @@ class FileIndex(LoggerMixin):
         except Exception as e:
             self.logger.error(f"Tag-Entfernen-Fehler: {e}")
             return False
+
+    def remove_file(self, file_path: str) -> bool:
+        """
+        Entfernt eine Datei aus dem Index und bereinigt Tags und Versionen.
+
+        Args:
+            file_path: Pfad der zu entfernenden Datei
+
+        Returns:
+            True wenn die Datei entfernt wurde, sonst False.
+        """
+        norm_path = str(Path(file_path))
+        with self._lock:
+            try:
+                row = self._conn.execute(
+                    "SELECT id FROM files WHERE path = ?", (norm_path,)
+                ).fetchone()
+                if not row:
+                    return False
+                file_id = row['id']
+                self._conn.execute("DELETE FROM file_tags WHERE file_id = ?", (file_id,))
+                self._conn.execute("DELETE FROM versions WHERE file_id = ?", (file_id,))
+                self._conn.execute("DELETE FROM files WHERE id = ?", (file_id,))
+                self._conn.commit()
+                self.logger.info(f"Aus Index entfernt: {norm_path}")
+                return True
+            except Exception as e:
+                self.logger.error(f"Fehler beim Entfernen von {norm_path}: {e}")
+                try:
+                    self._conn.rollback()
+                except Exception:
+                    pass
+                return False
     
     def get_stats(self) -> Dict[str, Any]:
         """Gibt Statistiken über den Index zurück."""
