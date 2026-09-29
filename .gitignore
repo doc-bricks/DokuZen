@@ -84,6 +84,22 @@ uv.lock
 *.bak
 *.swp
 
+# Security, Certificate & Secret Guards
+*.pfx
+*.p12
+*.cer
+*.crt
+*.pem
+*.key
+secrets.*
+credentials.json
+token.json
+keyring/
+
+# Test Run Outputs & Temporary Logs
+pytest_out.txt
+pytest*.txt
+
 *.exe
 *.msix
 *.appx

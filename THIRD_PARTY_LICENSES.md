@@ -2,7 +2,7 @@
 
 **Status:** Production Direct Runtime Dependency Inventory  
 **Audited:** 2026-08-24 (via PyPI JSON metadata & OSV/GHSA vulnerability scan)  
-**Re-Verified:** 2026-09-24 (Pfad A Turnus-Hygiene & CI Lifecycle Audit)
+**Re-Verified:** 2026-09-29 (Software Security, Dependency & License Compliance Audit)
 **Primary Project License:** [AGPL-3.0-or-later](LICENSE)  
 **Attribution & Copyright:** [NOTICE](NOTICE)
 
@@ -26,10 +26,10 @@ This document specifies DokuZen's direct Python runtime dependencies as declared
 | **PySide6** | `PySide6>=6.5.0` | `LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only` | Official Qt for Python GUI bindings and widget framework. | `>=6.5.0` |
 | **PyMuPDF** | `PyMuPDF>=1.24.0` | `AGPL-3.0-only` (or commercial Artifex) | High-speed PDF vector parsing, rendering, and text-layer extraction. | `>=1.24.0` |
 | **pikepdf** | `pikepdf>=8.15.1` | `MPL-2.0` | PDF decryption, structural repair, and QPDF bindings. | `>=8.15.1` |
-| **pillow** | `Pillow>=12.0.0` | `HPND` | Image format manipulation and transparency preservation. | `>=12.0.0` |
+| **pillow** | `Pillow>=12.3.0` | `HPND-sell-variant / MIT-CMU` | Image format manipulation and transparency preservation. | `>=12.3.0` |
 | **pytesseract** | `pytesseract>=0.3.13` | `Apache-2.0` | Subprocess wrapper for local Tesseract OCR engine. | `>=0.3.13` |
 | **python-docx** | `python-docx>=1.0.0` | `MIT` | Microsoft Word DOCX document parsing and text generation. | `>=1.0.0` |
-| **openpyxl** | `openpyxl>=3.1.0` | `MIT` | Excel spreadsheet parsing and table extraction. | `>=3.1.0` |
+| **openpyxl** | `openpyxl>=3.1.3` | `MIT` | Excel spreadsheet parsing and table extraction. | `>=3.1.3` |
 | **chardet** | `chardet>=5.0.0` | `0BSD` | Character encoding and Mojibake detection. | `>=5.0.0` |
 | **rapidfuzz** | `rapidfuzz>=3.0.0` | `MIT` | High-speed fuzzy string matching for redactions and search. | `>=3.0.0` |
 | **reportlab** | `reportlab>=4.2.0` | `BSD-3-Clause` | Programmatic PDF canvas generation and stamping. | `>=4.2.0` |

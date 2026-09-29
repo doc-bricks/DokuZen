@@ -22,7 +22,7 @@ DokuZen ist von Grund auf als 100% lokale, sichere Desktop-Dokumentensuite konzi
 Wenn Sie in DokuZen eine Sicherheitslücke oder ein potenzielles Sicherheitsrisiko finden:
 
 1. Bitte **kein** öffentliches Issue im GitHub-Tracker eröffnen.
-2. Nutzen Sie das private Sicherheitsmeldeportal von GitHub: [Security Advisories](https://github.com/doc-bricks/DokuZen/security/advisories).
+2. Nutzen Sie das private Sicherheitsmeldeportal von GitHub: [Security Advisories](https://github.com/doc-bricks/DokuZen/security/advisories) oder direkt das Formular [Neuen Sicherheitsbericht erstellen](https://github.com/doc-bricks/DokuZen/security/advisories/new).
 3. Alternativ per E-Mail an: `security@open-bricks.org`, `security@doc-bricks.org`, `security@ellmos.ai` oder `support@lukasgeiger.com`.
 4. Bitte fügen Sie eine Beschreibung des Problems, Reproduktionsschritte und die betroffene Version bei.
 
@@ -33,9 +33,9 @@ Wenn Sie in DokuZen eine Sicherheitslücke oder ein potenzielles Sicherheitsrisi
 - OCR- und Textextraktions-Pipelines (`pytesseract` Subprozess-Grenzen)
 - Persistenz- und Konfigurationsdateien (`dokuzen_state.json`, `settings.json`)
 
-### Reaktionszeit
+### Reaktionszeit & SLAs
 
-Kritische Sicherheitsmeldungen werden innerhalb von 48 Stunden bestätigt und mit höchster Priorität behoben.
+Kritische Sicherheitsmeldungen werden innerhalb von 48 Stunden bestätigt (Erstbestätigungs-SLA). Eine vollständige Triage und Einstufung erfolgt innerhalb von 5 Werktagen. Sicherheitsrelevante Patches werden unverzüglich als Hotfix bereitgestellt.
 
 ---
 
@@ -54,7 +54,7 @@ DokuZen is architected from the ground up as a 100% local, secure desktop docume
 If you discover a security vulnerability or potential risk in DokuZen:
 
 1. Do **not** open a public issue on GitHub.
-2. Use GitHub's private vulnerability reporting: [Security Advisories](https://github.com/doc-bricks/DokuZen/security/advisories).
+2. Use GitHub's private vulnerability reporting: [Security Advisories](https://github.com/doc-bricks/DokuZen/security/advisories) or directly the form [Open a new security advisory](https://github.com/doc-bricks/DokuZen/security/advisories/new).
 3. Alternatively, reach out via email: `security@open-bricks.org`, `security@doc-bricks.org`, `security@ellmos.ai`, or `support@lukasgeiger.com`.
 4. Include a detailed description, step-by-step reproduction guide, and affected version.
 
@@ -65,7 +65,7 @@ If you discover a security vulnerability or potential risk in DokuZen:
 - OCR and layout extraction pipelines (`pytesseract` subprocess boundaries)
 - State persistence and configuration management (`dokuzen_state.json`, `settings.json`)
 
-### Response Time
+### Response Time & SLAs
 
-Critical security advisories are acknowledged within 48 hours and resolved with top priority.
+Critical security advisories are acknowledged within 48 hours (initial acknowledgment SLA). Complete triage and classification is completed within 5 business days. Security patches are prioritized and released promptly.
 

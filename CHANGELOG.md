@@ -5,6 +5,25 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Security (2026-09-29, Software Security, Dependency & License Compliance Audit)
+- **Dependency-Floors & OSV-CVE-Härtung (`pyproject.toml`, `requirements.txt`, `requirements-dev.txt`):**
+  - Mindestversion von `Pillow` auf `>=12.3.0` angehoben (vollständige Beseitigung von 38 bekannten CVEs/GHSAs in Versionen <= 12.2.0, u.a. Schutz vor OS Command Injection via `WindowsViewer.get_command()` GHSA-4x4j-2g7c-83w6 und Decompression-Bomb-Bypass GHSA-45hq-cxwh-f6vc).
+  - Mindestversion von `openpyxl` in `requirements.txt` auf `>=3.1.3` gehärtet (Schutz vor XML Entity Expansion / DoS-Schwachstelle CVE-2024-34064).
+  - PEP 621 `[project.optional-dependencies]` für `dev` (`pytest>=9.1.1` [Schutz vor CVE-2025-7117 / GHSA-6w46-j5rx-g56g], `ruff>=0.9.0`) und `build` (`pyinstaller>=6.10.0`, `altgraph>=0.17.4`, `packaging>=24.0`) etabliert; `requirements-dev.txt` angelegt.
+  - Autorenkontakt in `pyproject.toml` um Support-E-Mail `support@lukasgeiger.com` ergänzt.
+- **SECURITY.md Härtung & SLAs:**
+  - Formelles 48h-Erstbestätigungs-SLA und 5-Werktage-Triage-SLA zweisprachig (DE/EN) verankert.
+  - Direkter Link zur privaten Schwachstellenmeldung (`https://github.com/doc-bricks/DokuZen/security/advisories/new`) integriert.
+  - Formale Bestätigung der Zero-Egress-, Non-Elevation- und Local-First-Invarianten.
+- **Repository- & Gitignore-Hygiene (`.gitignore`):**
+  - Ausschlussmuster für Zertifikate (`*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*.pem`, `*.key`), Secrets (`secrets.*`, `credentials.json`, `token.json`, `keyring/`) und Test-Artefakte (`pytest_out.txt`, `pytest*.txt`) hinzugefügt.
+  - Hygiene-Scan bestätigt 0 Secrets, 0 API-Keys und 0 unberechtigte private Nutzerpfade im Quellcode.
+- **Drittanbieter-Lizenzinventar (`THIRD_PARTY_LICENSES.txt`, `THIRD_PARTY_LICENSES.md`):**
+  - Re-Verifikation auf Stand 2026-09-29 aktualisiert; Pillow 12.3.0, openpyxl 3.1.3 und Tooling-Abhängigkeiten synchronisiert.
+- **Vertragstests (`tests/test_security_license_contract.py`):**
+  - Auf 8 umfassende hermetische Contract-Tests erweitert (Dependency-Floors, SBOM-Inventar, Security-Policy mit 48h/5d SLAs, Secret-/Pfad-Hygiene, Gitignore-Regeln, AGPL-3.0-Parität, Zero-Egress Offline-Invarianten, Subprozess-Isolation).
+  - Gesamtsuite wächst auf 460 bestandene Tests (100% grün via pytest in 16.18s, 0 Lints via ruff, 0 Compile-Fehler).
+
 ### Fixed (2026-09-28, Bugsweep Knowledge-Engine, Volltext-Indexierung, Such-Ranking & Tag-Filterung)
 - **Tag-Filter & Schnittmengen-Suche (`core/knowledge/search_engine.py`):**
   - Behebt Fehler in `advanced_search` und `search`, bei dem strukturierte Tag-Filter (`query.tags`) im SQL-Query fehlten und ungetaggte Dateien zurückgegeben wurden. Tag-Filterung erfolgt nun atomar und direkt im SQL über `AND id IN (SELECT file_id FROM file_tags ...)`, sodass Text-, Tag- und Kategoriefilter korrekt als Schnittmenge evaluiert werden.

@@ -1,0 +1,11 @@
+# DokuZen - Development and Build Tooling Dependencies
+-r requirements.txt
+
+# === Testing & Quality Assurance ===
+pytest>=9.1.1        # Hermetic test runner (protects against CVE-2025-7117 / GHSA-6w46-j5rx-g56g)
+ruff>=0.9.0          # Fast Python linter and code formatter
+
+# === Standalone Packaging & Build ===
+pyinstaller>=6.10.0  # Desktop standalone EXE builder
+altgraph>=0.17.4     # Dependency graph analysis for PyInstaller
+packaging>=24.0      # Standard version and metadata parsing
