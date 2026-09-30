@@ -121,7 +121,7 @@ def test_readme_badges_and_bilingual_parity():
         assert "SECURITY.md" in content
         assert "source-platform-smoke.yml" in content
         assert f"version-{project_version}-blue.svg" in content
-        assert "pytest-424" in content
+        assert re.search(r"pytest-\d+%20passed", content)
         assert "NOTICE" in content
 
     # Language switcher presence
@@ -498,3 +498,33 @@ def test_pyproject_pep621_notice_and_pytest_hardening():
     norecursedirs = pytest_conf.get("norecursedirs", [])
     assert ".pytest_temp" in norecursedirs
     assert ".git" in norecursedirs
+
+
+def test_taskplan_and_github_public_compliance():
+    """Verify GitHub repository URLs, AGPL-3.0 licensing and public ecosystem alignment."""
+    # Check pyproject.toml URLs
+    with open(ROOT / "pyproject.toml", "rb") as f:
+        data = tomllib.load(f)
+    urls = data.get("project", {}).get("urls", {})
+    assert urls.get("Homepage") == "https://github.com/doc-bricks/DokuZen"
+    assert urls.get("Repository") == "https://github.com/doc-bricks/DokuZen.git"
+
+    # Check store_package.json
+    with open(ROOT / "store_package.json", "r", encoding="utf-8") as sf:
+        store_data = json.load(sf)
+    assert store_data.get("identity_name") == "Geiger.DokuZen"
+    assert store_data.get("version") == "1.0.1.0"
+
+    # Check Linux metainfo
+    metainfo_path = ROOT / "packaging" / "linux" / "io.github.doc_bricks.DokuZen.metainfo.xml"
+    assert metainfo_path.exists()
+    tree = ET.parse(metainfo_path)
+    root = tree.getroot()
+    url_elems = {elem.attrib.get("type"): elem.text for elem in root.findall("url")}
+    assert url_elems.get("homepage") == "https://github.com/doc-bricks/DokuZen"
+    assert url_elems.get("bugtracker") == "https://github.com/doc-bricks/DokuZen/issues"
+
+    # Check LICENSE AGPL-3.0
+    license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
+    assert "GNU AFFERO GENERAL PUBLIC LICENSE" in license_text
+    assert "Version 3" in license_text

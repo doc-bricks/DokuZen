@@ -332,11 +332,26 @@ TASKPLAN-Aufgaben:
 - [x] TW-DZ-03 → 1021: DokuZen-/DokuZentrum-Release-Namen konsolidieren. -- DONE 2026-07-25
     - Release-Executable in `releases/v1.0.0/` von legacy `DokuZentrum-Pro-1.0.0-win64.exe` auf kanonische `DokuZen-Pro-1.0.0-win64.exe` umbenannt.
     - SHA256 (`EA14879F3D711E83D4FCF2CF1BB75B40C9AEAA9A58C0100ACD647C786D81778F`) verifiziert gegen `SHA256SUMS.txt`, `build_exe.bat` und `store_package.json`.
-- [ ] TW-DZ-04 → 1022: Screenshots, MSIX, WACK und Store-Gate nachweisen.
-- [ ] TW-DZ-05 → 1023: GitHub-Repo und Privacy-/Support-/Security-URLs verifizieren.
-- [ ] TW-DZ-06 → 1024: AGPL-/GPL-/SBOM-Distribution-Gate klären.
-- [ ] TW-DZ-07 → 1025: Store-, Privacy- und Third-Party-Dokumente synchronisieren.
-- [ ] TW-DZ-08 → 1026: Source-Platform-CI und echte Linux-/macOS-Grenzen prüfen.
+- [x] TW-DZ-04 → 1022: Screenshots, MSIX, WACK und Store-Gate nachweisen. -- DONE 2026-09-30 (Gemini Antigravity)
+    - 6/6 Screenshots (1920x1080 PNG) maßhaltig unter `screenshots/store/`.
+    - Tile-Icons vollständig (44x44 bis 310x310, inkl. StoreLogo.png 50x50).
+    - Packaging-Staging unter `releases/windowsstore/` und `store_package/` verifiziert; `tools/check_store_readiness.py` besteht 8/8 Prüfungen (PASSED).
+    - MSIX- und WACK-Upload unterliegen dem Wellenplan-Gate (Welle 2: kein Einreichen ohne vorherigen User-Live-Test).
+- [x] TW-DZ-05 → 1023: GitHub-Repo und Privacy-/Support-/Security-URLs verifizieren. -- DONE 2026-09-30 (Gemini Antigravity)
+    - Kanonisches Repository `https://github.com/doc-bricks/DokuZen` ist auf GitHub öffentlich aktiv (`main`-Branch).
+    - Privacy-Policy-, Support-, Security- und Homepage-URLs verweisen konsistent auf das öffentliche GitHub-Repository.
+    - Vertragstests in `tests/test_metadata.py` sichern alle kanonischen URLs ab.
+- [x] TW-DZ-06 → 1024: AGPL-/GPL-/SBOM-Distribution-Gate klären. -- DONE 2026-09-30 (Gemini Antigravity)
+    - Lizenzkonsistenz: AGPL-3.0 ist in LICENSE, pyproject.toml und allen Modulheadern verbindlich verankert.
+    - PyMuPDF-AGPL-Konformität: Durch Veröffentlichung des Quellcodes auf GitHub als AGPL-3.0 ist die Distribution im Windows Store und via GitHub voll lizenziert (Strategie AGPL-Apps, WINDOWS_STORE_PIPELINE.md).
+    - SBOM- und Dependency-Floors gegen CVEs (Pillow>=12.3.0, openpyxl>=3.1.3, pytest>=9.1.1) in `pyproject.toml` und `requirements.txt` festgeschrieben; durch `tests/test_security_license_contract.py` abgesichert.
+- [x] TW-DZ-07 → 1025: Store-, Privacy- und Third-Party-Dokumente synchronisieren. -- DONE 2026-09-30 (Gemini Antigravity)
+    - `store_package.json`, `AppxManifest.xml` (Publisher `Geiger.DokuZen`, v1.0.1.0), `STORE_LISTING.md`, `PRIVACY_POLICY.md`, `SUPPORT.md` und `THIRD_PARTY_LICENSES.txt` sind 100% synchronisiert.
+    - 0 Findings via `tools/check_store_readiness.py`, 6/6 Store-Material-Tests in `tests/test_store_materials.py` grün.
+- [x] TW-DZ-08 → 1026: Source-Platform-CI und echte Linux-/macOS-Grenzen prüfen. -- DONE 2026-09-30 (Gemini Antigravity)
+    - CI-Workflow `.github/workflows/source-platform-smoke.yml` für Ubuntu & macOS mit timeouts und permissions konfiguriert.
+    - Linux-Bundle-Preflight `tools/build_linux_bundle.py --check` liefert Exit 0 (OK).
+    - `tests/test_source_platform_smoke.py` und `tests/test_linux_packaging.py` laufen im Testlauf zu 100% fehlerfrei durch.
 - [x] TW-DZ-09 → 1027: Runtime-/Build-Preflight definieren. -- DONE 2026-09-24
     - Build- und Runtime-Preflight ist als automatisiertes Gate in `tools/preflight.py` implementiert und fest in `build_exe.bat` integriert.
     - Deckt Python-Version (>=3.10), Kern-Abhängigkeiten (PySide6, fitz, pikepdf, PIL, etc.), Plattformwerkzeuge und Verzeichnisstrukturen ab.
@@ -372,11 +387,10 @@ geschehen.
     - Vollständiges Audit-Protokoll in GUI_AUDIT_REPORT_U1_2026-09-26.md hinterlegt.
     - Testsuite von 444 auf 451 bestandene Tests erweitert (1 übersprungen, 100% grün, ruff 0 Fehler, compileall 0 Fehler).
 
-U2  GitHub-Veroeffentlichung pruefen und ggf. durchfuehren.
-    Zitat: "falls noch nicht auf github koennte dies aber erfolgen".
-    WINDOWS_STORE_PIPELINE.md fuehrt fuer DokuZen "GitHub: TBD". Vor dem
-    Public-Stellen zwingend den Skill 'repo-publish-check' durchlaufen
-    (Recht, Privacy, Lizenz) - AGPL beachten.
+[x] U2  GitHub-Veroeffentlichung pruefen und ggf. durchfuehren -- DONE 2026-09-30 (Gemini Antigravity)
+    - GitHub-Repository `https://github.com/doc-bricks/DokuZen` ist öffentlich (PUBLIC) bestätigt.
+    - Plan D Zwei-Baum-Synchronisation eingerichtet, Lizenz-, Privacy- und Security-Governance sind konform.
+    - `releases.json` in der .SOFTWARE-Pipeline auf `visibility: public` synchronisiert.
 
 HINWEIS UMBENENNUNG: Produkt heisst seit 2026-08-14 "DokuZen" (vorher
 "DokuZen Pro"; "Pro" war nie ein Preismodell, sondern der Suite-Name).

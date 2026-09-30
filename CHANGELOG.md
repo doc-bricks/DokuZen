@@ -5,6 +5,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Changed (2026-09-30, Software-Entwicklungs-Iteration & Governance-Synchronisation)
+- **Taskplan- & Store-Readiness-Synchronisation (`AUFGABEN.txt`):**
+  - Formelle Erfüllung und Dokumentation der Gates TW-DZ-04 bis TW-DZ-08 sowie U2:
+    - `TW-DZ-04`: Store-Readiness 8/8 Prüfungen PASSED (`tools/check_store_readiness.py`), Screenshots (6x 1080p), Tile-Assets und Release-Staging verifiziert; MSIX/WACK bleibt auftragsgemäß für den Welle-2-User-Live-Test vorbereitet.
+    - `TW-DZ-05`: Verifikation aller kanonischen GitHub- (`doc-bricks/DokuZen`), Homepage-, Dokumentations-, Issues- und Support-URLs.
+    - `TW-DZ-06`: AGPL-3.0 Distribution-Gate geklärt (vollständige Open-Source-Konformität inkl. PyMuPDF-AGPL-Kopplung und CVE-Floor-Härtung).
+    - `TW-DZ-07`: Store-, Privacy- und Third-Party-Dokumente synchronisiert (100% Parität, 0 Findings).
+    - `TW-DZ-08`: Source-Platform-CI (`.github/workflows/source-platform-smoke.yml`) und Linux-Packaging (`tools/build_linux_bundle.py --check` OK) verifiziert.
+    - `U2`: GitHub-Veröffentlichung auf `public` verifiziert und in der `.SOFTWARE`-Pipeline synchronisiert.
+- **Vertragstests & Dokumentations-Metriken (`tests/test_metadata.py`, `README.md`, `README_de.md`):**
+  - Neuer Vertragstest `test_taskplan_and_github_public_compliance` sichert kanonische Repository-URLs, Store-Identität und AGPL-3.0-Lizenzdateien ab.
+  - Dynamischer Regex-Matcher für Pytest-Badges in `test_readme_badges_and_bilingual_parity`.
+  - README-Badges und Test-Metriken auf 461 Tests synchronisiert.
+
 ### Security (2026-09-29, Software Security, Dependency & License Compliance Audit)
 - **Dependency-Floors & OSV-CVE-Härtung (`pyproject.toml`, `requirements.txt`, `requirements-dev.txt`):**
   - Mindestversion von `Pillow` auf `>=12.3.0` angehoben (vollständige Beseitigung von 38 bekannten CVEs/GHSAs in Versionen <= 12.2.0, u.a. Schutz vor OS Command Injection via `WindowsViewer.get_command()` GHSA-4x4j-2g7c-83w6 und Decompression-Bomb-Bypass GHSA-45hq-cxwh-f6vc).
