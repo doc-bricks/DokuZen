@@ -81,6 +81,13 @@ jobs:
         run: |
           python -m pytest tests/test_search_bar_platform_open.py tests/test_registry_platform_import.py -v
 
+      - name: Run collection export and output protection tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -m pytest tests/test_pdf_collection.py tests/test_collection_publication.py -v
+
       - name: Run store-materials and readiness tests
         env:
           PYTHONIOENCODING: utf-8
