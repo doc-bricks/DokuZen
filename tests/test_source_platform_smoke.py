@@ -12,7 +12,9 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import fitz
+from PySide6.QtCore import QCoreApplication, QEvent, QSettings
 from PySide6.QtWidgets import QApplication
+from shiboken6 import isValid
 
 import gui.main_window as main_window_module
 from core.library.persistence import PersistenceManager
@@ -30,6 +32,12 @@ class SourcePlatformSmokeTest(unittest.TestCase):
         self.state_file = self.tmp_path / "dokuzen_state.json"
         self.original_state_file = PersistenceManager.DEFAULT_STATE_FILE
         PersistenceManager.DEFAULT_STATE_FILE = self.state_file
+        self._settings_patch = mock.patch(
+            "PySide6.QtCore.QSettings",
+            side_effect=lambda *args: QSettings(str(self.tmp_path / "settings.ini"), QSettings.Format.IniFormat),
+        )
+        self._settings_patch.start()
+        self.addCleanup(self._settings_patch.stop)
 
         self.text_path = self.tmp_path / "Überblick_äöü.md"
         self.text_path.write_text(
@@ -49,6 +57,10 @@ class SourcePlatformSmokeTest(unittest.TestCase):
     def tearDown(self):
         try:
             self.window.close()
+            # Destroy widgets on the GUI thread while QApplication is still alive.
+            self.window.deleteLater()
+            QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+            self.assertFalse(isValid(self.window))
         finally:
             PersistenceManager.DEFAULT_STATE_FILE = self.original_state_file
             self._tmp.cleanup()

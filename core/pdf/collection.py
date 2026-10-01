@@ -203,7 +203,8 @@ class CollectionExporter(LoggerMixin):
             with tempfile.TemporaryDirectory(prefix=".dokuzen-collection-", dir=out_p.parent) as directory:
                 staged = Path(directory) / "collection.pdf"
                 output_doc.save(str(staged), garbage=3, deflate=True)
-                with fitz.open(str(staged)) as verified:
+                # Parse bytes so a failed native open cannot retain a Windows file handle.
+                with fitz.open(stream=staged.read_bytes(), filetype="pdf") as verified:
                     if not verified.is_pdf or verified.is_encrypted or len(verified) != total_pages:
                         raise ValueError("Die erzeugte Sammel-PDF ist unvollständig.")
                 self._check_output_sources(out_p, originals)
