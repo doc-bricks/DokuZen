@@ -10,6 +10,7 @@ optionaler Seitennummerierung und robuster Formatkonvertierung.
 
 from dataclasses import dataclass, field
 from pathlib import Path
+import os
 import tempfile
 from typing import List, Optional, Sequence, Tuple, Union
 
@@ -76,6 +77,18 @@ class CollectionExporter(LoggerMixin):
         if not PYMUPDF_AVAILABLE:
             self.logger.warning("PyMuPDF ist nicht verfügbar")
 
+    @staticmethod
+    def _check_output_sources(destination: Path, originals: Sequence[Path]) -> None:
+        for source in originals:
+            if destination.resolve() == source.resolve():
+                raise ValueError(f"Exportziel ist ein Quelldokument: {source}")
+            try:
+                same_file = destination.samefile(source)
+            except FileNotFoundError:
+                same_file = False
+            if same_file:
+                raise ValueError(f"Exportziel verweist auf ein Quelldokument: {source}")
+
     def export(
         self,
         documents: Sequence[Union[str, Path]],
@@ -109,18 +122,21 @@ class CollectionExporter(LoggerMixin):
 
         opts = options or CollectionExportOptions()
         out_p = Path(output_path)
-        out_p.parent.mkdir(parents=True, exist_ok=True)
 
         output_doc = None
         temp_files: List[Path] = []
         skipped: List[str] = []
         toc_entries: List[List[Union[int, str]]] = []
         doc_count = 0
+        published = False
 
         try:
+            originals = tuple(Path(entry) for entry in documents)
+            self._check_output_sources(out_p, originals)
+            out_p.parent.mkdir(parents=True, exist_ok=True)
             output_doc = fitz.open()
 
-            for doc_entry in documents:
+            for doc_entry in originals:
                 p = Path(doc_entry)
                 if not p.exists() or not p.is_file():
                     self.logger.warning("Datei übersprungen (nicht gefunden): %s", p)
@@ -184,7 +200,16 @@ class CollectionExporter(LoggerMixin):
             output_doc.set_metadata(meta)
 
             # Speichern
-            output_doc.save(str(out_p), garbage=3, deflate=True)
+            with tempfile.TemporaryDirectory(prefix=".dokuzen-collection-", dir=out_p.parent) as directory:
+                staged = Path(directory) / "collection.pdf"
+                output_doc.save(str(staged), garbage=3, deflate=True)
+                # Parse bytes so a failed native open cannot retain a Windows file handle.
+                with fitz.open(stream=staged.read_bytes(), filetype="pdf") as verified:
+                    if not verified.is_pdf or verified.is_encrypted or len(verified) != total_pages:
+                        raise ValueError("Die erzeugte Sammel-PDF ist unvollständig.")
+                self._check_output_sources(out_p, originals)
+                os.replace(staged, out_p)
+                published = True
             self.logger.info(
                 "Sammel-PDF erfolgreich erstellt: %s (%d Seiten aus %d Dokumenten)",
                 out_p,
@@ -201,6 +226,12 @@ class CollectionExporter(LoggerMixin):
             )
 
         except Exception as exc:
+            if published:
+                self.logger.warning("Sammel-PDF veröffentlicht; nachträgliche Bereinigung fehlgeschlagen: %s", exc)
+                return CollectionExportResult(
+                    success=True, output_path=str(out_p), total_pages=total_pages,
+                    document_count=doc_count, skipped_files=skipped,
+                )
             self.logger.error("Fehler beim Sammel-PDF-Export: %s", exc, exc_info=True)
             return CollectionExportResult(
                 success=False,
@@ -212,7 +243,7 @@ class CollectionExporter(LoggerMixin):
             )
 
         finally:
-            if output_doc:
+            if output_doc is not None:
                 output_doc.close()
             # Temporäre Konvertierungsdateien bereinigen
             for tf in temp_files:
