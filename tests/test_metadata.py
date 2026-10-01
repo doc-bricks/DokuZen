@@ -404,7 +404,11 @@ def test_ci_lifecycle_and_hardening_workflows():
     welcome_path = workflows_dir / "welcome.yml"
     assert welcome_path.exists(), "welcome.yml must exist"
     w_content = welcome_path.read_text(encoding="utf-8")
-    assert "actions/first-interaction@v3" in w_content
+    assert re.search(r"^\s+uses: actions/first-interaction@[0-9a-f]{40}(?:\s+#.*)?$", w_content, re.MULTILINE)
+    welcome_inputs = set(re.findall(
+        r"^\s+(repo[_-]token|issue[_-]message|pr[_-]message):", w_content, re.MULTILINE
+    ))
+    assert welcome_inputs == {"repo_token", "issue_message", "pr_message"}
     assert "timeout-minutes: 5" in w_content
     assert "cancel-in-progress: true" in w_content
     assert "issues: write" in w_content
