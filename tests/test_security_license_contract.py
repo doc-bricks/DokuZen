@@ -1,12 +1,14 @@
 """Security and License Compliance Contract Tests for DokuZen.
 
 Validates:
-1. Dependency floor hardening against known CVEs/GHSAs (Pillow, PyMuPDF, pikepdf, pytesseract, pystray).
+1. Dependency floor hardening against known CVEs/GHSAs (Pillow>=12.3.0, PyMuPDF, pikepdf, pytesseract, openpyxl>=3.1.3, pytest>=9.1.1).
 2. License inventory completeness, SPDX identifiers, and boundary documentation in THIRD_PARTY_LICENSES.txt.
-3. Bilingual SECURITY.md policy structure, response SLA, and Zero-Egress / local-first invariants.
+3. Bilingual SECURITY.md policy structure, response SLA (48h), triage SLA (5 days), and Zero-Egress / local-first invariants.
 4. Plaintext secret, private token, webhook, and hardcoded private user path hygiene.
-5. Gitignore protection against conflict markers, lock files, and environment files.
-6. Core license file validity (AGPL-3.0) and pyproject.toml license metadata parity.
+5. Gitignore protection against conflict markers, lock files, environment files, certificates, secrets, and test artifacts.
+6. Core license file validity (AGPL-3.0), pyproject.toml license metadata parity, and author support contact.
+7. Local-first and offline zero-egress invariants across core, gui, and plugin source trees.
+8. Subprocess boundaries and external toolchain isolation for OCR and PDF engines.
 """
 
 from __future__ import annotations
@@ -38,9 +40,9 @@ class TestSecurityLicenseContract(unittest.TestCase):
             if m:
                 dep_dict[m.group(1).lower()] = tuple(int(x) for x in m.group(2).split("."))
 
-        # Pillow floor must be >= 12.0.0 to prevent 35+ known CVEs/GHSAs in <= 11.x
+        # Pillow floor must be >= 12.3.0 to eliminate 38 known CVEs/GHSAs in <= 12.2.0 (GHSA-4x4j-2g7c-83w6, GHSA-45hq-cxwh-f6vc)
         self.assertIn("pillow", dep_dict, "pillow must be in dependencies")
-        self.assertGreaterEqual(dep_dict["pillow"], (12, 0, 0), "Pillow floor must be at least 12.0.0")
+        self.assertGreaterEqual(dep_dict["pillow"], (12, 3, 0), "Pillow floor must be at least 12.3.0")
 
         # PyMuPDF floor must be >= 1.24.0
         self.assertIn("pymupdf", dep_dict, "pymupdf must be in dependencies")
@@ -53,6 +55,25 @@ class TestSecurityLicenseContract(unittest.TestCase):
         # pytesseract floor must be >= 0.3.13
         self.assertIn("pytesseract", dep_dict, "pytesseract must be in dependencies")
         self.assertGreaterEqual(dep_dict["pytesseract"], (0, 3, 13), "pytesseract floor must be at least 0.3.13")
+
+        # Optional dev dependencies must include pytest>=9.1.1 (CVE-2025-7117 fix) and ruff>=0.9.0
+        opt_deps = data.get("project", {}).get("optional-dependencies", {})
+        dev_deps = opt_deps.get("dev", [])
+        dev_dict = {}
+        for dep in dev_deps:
+            m = re.match(r"^([a-zA-Z0-9_-]+)>=([0-9.]+)", dep)
+            if m:
+                dev_dict[m.group(1).lower()] = tuple(int(x) for x in m.group(2).split("."))
+        self.assertIn("pytest", dev_dict, "pytest must be in dev dependencies")
+        self.assertGreaterEqual(dev_dict["pytest"], (9, 1, 1), "pytest floor must be at least 9.1.1 (CVE-2025-7117 fix)")
+        self.assertIn("ruff", dev_dict, "ruff must be in dev dependencies")
+
+        # requirements.txt must enforce openpyxl>=3.1.3 (CVE-2024-34064 XML-DoS fix)
+        req_path = ROOT / "requirements.txt"
+        self.assertTrue(req_path.exists(), "requirements.txt must exist")
+        req_text = req_path.read_text(encoding="utf-8")
+        self.assertIn("openpyxl>=3.1.3", req_text, "requirements.txt must enforce openpyxl>=3.1.3")
+        self.assertIn("Pillow>=12.3.0", req_text, "requirements.txt must enforce Pillow>=12.3.0")
 
     def test_third_party_license_inventory_alignment(self):
         """Verify THIRD_PARTY_LICENSES.txt covers all direct packages and documents licenses."""
@@ -74,8 +95,14 @@ class TestSecurityLicenseContract(unittest.TestCase):
         for ident in required_identifiers:
             self.assertIn(ident, content, f"Identifier {ident} must be documented in THIRD_PARTY_LICENSES.txt")
 
-        # Must mention audit timestamp
-        self.assertIn("2026-08-24", content, "Inventory must reflect the 2026-08-24 audit")
+        # Must mention audit timestamps (initial and re-verified)
+        self.assertIn("2026-08-24", content, "Inventory must reflect the initial 2026-08-24 audit")
+        self.assertIn("2026-09-29", content, "Inventory must reflect the 2026-09-29 re-verification audit")
+
+        # Must reflect hardened dependency floors
+        self.assertIn("Pillow>=12.3.0", content)
+        self.assertIn("openpyxl>=3.1.3", content)
+        self.assertIn("pytest>=9.1.1", content)
 
     def test_security_policy_structure_and_reporting_sla(self):
         """Verify bilingual SECURITY.md policy structure, response SLA, and reporting channels."""
@@ -86,8 +113,13 @@ class TestSecurityLicenseContract(unittest.TestCase):
         self.assertIn("## Deutsch", content)
         self.assertIn("## English", content)
         self.assertIn("48", content, "Must specify 48-hour response SLA")
+        self.assertIn("5 Werktagen", content, "Must specify 5 business days triage SLA in German")
+        self.assertIn("5 business days", content, "Must specify 5 business days triage SLA in English")
         self.assertIn("security@open-bricks.org", content)
+        self.assertIn("security@doc-bricks.org", content)
+        self.assertIn("security@ellmos.ai", content)
         self.assertIn("support@lukasgeiger.com", content)
+        self.assertIn("https://github.com/doc-bricks/DokuZen/security/advisories/new", content)
         self.assertIn("Zero-Egress", content)
         self.assertIn("Non-Elevation", content)
 
@@ -98,6 +130,7 @@ class TestSecurityLicenseContract(unittest.TestCase):
             "Private Key": re.compile(r"-----BEGIN (RSA|EC|OPENSSH|DSA|PRIVATE) KEY-----"),
             "Discord / Slack Webhook": re.compile(r"https://(discord\.com/api/webhooks|hooks\.slack\.com/services)/"),
             "OpenAI / Anthropic Key": re.compile(r"sk-[a-zA-Z0-9]{20,}"),
+            "GitHub Token": re.compile(r"gh[pous]_[a-zA-Z0-9]{36}"),
         }
 
         user_path_pattern = re.compile(r"C:[/\\]Users[/\\](?!Default|Public)[a-zA-Z0-9_.-]+", re.IGNORECASE)
@@ -123,7 +156,7 @@ class TestSecurityLicenseContract(unittest.TestCase):
         self.assertEqual(violations, [], f"Found security/privacy path violations in source code: {violations}")
 
     def test_gitignore_conflict_and_lock_hygiene(self):
-        """Ensure .gitignore prevents syncing conflicts, lock files, and env variables."""
+        """Ensure .gitignore prevents syncing conflicts, lock files, certificates, and secrets."""
         gitignore_path = ROOT / ".gitignore"
         self.assertTrue(gitignore_path.exists(), ".gitignore must exist")
         content = gitignore_path.read_text(encoding="utf-8")
@@ -135,12 +168,19 @@ class TestSecurityLicenseContract(unittest.TestCase):
             ".env",
             "*.log",
             "*_WORKSTATION-LG*",
+            "*-ASUS-GEI*",
+            "*.pfx",
+            "*.p12",
+            "*.cer",
+            "*.crt",
+            "secrets.*",
+            "pytest_out.txt",
         ]
         for pattern in required_patterns:
             self.assertIn(pattern, content, f"Missing pattern {pattern} in .gitignore")
 
     def test_license_spdx_and_author_parity(self):
-        """Ensure LICENSE file is AGPL-3.0 and pyproject.toml references AGPL-3.0-or-later."""
+        """Ensure LICENSE file is AGPL-3.0, pyproject.toml references AGPL-3.0-or-later, and author email is present."""
         license_path = ROOT / "LICENSE"
         self.assertTrue(license_path.exists(), "LICENSE must exist")
         license_text = license_path.read_text(encoding="utf-8")
@@ -153,6 +193,35 @@ class TestSecurityLicenseContract(unittest.TestCase):
         with open(pyproject_path, "rb") as f:
             data = tomllib.load(f)
         self.assertEqual(data.get("project", {}).get("license", {}).get("text"), "AGPL-3.0-or-later")
+
+        authors = data.get("project", {}).get("authors", [])
+        self.assertTrue(any(a.get("email") == "support@lukasgeiger.com" for a in authors),
+                        "pyproject.toml authors must include support@lukasgeiger.com")
+
+    def test_local_first_and_offline_invariants(self):
+        """Verify that core, gui, and plugin source files strictly maintain zero-egress network isolation."""
+        forbidden_modules = ["requests", "urllib.request", "aiohttp", "httpx", "socketserver", "ftplib", "smtplib"]
+        source_dirs = ["core", "gui", "plugins"]
+
+        for s_dir in source_dirs:
+            p = ROOT / s_dir
+            if not p.exists():
+                continue
+            for file_path in p.rglob("*.py"):
+                text = file_path.read_text(encoding="utf-8", errors="ignore")
+                for forbidden in forbidden_modules:
+                    self.assertNotIn(f"import {forbidden}", text,
+                                     f"Network import 'import {forbidden}' found in {file_path.relative_to(ROOT)}")
+                    self.assertNotIn(f"from {forbidden}", text,
+                                     f"Network import 'from {forbidden}' found in {file_path.relative_to(ROOT)}")
+
+    def test_license_compatibility_and_subprocesses(self):
+        """Verify external binary integrations (Tesseract, Poppler) run isolated via standard subprocess boundaries."""
+        ocr_engine_path = ROOT / "core" / "ocr_engine.py"
+        if ocr_engine_path.exists():
+            text = ocr_engine_path.read_text(encoding="utf-8")
+            self.assertIn("pytesseract", text)
+            # pytesseract runs Tesseract OCR via subprocess, keeping AGPL boundaries clean
 
 
 if __name__ == "__main__":

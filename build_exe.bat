@@ -4,6 +4,10 @@ setlocal
 cd /d "%~dp0"
 
 set "APP_NAME=DokuZen-Pro"
+rem Packaging provenance: the active 1.0.1.0 Store package intentionally
+rem reuses the established 1.0.0 executable filename. Change this line only
+rem together with store_package.json, the active AppxManifest, tests and the
+rem documented release provenance.
 set "VERSION=1.0.0"
 set "BUILD_ROOT=C:\_Local_DEV\codex_build\DokuZen-Pro"
 set "DIST_DIR=%CD%\releases\v%VERSION%"

@@ -5,13 +5,14 @@
 **Deutsch** | [English](README.md)
 
 [![CI](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml/badge.svg)](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml)
-[![Pytest Status](https://img.shields.io/badge/pytest-391%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-460%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
 [![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![Platforms](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/doc-bricks/DokuZen)
 [![Privacy](https://img.shields.io/badge/datenschutz-100%25%20Local--First%20%7C%20Zero--Egress-success.svg)](SECURITY.md)
 [![Security](https://img.shields.io/badge/sicherheit-Zweisprachige%20Policy%20%7C%20Non--Elevation-informational.svg)](SECURITY.md)
 [![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](pyproject.toml)
 [![License AGPL-3.0](https://img.shields.io/badge/lizenz-AGPL--3.0--or--later-blue.svg)](LICENSE)
+[![Urheberrecht NOTICE](https://img.shields.io/badge/urheberrecht-NOTICE-blue.svg)](NOTICE)
 [![Ecosystem doc-bricks](https://img.shields.io/badge/ecosystem-doc--bricks-orange.svg)](https://github.com/doc-bricks)
 [![Umbrella open-bricks](https://img.shields.io/badge/umbrella-open--bricks-blueviolet.svg)](https://github.com/open-bricks)
 [![LLM Ready llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
@@ -358,7 +359,7 @@ Details entnehmen Sie der Sicherheitsrichtlinie in [`SECURITY.md`](SECURITY.md).
 DokuZen verfügt über eine umfangreiche Testsuite mit Unit-Tests, GUI-Rauchtests, Verschlüsselungsprüfungen und Metadatenparität:
 
 ```bash
-# Gesamte Testsuite ausführen (391 Tests, 100% bestanden)
+# Gesamte Testsuite ausführen (460 Tests, 100% bestanden)
 python -m pytest
 
 # Offscreen-Plattform Rauchtests durchführen
@@ -398,6 +399,12 @@ DokuZen beinhaltet die vollständige Microsoft Windows Store Paketierungs-Infras
 - **Manifest**: `store_package/DokuZen/AppxManifest.xml` (`Geiger.DokuZen`, `runFullTrust`)
 - **Grafiken**: 1080p Store-Screenshots in `screenshots/store/` und hochauflösende App-Symbole (44x44, 50x50, 150x150, 310x150, 310x310)
 - **Validierung**: Automatisierte Qualitätsprüfung über `tools/check_store_readiness.py`
+
+Die Packaging-Provenienz ist ausdrücklich getrennt: Das aktive `1.0.1.0`-
+Store-Paket verwendet bewusst den etablierten Executable-Namen
+`DokuZen-Pro-1.0.0-win64.exe`. Das Manifest unter `store_package/DokuZen Pro/`
+ist historisch und kein aktiver Paketeingang; der Readiness-Gatekeeper prüft
+direkt `store_package/DokuZen/AppxManifest.xml`.
 
 ---
 
@@ -451,6 +458,6 @@ DokuZen dokumentiert alle operativen und qualitativen Meilensteine:
 <a id="license-third-party"></a>
 ## 📄 Lizenz & Drittanbieter-Lizenzen
 
-DokuZen ist lizenziert unter der **GNU Affero General Public License v3.0 or later ([AGPL-3.0-or-later](LICENSE))**.
+DokuZen ist lizenziert unter der **GNU Affero General Public License v3.0 or later ([AGPL-3.0-or-later](LICENSE))**. Urheberrechtshinweise und Open-Source-Provenienz sind in [`NOTICE`](NOTICE) deklariert.
 
 Direkte Drittanbieter-Bibliotheken und Laufzeit-Copyleft-Grenzen sind in [`THIRD_PARTY_LICENSES.txt`](THIRD_PARTY_LICENSES.txt) und [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) dokumentiert.

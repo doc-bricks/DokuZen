@@ -14,7 +14,7 @@
     <DisplayName>DokuZen</DisplayName>
     <PublisherDisplayName>Geiger</PublisherDisplayName>
     <Description>Lokale Dokumenten-Werkstatt für PDF-Bearbeitung, OCR, Schwärzung, Konvertierung und Dateiverwaltung.</Description>
-    <Logo>icons\icon_50x50.png</Logo>
+    <Logo>icons\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>

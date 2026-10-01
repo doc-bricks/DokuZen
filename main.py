@@ -75,6 +75,7 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     group.add_argument("--open", dest="open_path", metavar="DATEI", help="Datei direkt öffnen und in der Vorschau anzeigen.")
     group.add_argument("--ocr", dest="ocr_path", metavar="DATEI", help="OCR-Dialog direkt mit der angegebenen Datei starten.")
     group.add_argument("--redact", dest="redact_path", metavar="DATEI", help="Schwärzungs-Dialog direkt mit der angegebenen PDF starten.")
+    group.add_argument("--annotate", dest="annotate_path", metavar="PDF", help="PDF-Annotationen-Dialog direkt mit der angegebenen PDF starten.")
     group.add_argument(
         "--merge",
         dest="merge_paths",
@@ -102,12 +103,13 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
             args.open_path,
             args.ocr_path,
             args.redact_path,
+            args.annotate_path,
             args.merge_paths,
             args.import_paths,
         )
     )
     if args.paths and has_option_action:
-        parser.error("Positionspfade können nicht mit --open/--ocr/--redact/--merge/--import kombiniert werden.")
+        parser.error("Positionspfade können nicht mit --open/--ocr/--redact/--annotate/--merge/--import kombiniert werden.")
 
     return args
 
@@ -121,6 +123,8 @@ def build_startup_command(args: argparse.Namespace) -> Optional[StartupCommand]:
         return StartupCommand("ocr", (args.ocr_path,))
     if args.redact_path:
         return StartupCommand("redact", (args.redact_path,))
+    if args.annotate_path:
+        return StartupCommand("annotate", (args.annotate_path,))
     if args.merge_paths:
         return StartupCommand("merge", tuple(args.merge_paths))
     if args.import_paths:
@@ -144,6 +148,9 @@ def apply_startup_command(window: MainWindow, command: StartupCommand) -> None:
         return
     if command.action == "redact":
         window.startup_redaction_path(command.paths[0])
+        return
+    if command.action == "annotate":
+        window.startup_annotate_path(command.paths[0])
         return
     if command.action == "merge":
         window.startup_merge_paths(command.paths)

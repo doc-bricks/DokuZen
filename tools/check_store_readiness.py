@@ -26,6 +26,10 @@ except ModuleNotFoundError:  # Python < 3.11 fallback if needed
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
+# The nested ``store_package/DokuZen Pro`` manifest is a historical artifact.
+# Never use a glob here: the active Store contract is this exact path.
+ACTIVE_MANIFEST_RELATIVE = Path("store_package") / "DokuZen" / "AppxManifest.xml"
+
 FORBIDDEN_TRADEMARK_KEYWORDS = (
     "microsoft",
     "windows",
@@ -72,10 +76,20 @@ REQUIRED_DOCUMENTS = (
 REQUIRED_ICONS = {
     "icon_44x44.png": (44, 44),
     "icon_50x50.png": (50, 50),
+    "StoreLogo.png": (50, 50),
     "icon_150x150.png": (150, 150),
     "icon_310x150.png": (310, 150),
     "icon_310x310.png": (310, 310),
 }
+
+REQUIRED_RELEASE_STAGING = (
+    "BUILD.md",
+    "WACK_PROTOCOL.md",
+    "store_settings.json",
+    "store_listing_de.md",
+    "store_listing_en.md",
+    "StoreLogo.png",
+)
 
 REQUIRED_SCREENSHOTS = (
     "01_bibliothek.png",
@@ -160,9 +174,22 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
     if config is None:
         findings.append("[repository] store_package.json is missing or invalid")
     else:
-        for field in ("app_name", "publisher", "publisher_display", "identity_name", "version", "executable"):
+        for field in (
+            "app_name",
+            "publisher",
+            "publisher_display",
+            "identity_name",
+            "version",
+            "executable",
+            "license",
+            "store_id",
+        ):
             if not isinstance(config.get(field), str) or not str(config[field]).strip():
                 findings.append(f"[repository] store_package.json field {field!r} is missing")
+
+        languages = config.get("languages")
+        if not isinstance(languages, list) or len(languages) < 2:
+            findings.append("[repository] store_package.json must declare at least 2 languages")
 
         for field in ("privacy_url", "support_url"):
             value = config.get(field)
@@ -193,12 +220,13 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
                 f"[repository] version mismatch: pyproject={project_version}, store={store_version!r}"
             )
 
-    # 2. AppxManifest.xml
-    manifest_paths = list((project_root / "store_package").glob("**/AppxManifest.xml"))
-    if not manifest_paths:
-        findings.append("[repository] AppxManifest.xml is missing under store_package/")
+    # 2. Active AppxManifest.xml
+    manifest_file = project_root / ACTIVE_MANIFEST_RELATIVE
+    if not manifest_file.is_file():
+        findings.append(
+            f"[repository] active AppxManifest.xml is missing: {ACTIVE_MANIFEST_RELATIVE.as_posix()}"
+        )
     else:
-        manifest_file = manifest_paths[0]
         manifest_text = _read_nonempty(manifest_file)
         if manifest_text is None:
             findings.append(f"[repository] {manifest_file.name} is empty or unreadable")
@@ -216,6 +244,11 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
                 if identity is None:
                     findings.append("[manifest] Missing Identity element in AppxManifest.xml")
                 else:
+                    if config and identity.attrib.get("Version") != config.get("version"):
+                        findings.append(
+                            f"[manifest] Version mismatch: manifest={identity.attrib.get('Version')}, "
+                            f"config={config.get('version')}"
+                        )
                     if config and identity.attrib.get("Name") != config.get("identity_name"):
                         findings.append(
                             f"[manifest] Identity Name mismatch: manifest={identity.attrib.get('Name')}, "
@@ -223,6 +256,19 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
                         )
                     if config and identity.attrib.get("Publisher") != config.get("publisher"):
                         findings.append("[manifest] Publisher mismatch in AppxManifest.xml")
+
+                props = root.find("appx:Properties", ns)
+                if props is None:
+                    props = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Properties")
+                if props is not None:
+                    logo_el = props.find("appx:Logo", ns)
+                    if logo_el is None:
+                        logo_el = props.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Logo")
+                    if logo_el is None or logo_el.text not in ("icons\\StoreLogo.png", "icons/StoreLogo.png"):
+                        actual_logo = logo_el.text if logo_el is not None else "None"
+                        findings.append(
+                            f"[manifest] Properties/Logo must point to icons\\StoreLogo.png, found {actual_logo}"
+                        )
 
                 caps = root.find("appx:Capabilities", ns)
                 if caps is None:
@@ -237,6 +283,20 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
                             break
                     if not fulltrust_found:
                         findings.append("[manifest] runFullTrust capability missing in AppxManifest.xml")
+
+                application = root.find("appx:Applications/appx:Application", ns)
+                if application is None:
+                    application = root.find(
+                        "{http://schemas.microsoft.com/appx/manifest/foundation/windows10}"
+                        "Applications/{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Application"
+                    )
+                if application is None:
+                    findings.append("[manifest] Missing Application element in active AppxManifest.xml")
+                elif config and application.attrib.get("Executable") != config.get("executable"):
+                    findings.append(
+                        f"[manifest] Executable mismatch: manifest={application.attrib.get('Executable')}, "
+                        f"config={config.get('executable')}"
+                    )
 
             except ET.ParseError as e:
                 findings.append(f"[manifest] AppxManifest.xml XML parse error: {e}")
@@ -292,7 +352,28 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
         if "Offline" not in privacy and "offline" not in privacy and "lokal" not in privacy.lower():
             findings.append("[documentation] PRIVACY_POLICY.md must state offline processing guarantee")
 
-    # 7. Packaged MSIX bundle verification
+    # 7. Release Staging under releases/windowsstore
+    staging_dir = project_root / "releases" / "windowsstore"
+    if not staging_dir.exists():
+        findings.append("[staging] releases/windowsstore directory is missing")
+    else:
+        for fname in REQUIRED_RELEASE_STAGING:
+            fpath = staging_dir / fname
+            if not fpath.exists():
+                findings.append(f"[staging] Missing release staging file: {fname}")
+            elif fpath.stat().st_size == 0:
+                findings.append(f"[staging] Release staging file is empty: {fname}")
+        store_logo = staging_dir / "StoreLogo.png"
+        if store_logo.exists():
+            findings.extend(_check_png_file(store_logo, (50, 50)))
+        staging_screenshots = staging_dir / "screenshots"
+        if not staging_screenshots.exists():
+            findings.append("[staging] Missing screenshots/ directory under releases/windowsstore/")
+        else:
+            for ss_name in REQUIRED_SCREENSHOTS:
+                findings.extend(_check_png_file(staging_screenshots / ss_name, (1920, 1080)))
+
+    # 8. Packaged MSIX bundle verification
     msix_dir = project_root / "releases" / "windowsstore"
     msix_candidates = list(msix_dir.glob("**/*.msix")) if msix_dir.exists() else []
     if not msix_candidates:
@@ -363,8 +444,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     print("=== DokuZen Windows Store Readiness: PASSED ===")
     print("  [OK] store_package.json is valid and complete")
     print("  [OK] AppxManifest.xml matches publisher and capability constraints")
-    print("  [OK] 5/5 Store tile icons verified with correct pixel dimensions")
+    print("  [OK] 6/6 Store tile icons verified with correct pixel dimensions (incl. StoreLogo.png)")
     print("  [OK] 6/6 Store screenshots verified (1920x1080 PNG)")
+    print("  [OK] Release staging materials verified under releases/windowsstore/")
     print("  [OK] Mandatory Store legal and support documents verified (DE + EN)")
     print("  [OK] Policy 10.1.3 search terms conformant (<= 7 keywords/lang, no trademarks)")
     msix_dir = args.project_root.resolve() / "releases" / "windowsstore"

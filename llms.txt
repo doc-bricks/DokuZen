@@ -11,8 +11,8 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (391 unit, integration & security contract tests passed)
-- **Last-checked:** 2026-09-19 (Prior audit: 2026-09-07)
+- **Test Suite Status:** Pytest test suite 100% green (424 unit, integration & security contract tests passed)
+- **Last-checked:** 2026-09-24 (Prior audits: 2026-09-19, 2026-09-07)
 
 ---
 
@@ -26,6 +26,15 @@ DokuZen ist als modulares 3-Panel-Desktop-System aufgebaut:
 5. **Hintergrunddienste (`plugins/background/`):** Privacy Guard (Datenschutz-Ampel), Sync Engine, Media Brain.
 6. **Windows Store Bridge (`store_package/` & `tools/`):** MSIX Packaging Manifest, Store Assets & Automatisierter Preflight Gatekeeper.
 7. **Linux Packaging (`packaging/linux/` & `tools/build_linux_bundle.py`):** Portable PyInstaller-onedir tarball with Freedesktop/AppStream metadata and CI artifact workflow.
+
+### Packaging provenance
+
+The active Store input is `store_package/DokuZen/AppxManifest.xml` with
+identity `Geiger.DokuZen` and version `1.0.1.0`. The Store package intentionally
+retains the established executable filename `DokuZen-Pro-1.0.0-win64.exe`.
+`store_package/DokuZen Pro/AppxManifest.xml` is historical only; readiness
+validation addresses the canonical active manifest directly and never selects
+an AppxManifest by recursive glob order.
 
 ---
 
@@ -99,6 +108,7 @@ python -m ruff check .
 
 - [`README.md`](README.md) — English Documentation & Visual Showcase
 - [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
+- [`NOTICE`](NOTICE) — Kanonische Open-Source-Urheberrechts- und Attributionsdatei
 - [`SECURITY.md`](SECURITY.md) — Zweisprachige Sicherheitsrichtlinie & Zero-Egress Invarianten
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Release Entries
 - [`MARKETING-LOG.txt`](MARKETING-LOG.txt) — Pfad B Marketing & Discoverability Audit Register

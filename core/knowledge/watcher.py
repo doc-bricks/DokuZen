@@ -412,11 +412,11 @@ class KnowledgeWatcher(LoggerMixin):
             
         elif event.event_type == WatchEvent.DELETED:
             self.logger.debug(f"Datei gelöscht: {event.path}")
-            # TODO: Aus Index entfernen oder als gelöscht markieren
+            self._index.remove_file(event.path)
             
         elif event.event_type == WatchEvent.MOVED:
             self.logger.debug(f"Datei verschoben: {event.path} -> {event.dest_path}")
-            # TODO: Pfad im Index aktualisieren
+            self._index.remove_file(event.path)
             if event.dest_path:
                 self._index.index_file(event.dest_path)
     

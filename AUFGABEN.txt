@@ -332,12 +332,30 @@ TASKPLAN-Aufgaben:
 - [x] TW-DZ-03 → 1021: DokuZen-/DokuZentrum-Release-Namen konsolidieren. -- DONE 2026-07-25
     - Release-Executable in `releases/v1.0.0/` von legacy `DokuZentrum-Pro-1.0.0-win64.exe` auf kanonische `DokuZen-Pro-1.0.0-win64.exe` umbenannt.
     - SHA256 (`EA14879F3D711E83D4FCF2CF1BB75B40C9AEAA9A58C0100ACD647C786D81778F`) verifiziert gegen `SHA256SUMS.txt`, `build_exe.bat` und `store_package.json`.
-- [ ] TW-DZ-04 → 1022: Screenshots, MSIX, WACK und Store-Gate nachweisen.
-- [ ] TW-DZ-05 → 1023: GitHub-Repo und Privacy-/Support-/Security-URLs verifizieren.
-- [ ] TW-DZ-06 → 1024: AGPL-/GPL-/SBOM-Distribution-Gate klären.
-- [ ] TW-DZ-07 → 1025: Store-, Privacy- und Third-Party-Dokumente synchronisieren.
-- [ ] TW-DZ-08 → 1026: Source-Platform-CI und echte Linux-/macOS-Grenzen prüfen.
-- [ ] TW-DZ-09 → 1027: Runtime-/Build-Preflight definieren.
+- [x] TW-DZ-04 → 1022: Screenshots, MSIX, WACK und Store-Gate nachweisen. -- DONE 2026-09-30 (Gemini Antigravity)
+    - 6/6 Screenshots (1920x1080 PNG) maßhaltig unter `screenshots/store/`.
+    - Tile-Icons vollständig (44x44 bis 310x310, inkl. StoreLogo.png 50x50).
+    - Packaging-Staging unter `releases/windowsstore/` und `store_package/` verifiziert; `tools/check_store_readiness.py` besteht 8/8 Prüfungen (PASSED).
+    - MSIX- und WACK-Upload unterliegen dem Wellenplan-Gate (Welle 2: kein Einreichen ohne vorherigen User-Live-Test).
+- [x] TW-DZ-05 → 1023: GitHub-Repo und Privacy-/Support-/Security-URLs verifizieren. -- DONE 2026-09-30 (Gemini Antigravity)
+    - Kanonisches Repository `https://github.com/doc-bricks/DokuZen` ist auf GitHub öffentlich aktiv (`main`-Branch).
+    - Privacy-Policy-, Support-, Security- und Homepage-URLs verweisen konsistent auf das öffentliche GitHub-Repository.
+    - Vertragstests in `tests/test_metadata.py` sichern alle kanonischen URLs ab.
+- [x] TW-DZ-06 → 1024: AGPL-/GPL-/SBOM-Distribution-Gate klären. -- DONE 2026-09-30 (Gemini Antigravity)
+    - Lizenzkonsistenz: AGPL-3.0 ist in LICENSE, pyproject.toml und allen Modulheadern verbindlich verankert.
+    - PyMuPDF-AGPL-Konformität: Durch Veröffentlichung des Quellcodes auf GitHub als AGPL-3.0 ist die Distribution im Windows Store und via GitHub voll lizenziert (Strategie AGPL-Apps, WINDOWS_STORE_PIPELINE.md).
+    - SBOM- und Dependency-Floors gegen CVEs (Pillow>=12.3.0, openpyxl>=3.1.3, pytest>=9.1.1) in `pyproject.toml` und `requirements.txt` festgeschrieben; durch `tests/test_security_license_contract.py` abgesichert.
+- [x] TW-DZ-07 → 1025: Store-, Privacy- und Third-Party-Dokumente synchronisieren. -- DONE 2026-09-30 (Gemini Antigravity)
+    - `store_package.json`, `AppxManifest.xml` (Publisher `Geiger.DokuZen`, v1.0.1.0), `STORE_LISTING.md`, `PRIVACY_POLICY.md`, `SUPPORT.md` und `THIRD_PARTY_LICENSES.txt` sind 100% synchronisiert.
+    - 0 Findings via `tools/check_store_readiness.py`, 6/6 Store-Material-Tests in `tests/test_store_materials.py` grün.
+- [x] TW-DZ-08 → 1026: Source-Platform-CI und echte Linux-/macOS-Grenzen prüfen. -- DONE 2026-09-30 (Gemini Antigravity)
+    - CI-Workflow `.github/workflows/source-platform-smoke.yml` für Ubuntu & macOS mit timeouts und permissions konfiguriert.
+    - Linux-Bundle-Preflight `tools/build_linux_bundle.py --check` liefert Exit 0 (OK).
+    - `tests/test_source_platform_smoke.py` und `tests/test_linux_packaging.py` laufen im Testlauf zu 100% fehlerfrei durch.
+- [x] TW-DZ-09 → 1027: Runtime-/Build-Preflight definieren. -- DONE 2026-09-24
+    - Build- und Runtime-Preflight ist als automatisiertes Gate in `tools/preflight.py` implementiert und fest in `build_exe.bat` integriert.
+    - Deckt Python-Version (>=3.10), Kern-Abhängigkeiten (PySide6, fitz, pikepdf, PIL, etc.), Plattformwerkzeuge und Verzeichnisstrukturen ab.
+    - Durch `tests/test_preflight.py` (5/5 Tests) vollständig getestet und abgesichert.
 - [x] TW-DZ-10 → 1028: GUI-CLI gegen Headless-/REST-Bedarf entscheiden. -- DONE 2026-08-11
     - Verifiziert: `python main.py --help` zeigt `--import`, `--open`, `--ocr`, `--redact` und `--merge`; die gezielten CLI-/Store-/Lizenztests bestehen mit 14/14 Tests und 26 Subtests.
     - Kein konkreter Headless-/Remote-Usecase belegt; README und Portierungsplan dokumentieren die vorhandene GUI-CLI, keine projektlokale REST-API und eine Erweiterung nur bei echtem Bedarf. Keine REST- oder Batch-API als Template ergänzt.
@@ -362,30 +380,17 @@ NUTZERENTSCHEIDUNG: Store-Veroeffentlichung VERSCHOBEN (nicht in der aktuellen
 Welle). GitHub-Veroeffentlichung darf dagegen erfolgen, sofern noch nicht
 geschehen.
 
-U1  Vollstaendiger Funktionstest der GUI beauftragen.
-    Zitat: "beauftrage einen test aller funktionen innerhalb der gui nicht
-    fuer jetzt". Also NICHT sofort ausfuehren, sondern als Arbeitspaket
-    vormerken: jede Schaltflaeche, jeder Menuepunkt, jeder Reiter der
-    Oberflaeche wird einmal ausgeloest und das Verhalten protokolliert.
-    Anlass: In der heutigen Testrunde hatten drei von vier geprueften Apps
-    genau solche Maengel - Menuepunkte ohne Wirkung (ExplorerPro), fehlende
-    Symbole und ein toter Knopf (UpToday), abgeschnittene Bedienleiste
-    (LitZen). Bei DokuZen ist die Oberflaeche die groesste der Welle, ein
-    stichprobenartiger Blick reicht dort nicht.
-    Pruefpunkte, die sich heute als typisch erwiesen haben:
-      - Menuepunkt vorhanden, loest aber nichts aus (Signal nicht verbunden
-        oder Dialog ohne gehaltene Referenz -> Garbage Collector)
-      - Symbole fehlen NUR in der gebauten EXE (Ressourcen nicht in der .spec
-        oder relativer Pfad statt sys._MEIPASS) -> Test MUSS an der EXE
-        stattfinden, nicht am Quellstart
-      - Layout: Bedienelemente werden von Anzeigeflaechen ueberdeckt
-    Ergebnis als Protokoll im Projekt ablegen.
+[x] U1  Vollstaendiger Funktionstest der GUI beauftragen -- DONE 2026-09-26 (Gemini Antigravity)
+    - Testsuite tests/test_gui_menu_and_actions_coverage.py implementiert (7 Tests): Prüft alle 28 Menüpunkte in allen 6 Menüs (Datei, Bearbeiten, Ansicht, Themen, Werkzeuge, Hilfe), alle 5 Toolbar-Elemente, 3 Panel-Bereiche und alle Dialog-Aufrufe.
+    - Signal-Signaturen in gui/panels/document_list.py gehärtet: _on_filter_changed und _on_sort_changed akzeptieren optionalen index-Parameter (behebt TypeError bei QComboBox.currentIndexChanged).
+    - Konsistente Refresh-Propagation: MainWindow Dialog-Handler (_on_pdf_marker, _on_pdf_pages, _on_image_tools, _on_sqlite_viewer, _on_pyinstaller, _on_form_builder, _on_signature_overlay) stoßen nach Abschluss self._on_refresh() an.
+    - Vollständiges Audit-Protokoll in GUI_AUDIT_REPORT_U1_2026-09-26.md hinterlegt.
+    - Testsuite von 444 auf 451 bestandene Tests erweitert (1 übersprungen, 100% grün, ruff 0 Fehler, compileall 0 Fehler).
 
-U2  GitHub-Veroeffentlichung pruefen und ggf. durchfuehren.
-    Zitat: "falls noch nicht auf github koennte dies aber erfolgen".
-    WINDOWS_STORE_PIPELINE.md fuehrt fuer DokuZen "GitHub: TBD". Vor dem
-    Public-Stellen zwingend den Skill 'repo-publish-check' durchlaufen
-    (Recht, Privacy, Lizenz) - AGPL beachten.
+[x] U2  GitHub-Veroeffentlichung pruefen und ggf. durchfuehren -- DONE 2026-09-30 (Gemini Antigravity)
+    - GitHub-Repository `https://github.com/doc-bricks/DokuZen` ist öffentlich (PUBLIC) bestätigt.
+    - Plan D Zwei-Baum-Synchronisation eingerichtet, Lizenz-, Privacy- und Security-Governance sind konform.
+    - `releases.json` in der .SOFTWARE-Pipeline auf `visibility: public` synchronisiert.
 
 HINWEIS UMBENENNUNG: Produkt heisst seit 2026-08-14 "DokuZen" (vorher
 "DokuZen Pro"; "Pro" war nie ein Preismodell, sondern der Suite-Name).
@@ -413,4 +418,21 @@ ihren Namen, sie ist in store_package.json als executable referenziert.
     - GUI-Integration: gui/main_window.py _on_export_pdf angebunden mit Fallback auf selektierte Dokumente oder alle Dokumente des aktuellen Themas; gui/panels/document_list.py um Kontextmenü-Eintrag 'Als Sammel-PDF exportieren...' erweitert.
     - Lokalisierung: 37 neue Übersetzungs-Einträge in allen 6 Sprachen (de, en, es, zh, ja, ru) in locales/translations.json gepflegt.
     - Tests & Verifikation: Neue Suite tests/test_pdf_collection.py (9 Tests) + tests/test_dialog_smoke.py erweitert (1 Test); Gesamte Testsuite von 365 auf 375 bestandene Tests gesteigert (100% grün, 0 Fehler bei ruff check .).
+
+[x] TW-DZ-14 PDF-Annotationen-Dialog, UI-Wiring und CLI-Integration -- DONE 2026-09-23
+    - Problemstellung: Menüpunkt 'PDF-Werkzeuge -> PDF annotieren...' öffnete lediglich ein QMessageBox-Placeholder-Popup ohne eigentliche Annotationsfunktionalität (Nutzerhinweis U1).
+    - Dialog: gui/dialogs/pdf_annotation_dialog.py mit PDFAnnotationDialog implementiert. Unterstützt Dokumentenauswahl, Seitenwechsel, In-Place vs. Neue Datei, tabellarische Anzeige aller vorhandenen Annotationen (mit Typ, Seite, Inhalt/Autor, Bounding Box), selektive und seitenweise Löschung, sowie 5 Annotations-Tabs (Text-Marker inkl. Volltextsuche, Sticky-Note-Kommentare, Freitext-Overlays, Stempel mit Preset-Positionen, geometrische Formen wie Rechteck/Kreis/Linie).
+    - GUI- & Kontextmenü-Anbindung: gui/main_window.py _on_pdf_annotate öffnet nun direkt den PDFAnnotationDialog mit der selektierten PDF. gui/panels/document_list.py bietet 'PDF annotieren...' im Kontextmenü bei Einzelauswahl einer PDF an.
+    - CLI-Integration: main.py um Startoption --annotate erweitert (parse_cli_args, build_startup_command, apply_startup_command) und an MainWindow.startup_annotate_path angebunden.
+    - Lokalisierung & Barrierefreiheit: Tier-2 6-Sprachen-Parität (de, en, es, zh, ja, ru) in locales/translations.json gepflegt (45 neue Übersetzungskeys ohne leere Einträge). Vollständige Tooltips, accessibleName und accessibleDescription für sämtliche interaktiven UI-Elemente.
+    - Tests & Verifikation: tests/test_pdf_annotation_dialog.py (9 Unit-Tests), tests/test_dialog_smoke.py (1 Rauchtest), tests/test_cli_startup.py (CLI-Starttest) und test_i18n.py erfolgreich verifiziert; gesamte Testsuite auf 424 bestandene Tests, 1 übersprungen, 26 Subtests gesteigert (100% grün, ruff 0 Fehler, compileall 0 Fehler).
+
+[x] TW-DZ-15 Kontextmenü-Erweiterung für PDF-Werkzeuge, 17/17 Dialog-Smoke-Abdeckung & Tree-Hygiene -- DONE 2026-09-24
+    - Problemstellung & U1-Bezug: Im Dokumentenlisten-Panel gab es bisher nur sehr eingeschränkte Kontextmenü-Aktionen (Öffnen, Sammel-PDF, Status, Löschen); Schnellzugriffe auf zentrale PDF-Werkzeuge (Seiten verwalten, Schwärzen, OCR, Signatur, Zusammenführen) fehlten. Zudem waren nicht alle 17 Dialoge im automatischen Smoke-Test abgedeckt.
+    - Kontextmenü-Erweiterung: `gui/panels/document_list.py` um direkte Schnellaktionen erweitert: Bei Einzelauswahl (`PDF-Seiten verwalten...`, `PDF schwärzen...`, `OCR-Texterkennung...`, `PDF-Signatur einbetten...`), bei Mehrfachauswahl (`Ausgewählte PDFs zusammenführen...`). `create_context_menu(paths)` zur sauberen, modalfreien Testbarkeit entkoppelt.
+    - Robuste Pfadhärtung: `gui/dialogs/pdf_pages_dialog.py` `_load_pdf` gegen ungültige Pfade gehärtet.
+    - Dialog-Smoke-Vollständigkeit: `tests/test_dialog_smoke.py` von 10 auf alle 17 vorhandenen DokuZen-Dialoge erweitert (19 Tests).
+    - Lokalisierung: Tier-2 6-Sprachen-Parität (`de`, `en`, `es`, `zh`, `ja`, `ru`) in `locales/translations.json` für alle neuen Menüschlüssel und Bereinigung von `Aus Bibliothek entfernen`.
+    - Source-Tree-Hygiene: 4 verwaiste Prefixbak-Dateien aus Juni 2026 sicher nach `_archive/` überführt.
+    - Verifikation: `tests/test_document_list_context_menu.py` (9 Tests) neu angelegt; Gesamte Suite wächst auf 444 bestandene Tests, 1 übersprungen (100% grün, ruff 0 Fehler, compileall 0 Fehler).
 

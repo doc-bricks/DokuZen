@@ -70,13 +70,13 @@ class FormatDetector(LoggerMixin):
         ".pdf", ".doc", ".docx", ".odt", ".rtf", ".txt",
         ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp",
         ".xlsx", ".xls", ".csv",
-        ".py", ".log", ".json", ".xml", ".html", ".md", ".markdown",
+        ".py", ".log", ".json", ".xml", ".html", ".htm", ".md", ".markdown",
         ".db", ".sqlite", ".sqlite3"
     }
 
     # Formate, die nach PDF gewandelt werden können
     CONVERTIBLE_TO_PDF_EXTS = {
-        ".docx", ".doc", ".txt", ".md", ".markdown", ".html", ".htm",
+        ".docx", ".txt", ".md", ".markdown", ".html", ".htm",
         ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp"
     }
 
@@ -105,6 +105,20 @@ class FormatDetector(LoggerMixin):
             return False, h
         except (OSError, PermissionError):
             return False, None
+
+    @staticmethod
+    def _is_path_in_existing(path: str, existing_paths: Optional[Set[str]]) -> bool:
+        """Prüft robust (inkl. Windows Case-Insensitivität und Slash-Varianten), ob ein Pfad bereits existiert."""
+        if not existing_paths:
+            return False
+        abs_p = os.path.abspath(path)
+        if path in existing_paths or abs_p in existing_paths:
+            return True
+        norm_p = os.path.normcase(abs_p)
+        for ep in existing_paths:
+            if os.path.normcase(os.path.abspath(ep)) == norm_p:
+                return True
+        return False
 
     def detect_file_type(self, path: str) -> FileType:
         """
@@ -193,10 +207,10 @@ class FormatDetector(LoggerMixin):
     def is_convertible_to_pdf(self, path: str) -> bool:
         """Prüft, ob die Datei in ein PDF umgewandelt werden kann."""
         ext = Path(path).suffix.lower()
-        if ext in self.CONVERTIBLE_TO_PDF_EXTS:
-            return True
+        if ext:
+            return ext in self.CONVERTIBLE_TO_PDF_EXTS
         ft = self.detect_file_type(path)
-        return ft in (FileType.OFFICE, FileType.IMAGE, FileType.TEXT_MARKDOWN, FileType.WEB_HTML)
+        return ft in (FileType.IMAGE, FileType.TEXT_MARKDOWN, FileType.WEB_HTML)
 
     def determine_action(
         self,
@@ -208,8 +222,7 @@ class FormatDetector(LoggerMixin):
         """
         Bestimmt die empfohlene Ingest-Aktion.
         """
-        abs_path = os.path.abspath(path)
-        if existing_paths and (abs_path in existing_paths or path in existing_paths):
+        if self._is_path_in_existing(path, existing_paths):
             return IngestAction.SKIP_DUPLICATE
 
         if file_type == FileType.PDF:
@@ -250,8 +263,7 @@ class FormatDetector(LoggerMixin):
                 size_bytes = 0
 
         file_type = self.detect_file_type(path)
-        abs_path = os.path.abspath(path)
-        is_duplicate = bool(existing_paths and (abs_path in existing_paths or path in existing_paths))
+        is_duplicate = self._is_path_in_existing(path, existing_paths)
 
         rec_action = self.determine_action(
             file_type,

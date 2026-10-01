@@ -194,6 +194,9 @@ class PDFPagesDialog(QDialog, LoggerMixin):
         if not PYMUPDF_AVAILABLE:
             QMessageBox.critical(self, "Fehler", "PyMuPDF nicht verfügbar!")
             return
+
+        if not path or not Path(path).exists() or not Path(path).is_file():
+            return
         
         try:
             # Vorherige schließen

@@ -28,6 +28,9 @@ class FakeWindow:
     def startup_redaction_path(self, path):
         self.calls.append(("redact", path))
 
+    def startup_annotate_path(self, path):
+        self.calls.append(("annotate", path))
+
     def startup_merge_paths(self, paths):
         self.calls.append(("merge", tuple(paths)))
 
@@ -43,6 +46,11 @@ class CliStartupTest(unittest.TestCase):
         command = build_startup_command(args)
         self.assertEqual(command, StartupCommand("open", ("bericht.pdf",)))
 
+    def test_annotate_option_creates_annotate_command(self):
+        args = parse_cli_args(["--annotate", "kommentar.pdf"])
+        command = build_startup_command(args)
+        self.assertEqual(command, StartupCommand("annotate", ("kommentar.pdf",)))
+
     def test_merge_option_keeps_all_paths(self):
         args = parse_cli_args(["--merge", "a.pdf", "b.pdf", "c.pdf"])
         command = build_startup_command(args)
@@ -52,6 +60,8 @@ class CliStartupTest(unittest.TestCase):
         window = FakeWindow()
         apply_startup_command(window, StartupCommand("ocr", ("scan.pdf",)))
         self.assertEqual(window.calls, [("ocr", "scan.pdf")])
+        apply_startup_command(window, StartupCommand("annotate", ("annot.pdf",)))
+        self.assertEqual(window.calls[-1], ("annotate", "annot.pdf"))
 
     def test_apply_startup_command_rejects_unknown_actions(self):
         window = FakeWindow()

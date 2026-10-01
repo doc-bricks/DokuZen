@@ -120,9 +120,9 @@ class LibraryManager(LoggerMixin):
     # Unterstützte Dateierweiterungen
     SUPPORTED_EXTENSIONS = {
         ".pdf", ".doc", ".docx", ".odt", ".rtf", ".txt",
-        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff",
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp",
         ".xlsx", ".xls", ".csv",
-        ".py", ".log", ".json", ".xml", ".html", ".md",
+        ".py", ".log", ".json", ".xml", ".html", ".htm", ".md", ".markdown",
         ".db", ".sqlite", ".sqlite3"
     }
     

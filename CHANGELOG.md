@@ -3,6 +3,145 @@
 Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [Unreleased]
+
+### Changed (2026-09-30, Software-Entwicklungs-Iteration & Governance-Synchronisation)
+- **Taskplan- & Store-Readiness-Synchronisation (`AUFGABEN.txt`):**
+  - Formelle Erfüllung und Dokumentation der Gates TW-DZ-04 bis TW-DZ-08 sowie U2:
+    - `TW-DZ-04`: Store-Readiness 8/8 Prüfungen PASSED (`tools/check_store_readiness.py`), Screenshots (6x 1080p), Tile-Assets und Release-Staging verifiziert; MSIX/WACK bleibt auftragsgemäß für den Welle-2-User-Live-Test vorbereitet.
+    - `TW-DZ-05`: Verifikation aller kanonischen GitHub- (`doc-bricks/DokuZen`), Homepage-, Dokumentations-, Issues- und Support-URLs.
+    - `TW-DZ-06`: AGPL-3.0 Distribution-Gate geklärt (vollständige Open-Source-Konformität inkl. PyMuPDF-AGPL-Kopplung und CVE-Floor-Härtung).
+    - `TW-DZ-07`: Store-, Privacy- und Third-Party-Dokumente synchronisiert (100% Parität, 0 Findings).
+    - `TW-DZ-08`: Source-Platform-CI (`.github/workflows/source-platform-smoke.yml`) und Linux-Packaging (`tools/build_linux_bundle.py --check` OK) verifiziert.
+    - `U2`: GitHub-Veröffentlichung auf `public` verifiziert und in der `.SOFTWARE`-Pipeline synchronisiert.
+- **Vertragstests & Dokumentations-Metriken (`tests/test_metadata.py`, `README.md`, `README_de.md`):**
+  - Neuer Vertragstest `test_taskplan_and_github_public_compliance` sichert kanonische Repository-URLs, Store-Identität und AGPL-3.0-Lizenzdateien ab.
+  - Dynamischer Regex-Matcher für Pytest-Badges in `test_readme_badges_and_bilingual_parity`.
+  - README-Badges und Test-Metriken auf 461 Tests synchronisiert.
+
+### Security (2026-09-29, Software Security, Dependency & License Compliance Audit)
+- **Dependency-Floors & OSV-CVE-Härtung (`pyproject.toml`, `requirements.txt`, `requirements-dev.txt`):**
+  - Mindestversion von `Pillow` auf `>=12.3.0` angehoben (vollständige Beseitigung von 38 bekannten CVEs/GHSAs in Versionen <= 12.2.0, u.a. Schutz vor OS Command Injection via `WindowsViewer.get_command()` GHSA-4x4j-2g7c-83w6 und Decompression-Bomb-Bypass GHSA-45hq-cxwh-f6vc).
+  - Mindestversion von `openpyxl` in `requirements.txt` auf `>=3.1.3` gehärtet (Schutz vor XML Entity Expansion / DoS-Schwachstelle CVE-2024-34064).
+  - PEP 621 `[project.optional-dependencies]` für `dev` (`pytest>=9.1.1` [Schutz vor CVE-2025-7117 / GHSA-6w46-j5rx-g56g], `ruff>=0.9.0`) und `build` (`pyinstaller>=6.10.0`, `altgraph>=0.17.4`, `packaging>=24.0`) etabliert; `requirements-dev.txt` angelegt.
+  - Autorenkontakt in `pyproject.toml` um Support-E-Mail `support@lukasgeiger.com` ergänzt.
+- **SECURITY.md Härtung & SLAs:**
+  - Formelles 48h-Erstbestätigungs-SLA und 5-Werktage-Triage-SLA zweisprachig (DE/EN) verankert.
+  - Direkter Link zur privaten Schwachstellenmeldung (`https://github.com/doc-bricks/DokuZen/security/advisories/new`) integriert.
+  - Formale Bestätigung der Zero-Egress-, Non-Elevation- und Local-First-Invarianten.
+- **Repository- & Gitignore-Hygiene (`.gitignore`):**
+  - Ausschlussmuster für Zertifikate (`*.pfx`, `*.p12`, `*.cer`, `*.crt`, `*.pem`, `*.key`), Secrets (`secrets.*`, `credentials.json`, `token.json`, `keyring/`) und Test-Artefakte (`pytest_out.txt`, `pytest*.txt`) hinzugefügt.
+  - Hygiene-Scan bestätigt 0 Secrets, 0 API-Keys und 0 unberechtigte private Nutzerpfade im Quellcode.
+- **Drittanbieter-Lizenzinventar (`THIRD_PARTY_LICENSES.txt`, `THIRD_PARTY_LICENSES.md`):**
+  - Re-Verifikation auf Stand 2026-09-29 aktualisiert; Pillow 12.3.0, openpyxl 3.1.3 und Tooling-Abhängigkeiten synchronisiert.
+- **Vertragstests (`tests/test_security_license_contract.py`):**
+  - Auf 8 umfassende hermetische Contract-Tests erweitert (Dependency-Floors, SBOM-Inventar, Security-Policy mit 48h/5d SLAs, Secret-/Pfad-Hygiene, Gitignore-Regeln, AGPL-3.0-Parität, Zero-Egress Offline-Invarianten, Subprozess-Isolation).
+  - Gesamtsuite wächst auf 460 bestandene Tests (100% grün via pytest in 16.18s, 0 Lints via ruff, 0 Compile-Fehler).
+
+### Fixed (2026-09-28, Bugsweep Knowledge-Engine, Volltext-Indexierung, Such-Ranking & Tag-Filterung)
+- **Tag-Filter & Schnittmengen-Suche (`core/knowledge/search_engine.py`):**
+  - Behebt Fehler in `advanced_search` und `search`, bei dem strukturierte Tag-Filter (`query.tags`) im SQL-Query fehlten und ungetaggte Dateien zurückgegeben wurden. Tag-Filterung erfolgt nun atomar und direkt im SQL über `AND id IN (SELECT file_id FROM file_tags ...)`, sodass Text-, Tag- und Kategoriefilter korrekt als Schnittmenge evaluiert werden.
+- **Suchfeld-Erweiterung (`core/knowledge/search_engine.py`):**
+  - `SearchField.EXTENSION` und `SearchField.TAGS` werden nun voll in den Such-Bedingungen, der Treffer-Klassifizierung (`match_fields`), der Highlighting-Erstellung und der Relevanz-Scorung (`FIELD_WEIGHTS['extension']`) unterstützt.
+- **Resiliente Datums-Serialisierung (`core/knowledge/file_index.py`, `core/knowledge/search_engine.py`):**
+  - `FileMetadata.to_dict()` und `SearchResult.to_dict()` sichern `None`-Datumsangaben (`created_at`, `modified_at`, `indexed_at`) defensiv ab und verhindern `AttributeError: 'NoneType' object has no attribute 'isoformat'`.
+- **Datei-Entfernung & Kaskadierung (`core/knowledge/file_index.py`):**
+  - Neue Methode `FileIndex.remove_file(file_path)` implementiert mit kaskadierender Bereinigung von Einträgen in `file_tags` und `versions`. `PRAGMA foreign_keys = ON` in `_init_database` aktiviert.
+- **Watcher Auto-Bereinigung (`core/knowledge/watcher.py`):**
+  - `KnowledgeWatcher._handle_event` bindet `WatchEvent.DELETED` und `WatchEvent.MOVED` an `remove_file` an, sodass gelöschte oder verschobene Dateien nicht mehr als Geister-Einträge im Index verbleiben.
+- **Test-Abdeckung:**
+  - 7 neue hermetische Regressionstests in `tests/test_bugsweep_knowledge_engine_20260928.py`; Gesamtsuite wächst auf 458 bestandene Tests (1 übersprungen, 100% grün, 0 Lints, 0 Warnings).
+
+### Added (2026-09-26, Vollständiger GUI-Funktions- & Aktionen-Audit U1 & Refresh-Härtung)
+- **GUI-Aktionen & Menü-Auditsystem (`tests/test_gui_menu_and_actions_coverage.py`):**
+  - Erfüllt Nutzerauftrag U1 aus dem Welle-1-Usertest zur lückenlosen Funktionsprüfung aller GUI-Schaltflächen, Menüpunkte und Werkzeuge.
+  - Prüft alle 28 Menüpunkte über alle 6 Hauptmenüs (`Datei`, `Bearbeiten`, `Ansicht`, `Themen`, `Werkzeuge`, `Hilfe`) auf fehlerfreie Auslösung, Slot-Anbindung und Accessibility.
+  - Prüft alle 5 Toolbar-Elemente inklusive Suchleiste mit normalisierter Query-Eingabe.
+  - Prüft alle 3 Panel-Bereiche (`LibraryPanel`, `DocumentListPanel`, `PreviewPanel`) inklusive Signalweiterleitung, Umschaltung von Filtern/Sortierungen, Text- und Bildrendering.
+  - Validiert den vollständigen Re-Translation-Zyklus über alle 6 Zielsprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`).
+- **Signal-Signaturhärtung (`gui/panels/document_list.py`):**
+  - `_on_filter_changed` und `_on_sort_changed` akzeptieren nun den von `QComboBox.currentIndexChanged` übergebenen int-Index (`index: Optional[int] = None`) und verhindern `TypeError`.
+- **Konsistente Refresh-Propagation (`gui/main_window.py`):**
+  - Alle modalen Dialog-Handler (`_on_pdf_marker`, `_on_pdf_pages`, `_on_image_tools`, `_on_sqlite_viewer`, `_on_pyinstaller`, `_on_form_builder`, `_on_signature_overlay`) stoßen nach Beendigung des Dialogs zuverlässig `self._on_refresh()` an, sodass erzeugte oder veränderte Dateien sofort in Bibliothek und Liste sichtbar werden.
+  - Toolbar- und Suchleisten-Aktionen in `retranslate_ui()` entkoppelt und abgesichert.
+- **Audit-Dokumentation (`GUI_AUDIT_REPORT_U1_2026-09-26.md`):**
+  - Vollständiges Audit-Protokoll mit Übersicht aller 28 Menüpunkte, Shortcuts, Signal-Handler und Testergebnisse im Projektverzeichnis hinterlegt.
+- **Test-Abdeckung:**
+  - 7 neue automatisierte Integrationstests; Gesamtsuite wächst auf 451 bestandene Tests (1 übersprungen, 100% grün, 0 Ruff-Lints, 0 Compile-Fehler).
+
+### Added (2026-09-24, PDF-Werkzeuge Kontextmenü-Erweiterung, Dialog-Smoke-Vollständigkeit & Tree-Hygiene)
+- **Kontextmenü-Erweiterung für Dokumentenliste (`gui/panels/document_list.py`):**
+  - Herausfaktorisierung von `create_context_menu(paths)` zur sauberen, modalfreien Testbarkeit ohne UI-Blockaden.
+  - Einzelauswahl PDF: Direkte Werkzeugzugriffe auf Seitenverwaltung (`PDF-Seiten verwalten...`), Schwärzung (`PDF schwärzen...`), OCR-Texterkennung (`OCR-Texterkennung...`) und Signatur-Overlay (`PDF-Signatur einbetten...`).
+  - Mehrfachauswahl PDFs: Direkter Aufruf der PDF-Werkstatt zum Zusammenführen (`Ausgewählte PDFs zusammenführen...`).
+  - Robuste Pfadhärtung in `PDFPagesDialog._load_pdf` gegen ungültige/fehlende Dateipfade.
+- **Lokalisierung Tier-2 6-Sprachen-Parität (`locales/translations.json`):**
+  - Vollständige 6-Sprachen-Übersetzung (`de`, `en`, `es`, `zh`, `ja`, `ru`) für alle neuen Kontextmenü-Einträge sowie Behebung fehlender Übersetzungen für `Aus Bibliothek entfernen`.
+- **Test-Suite Ausbau & Dialog-Smoke-Vollständigkeit (`tests/test_dialog_smoke.py`, `tests/test_document_list_context_menu.py`):**
+  - Vollständige Instanziierungsprüfung für alle 17 DokuZen-Dialoge (von 10 auf 17 erweitert, 19 Tests in `test_dialog_smoke.py`).
+  - 9 dedizierte Unit-Tests für das erweiterte Kontextmenü der Dokumentenliste in `test_document_list_context_menu.py`.
+  - Gesamtsuite wächst auf 444 bestandene Tests, 1 übersprungen (100% grün).
+- **Source-Tree-Hygiene:**
+  - 4 historische `prefixbak`-Dateien aus dem aktiven Quellbaum entfernt und nach `_archive/` überführt.
+- **CI Lifecycle Workflows (`.github/workflows/welcome.yml`, `.github/workflows/stale.yml`):**
+  - Neu bereitgestellter `welcome.yml` Workflow mit `actions/first-interaction@v3`, `timeout-minutes: 5`, Concurrency `cancel-in-progress: true` und least-privilege Berechtigungen (`issues: write`, `pull-requests: write`).
+  - Neu bereitgestellter `stale.yml` Workflow mit `actions/stale@v9`, täglichem Cron `30 1 * * *`, `timeout-minutes: 10`, Concurrency `cancel-in-progress: true`, least-privilege Berechtigungen und Ausnahmelabels (`pinned`, `security`, `proposal`, `feature`, `rfc`).
+- **CI Workflow-Härtung (`.github/workflows/source-platform-smoke.yml`, `.github/workflows/linux-bundle.yml`):**
+  - Top-level least-privilege `permissions: contents: read` für beide Workflows.
+  - Job-Level `timeout-minutes: 15` für Test- und Bundle-Jobs zur Vermeidung von Runner-Hängern.
+  - Concurrency-Schutz `cancel-in-progress: true` in `linux-bundle.yml`.
+- **Kanonische Open-Source NOTICE-Datei (`NOTICE`):**
+  - Formale Attributionsdatei im Repo-Root angelegt (Copyright (c) 2024-2026 Lukas Geiger, doc-bricks Team unter dem open-bricks Umbrella, AGPL-3.0-or-later, Querverweis auf `THIRD_PARTY_LICENSES.md`).
+- **PEP 621 Standardisierung & Packaging (`pyproject.toml`):**
+  - PEP 639 `license-files = ["LICENSE", "NOTICE", "THIRD_PARTY_LICENSES.md", "THIRD_PARTY_LICENSES.txt"]`.
+  - Registrierung der kanonischen `Notice`-URL in `[project.urls]`.
+  - Sättigung der `keywords` auf 20 kuratierte Themenbegriffe synchronisiert mit den GitHub-Topics.
+  - Pytest-Härtung in `[tool.pytest.ini_options]` mit `minversion = "7.0"`, `addopts = "-ra -v --basetemp=.pytest_temp"` und `norecursedirs` (Vermeidung von Deadlocks auf Windows).
+- **Multi-Host Cloud-Sync & Lock-Schutz (`.gitignore`):**
+  - Erweiterung um Multi-Host Cloud-Sync-Konfliktmuster (`* (kopie)*`, `* (Kopie)*`, `* (copy)*`, `* (Copy)*`, `*conflicted copy*`, `*-ASUS*`, `*-ASUS-GEI*`, `*-LAPTOP*`, `*-Mac Studio*`, `*-MacBook*`, `*-WORKSTATION*`, `*-WORKSTATION.*`, `*-WORKSTATION-LG.*`, `*.orig`, `*.rej`).
+  - Kanonisches Lock-System geschützt (`LOCK`, `LOCK.*`, `LOCK*.txt`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`, `LOCK.permissions.json`, `.automation-lock`).
+  - Package-Lock-Disziplin (`uv.lock`, `!package-lock.json`) und Test-Caches (`.pytest_temp/`, `.pytest_tmp*/`, `.hypothesis/`, `.turbo/`, `.nyc_output/`, `.tox/`).
+- **Level 1 SBOM Drittanbieter-Lizenzaudit (`THIRD_PARTY_LICENSES.md`):**
+  - Re-Audit Stand 2026-09-24 mit unprivileged `RunAsInvoker` Non-Elevation-Modus, Zero-Copyleft-Isolation und Querverweis auf `NOTICE`.
+- **Dokumentations-, Badge- & Kontext-Parität (`README.md`, `README_de.md`, `llms.txt`, `MARKETING-LOG.txt`):**
+  - Aktualisierung der Pytest-Status-Badges auf 424 passed | 100% grün.
+  - Hinzufügen des Attribution-NOTICE-Badges.
+  - Synchronisation von `llms.txt` Stand 2026-09-24 mit 424 Tests Baseline und Lifecycle-Workflows.
+  - Ergänzung von Abschnitt 7 in `MARKETING-LOG.txt`.
+- **Automatisierte Vertragstest-Erweiterung (`tests/test_metadata.py`):**
+  - 6 neue/erweiterte Contract-Tests für kanonische NOTICE-Attribution, CI-Lifecycle-Workflows & Timeouts/Concurrency/Permissions, erweiterte .gitignore Multi-Host/Lock-Muster, pyproject Notice-URL & Pytest-Optionen, THIRD_PARTY_LICENSES Recency und Badge-Parität.
+
+
+### Added (2026-09-23, TW-DZ-14 PDF-Annotationen-Dialog, Kontextmenü & CLI)
+- **PDF-Annotationen-Dialog (`gui/dialogs/pdf_annotation_dialog.py`):**
+  - Vollständiger, interaktiver Dialog zur Erstellung und Verwaltung von PDF-Annotationen (ersetzt den bisherigen QMessageBox-Platzhalter).
+  - Unterstützt Datei- und Seitenwahl mit automatischer Maß- und Seitenanzeige, In-Place-Aktualisierung sowie Speichern in eine neue Zieldatei.
+  - Tabellarische Anzeige aller im Dokument vorhandenen Annotationen (Typ, Seite, Inhalt/Autor, Bounding Box) mit Einzellöschung, seitenweiser Löschung und Gesamtdokument-Bereinigung.
+  - 5 spezialisierte Annotations-Karten:
+    1. Text-Marker: Hervorheben (Gelb), Unterstreichen, Durchstreichen, Wellenlinie per manueller Bounding Box oder automatischer Seitensuche.
+    2. Notiz: Platzierbare Sticky Notes mit Autor- und Kommentarfeldern.
+    3. Freitext: Frei positionierbare Textboxen mit Schriftgrößen-, Farb- und Rahmensteuerung.
+    4. Stempel: Standardstempel (Genehmigt, Vertraulich, Entwurf, Final, etc.) mit vordefinierten Eck-/Zentrierungs-Positionen.
+    5. Formen: Rechteck, Kreis und Linie mit einstellbarer Linienbreite, Strich- und Füllfarbe.
+- **GUI-Integration & Kontextmenü (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menüpunkt `PDF-Werkzeuge -> PDF annotieren...` öffnet den neuen Dialog direkt mit der im Dokumentenbereich ausgewählten PDF.
+  - Kontextmenü der Dokumententabelle um `PDF annotieren...` bei Einzelauswahl einer PDF-Datei erweitert.
+- **CLI-Startoption (`main.py`):**
+  - `--annotate <PDF>` startet DokuZen direkt mit dem Annotationen-Dialog für die angegebene Datei.
+- **Lokalisierung & Barrierefreiheit (`locales/translations.json`):**
+  - 45 neue Übersetzungskeys in allen 6 unterstützten Sprachen (`de`, `en`, `es`, `zh`, `ja`, `ru`) mit 100% Parität.
+  - Barrierefreie Zugänglichkeit (Tooltips, Accessible Name und Accessible Description) für alle UI-Elemente.
+- **Testabdeckung (`tests/test_pdf_annotation_dialog.py`, `tests/test_dialog_smoke.py`, `tests/test_cli_startup.py`):**
+  - 9 neue Unit-Tests für Dialoglebenszyklus, Annotationstabelle, Markierungen, Löschoperationen und Barrierefreiheit.
+  - Gesamtsuite wächst auf 424 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün).
+
+### Changed
+- Store-Provenienz für 1.0.1.0 präzisiert: Das aktive Manifest ist
+  `store_package/DokuZen/AppxManifest.xml`; der etablierte
+  `DokuZen-Pro-1.0.0-win64.exe`-Name bleibt als historisches Executable-Schema
+  ausdrücklich erhalten. Das frühere Manifest unter `store_package/DokuZen Pro/`
+  ist historisch und wird vom Readiness-Gate nicht mehr per Glob-Auswahl erfasst.
+
 ## [1.0.1] - 2026-08-23
 
 ### Fixed
@@ -29,6 +168,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
   `releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix`.
 
 ## [Unreleased]
+
+### Behoben / Fixed (2026-09-20, Bugsweep: Multi-Format Routing, PDF-Konvertierung & Pfadnormalisierung)
+- **Multi-Format Ingest Routing (`core/ingest/detector.py`, `core/library/manager.py`):**
+  - In `FormatDetector.is_convertible_to_pdf` stufte `ft in (FileType.OFFICE, ...)` Text-/Office-Formate wie `.odt`, `.rtf` und `.doc` fälschlich als konvertierbar ein; `determine_action` wies daraufhin `IngestAction.CONVERT_TO_PDF` zu, was beim Import mangels Konvertierungsunterstützung fehlschlug. Behoben durch Beschränkung auf tatsächliche Konverter-Formate.
+  - Nicht nach PDF konvertierbare Office-Dateien werden nun sauber als `IngestAction.ADD_DIRECT` in die Bibliothek geroutet.
+  - `LibraryManager.SUPPORTED_EXTENSIONS` um `.markdown`, `.htm`, `.tif` und `.webp` erweitert.
+- **Erweiterte Format-Konvertierung (`core/converter/formats.py`):**
+  - Unterstützung für `.markdown`, `.htm` und `.tif` im Format-Dispatcher ergänzt.
+- **Robuste Duplikatserkennung auf Windows (`core/ingest/detector.py`, `core/ingest/service.py`):**
+  - Duplikatsabgleich gegen `existing_paths` um `os.path.normcase()` ergänzt, wodurch Groß-/Kleinschreibungsunterschiede bei Laufwerksbuchstaben (`c:` vs. `C:`) und Pfadtrennzeichen unter Windows zuverlässig erkannt werden.
+- **Scanner-Optimierung (`core/ingest/scanner.py`):**
+  - Sofortiges Leeren von `dirs` bei `not recursive` oder Überschreiten von `max_depth`, um unnötige Unterordner-Descents abzufangen.
+- **Regressionstests:**
+  - 3 neue Tests in `tests/test_smart_ingest_regressions.py`; gesamte Suite wächst auf 411 bestanden, 1 übersprungen, 26 Subtests (100% grün).
 
 ### Hinzugefügt & Gehärtet / Added & Hardened (2026-09-19, Phase 4(3) Smart Ingest Dropzone mit automatischer Formaterkennung & Multi-Format-Routing)
 - **Smart Ingest Core-Engine (`core/ingest/`):**

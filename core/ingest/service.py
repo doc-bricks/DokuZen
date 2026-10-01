@@ -46,6 +46,7 @@ class SmartIngestService(LoggerMixin):
                 if p:
                     existing.add(str(Path(p).resolve()))
                     existing.add(os.path.abspath(p))
+                    existing.add(os.path.normcase(os.path.abspath(p)))
         except Exception as e:
             self.logger.warning(f"Konnte bestehende Dokumente nicht laden: {e}")
         return existing
@@ -92,7 +93,12 @@ class SmartIngestService(LoggerMixin):
 
         # Falls die Zieldatei bereits existiert und nicht identisch ist: Nummerierung
         counter = 1
-        while target.exists() and str(target.resolve()) != str(src_path.resolve()):
+        while target.exists():
+            try:
+                if target.samefile(src_path):
+                    break
+            except (OSError, ValueError):
+                pass
             target = dest_dir / f"{base_stem}_{counter}.pdf"
             counter += 1
 

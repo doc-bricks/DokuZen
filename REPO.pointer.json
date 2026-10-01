@@ -1,0 +1,25 @@
+{
+  "schema": "ellmos-repo-pointer-v1",
+  "repo_id": "doc-bricks/DokuZen",
+  "profile": "plan-d-code",
+  "remote": "https://github.com/doc-bricks/DokuZen.git",
+  "default_branch": "main",
+  "local_locator": {
+    "slot_manifest": ".SYNC/{slot}/repos.json",
+    "repo_name": "DokuZen",
+    "windows_default": "C:\\_Local_DEV\\repos\\DokuZen"
+  },
+  "onedrive_mirror": {
+    "mode": "tracked-files-no-git",
+    "relative_root": ".",
+    "source_commit": "63b45de77a28841445da9b50f75e3a893cb6110f",
+    "generated_at": "2026-09-21T18:11:30+02:00",
+    "delete_policy": "no-delete",
+    "migration_state": "active-mirrored"
+  },
+  "authority": {
+    "git": "local-checkout-plus-github",
+    "planning": "onedrive",
+    "mirror": "derived-read-surface"
+  }
+}

@@ -72,8 +72,8 @@ class FormatConverter(LoggerMixin):
     """
     
     # Unterstützte Eingabeformate
-    SUPPORTED_INPUTS = {".pdf", ".docx", ".doc", ".txt", ".md", ".html",
-                        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}
+    SUPPORTED_INPUTS = {".pdf", ".docx", ".txt", ".md", ".markdown", ".html", ".htm",
+                        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp"}
     
     def __init__(self):
         self.logger.debug("FormatConverter initialisiert")
@@ -114,11 +114,11 @@ class FormatConverter(LoggerMixin):
             return self._convert_from_pdf(input_path, output_path, out_ext)
         elif input_ext == ".docx":
             return self._convert_from_docx(input_path, output_path, out_ext)
-        elif input_ext in {".txt", ".md"}:
+        elif input_ext in {".txt", ".md", ".markdown"}:
             return self._convert_from_text(input_path, output_path, out_ext)
-        elif input_ext == ".html":
+        elif input_ext in {".html", ".htm"}:
             return self._convert_from_html(input_path, output_path, out_ext)
-        elif input_ext in {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"}:
+        elif input_ext in {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif", ".webp"}:
             return self._convert_from_image(input_path, output_path, out_ext)
         else:
             return ConversionResult(False, output_path, input_ext, out_ext,
@@ -283,7 +283,7 @@ class FormatConverter(LoggerMixin):
                 text = f.read()
         
         try:
-            if output_ext in {".txt", ".md"}:
+            if output_ext in {".txt", ".md", ".markdown"}:
                 with open(output_path, "w", encoding="utf-8") as f:
                     f.write(text)
                 return ConversionResult(True, output_path, input_ext, output_ext)
@@ -353,7 +353,7 @@ class FormatConverter(LoggerMixin):
         clean_text = re.sub(r'\n{3,}', '\n\n', clean_text).strip()
         
         try:
-            if output_ext in {".txt", ".md"}:
+            if output_ext in {".txt", ".md", ".markdown"}:
                 with open(output_path, "w", encoding="utf-8") as f:
                     f.write(clean_text)
                 return ConversionResult(True, output_path, ".html", output_ext)
