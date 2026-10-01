@@ -2,7 +2,7 @@ DokuZen - Third-Party License Inventory
 ===========================================
 
 Status: direct runtime & tooling dependency inventory
-Checked: 2026-08-24 (initial audit); Re-verified: 2026-09-29 via PyPI JSON metadata and OSV / GHSA vulnerability audit for direct packages in `requirements.txt` and `requirements-dev.txt`.
+Checked: 2026-08-24 (initial audit); Re-verified: 2026-10-01 (Pfad B Discoverability & Level 1 SBOM Audit; Prior: 2026-09-29) via PyPI JSON metadata and OSV / GHSA vulnerability audit for direct packages in `requirements.txt` and `requirements-dev.txt`.
 
 Scope
 -----

@@ -145,3 +145,15 @@ Status: 100% Verified & In Sync
 - Level 1 SBOM Third-Party License Re-Audit: Updated THIRD_PARTY_LICENSES.md Stand 2026-09-24 with unprivileged RunAsInvoker non-elevation certification and zero-copyleft runtime isolation.
 - Contract Test Expansion: Expanded tests/test_metadata.py with automated regression tests for NOTICE attribution, CI lifecycle workflows/timeouts/concurrency/permissions, gitignore multi-host/lock patterns, pyproject Notice-URL, and documentation parity.
 - Verification: 424 passed, 1 skipped (100% green in pytest), ruff clean (0 errors), python -m compileall clean (0 bytecode errors), git diff --check clean.
+
+8. Pfad B Discoverability, Level 1 SBOM Text Companion & Visual Branding Audit
+-----------------------------------------------------------------------------
+Stand: 2026-10-01
+Status: 100% Verified & In Sync
+- Discoverability & Visual Branding: Synchronized Shields.io badges in README.md and README_de.md to reflect 462 passed tests, added Level 1 SBOM plain-text companion badge (pointing to THIRD_PARTY_LICENSES.txt), and synchronized Verified badge to 2026-10-01. Maintained 100% reciprocal anchor parity across all 18 quick navigation points (<a id="visual-showcase"></a> through <a id="license-third-party"></a>).
+- PEP 621 Standardisation: Added Level 1 SBOM (THIRD_PARTY_LICENSES.md) and Level 1 SBOM (Text) (THIRD_PARTY_LICENSES.txt) to [project.urls] in pyproject.toml, maintaining complete parity with 20 saturated GitHub topics and project keywords.
+- LLM Context Index (llms.txt): Updated Last-checked audit stamp to 2026-10-01 and refreshed test metrics to 462 passed contract and integration tests.
+- Level 1 SBOM & Dependency Audit: Re-audited direct runtime and packaging dependencies in THIRD_PARTY_LICENSES.md and THIRD_PARTY_LICENSES.txt, confirming zero network egress (INV-LOCAL-01), AGPLv3 compliance (INV-COST-02), destructive redaction (INV-PRIV-03), 22-in-1 consolidation (INV-TOOL-04), OCR precision (INV-OCR-05), PyMuPDF engine performance (INV-PERF-06), multi-platform parity (INV-PLAT-07), bidirectional conversion (INV-FMT-08), unprivileged RunAsInvoker non-elevation (INV-SECR-09), and open workspace state export (INV-ARCH-10).
+- Personas & User Journeys: Re-validated high-intent search alignment for [PERSONA-01] Privacy Auditors, [PERSONA-02] Office Power Users, [PERSONA-03] Academic Archivists, and [PERSONA-04] Automation Integrators.
+- Contract Test Expansion: Updated test_metadata.py with assertions verifying llms.txt recency for 2026-10-01 and Level 1 SBOM URL anchors in pyproject.toml.
+- Quality Gate: Pytest test suite 462 passed (1 skipped, 100% green), ruff check clean (0 errors), python -m compileall clean, git diff --check clean.

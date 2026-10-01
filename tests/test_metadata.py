@@ -41,6 +41,8 @@ def test_pyproject_metadata_and_pep621_classifiers():
     assert urls.get("Changelog") == "https://github.com/doc-bricks/DokuZen/blob/main/CHANGELOG.md"
     assert urls.get("Security") == "https://github.com/doc-bricks/DokuZen/blob/main/SECURITY.md"
     assert urls.get("Umbrella") == "https://github.com/open-bricks"
+    assert urls.get("Level 1 SBOM") == "https://github.com/doc-bricks/DokuZen/blob/main/THIRD_PARTY_LICENSES.md"
+    assert urls.get("Level 1 SBOM (Text)") == "https://github.com/doc-bricks/DokuZen/blob/main/THIRD_PARTY_LICENSES.txt"
     assert urls.get("Third-Party Licenses") == "https://github.com/doc-bricks/DokuZen/blob/main/THIRD_PARTY_LICENSES.txt"
     assert urls.get("Marketing Log") == "https://github.com/doc-bricks/DokuZen/blob/main/MARKETING-LOG.txt"
     assert urls.get("LLM Ready") == "https://github.com/doc-bricks/DokuZen/blob/main/llms.txt"
@@ -96,7 +98,7 @@ def test_llms_txt_structure():
     assert "doc-bricks" in content
     assert "open-bricks" in content
     assert "Last-checked:" in content or "Last-checked:**" in content
-    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24"])
+    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24", "2026-10-01"])
     assert "NOTICE" in content
     assert "PySide6" in content
     assert "PyMuPDF" in content
@@ -532,3 +534,22 @@ def test_taskplan_and_github_public_compliance():
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     assert "GNU AFFERO GENERAL PUBLIC LICENSE" in license_text
     assert "Version 3" in license_text
+
+
+def test_level1_sbom_text_companion_and_pyproject_urls():
+    """Verify presence and validity of Level 1 SBOM text companion and pyproject URLs."""
+    sbom_txt = ROOT / "THIRD_PARTY_LICENSES.txt"
+    assert sbom_txt.exists(), "THIRD_PARTY_LICENSES.txt must exist"
+    txt_content = sbom_txt.read_text(encoding="utf-8")
+    assert "DokuZen - Third-Party License Inventory" in txt_content
+    assert "Direct Python Dependencies" in txt_content
+    assert "PySide6" in txt_content
+    assert "PyMuPDF" in txt_content
+    assert "Pillow" in txt_content
+
+    with open(ROOT / "pyproject.toml", "rb") as f:
+        data = tomllib.load(f)
+    urls = data.get("project", {}).get("urls", {})
+    assert "Level 1 SBOM" in urls
+    assert "Level 1 SBOM (Text)" in urls
+    assert urls["Level 1 SBOM (Text)"].endswith("THIRD_PARTY_LICENSES.txt")

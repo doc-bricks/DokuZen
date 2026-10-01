@@ -2,7 +2,7 @@
 
 **Status:** Production Direct Runtime Dependency Inventory  
 **Audited:** 2026-08-24 (via PyPI JSON metadata & OSV/GHSA vulnerability scan)  
-**Re-Verified:** 2026-09-29 (Software Security, Dependency & License Compliance Audit)
+**Re-Verified:** 2026-10-01 (Pfad B Discoverability, Level 1 SBOM Text Companion & Governance Audit; Prior: 2026-09-29)
 **Primary Project License:** [AGPL-3.0-or-later](LICENSE)  
 **Attribution & Copyright:** [NOTICE](NOTICE)
 

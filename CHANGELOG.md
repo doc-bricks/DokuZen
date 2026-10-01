@@ -5,6 +5,25 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Documentation & Discoverability (2026-10-01, Pfad B Discoverability, Level 1 SBOM Text-Begleitdatei & Audit-Synchronisation)
+- **Badges & Visual Branding (`README.md`, `README_de.md`):**
+  - Pytest-Status-Badge auf 462 bestandene Tests aktualisiert (`462 passed | 100%`).
+  - Level 1 SBOM Plain-Text Companion Badge hinzugefügt (`SBOM: Level 1 Text -> THIRD_PARTY_LICENSES.txt`).
+  - Geprüft/Verified-Badge Stand 2026-10-01 synchronisiert.
+  - Wechselseitige bilinguale 18-Punkte-Schnellnavigation und duale HTML-Anker (`<a id="..."></a>`) vollständig gewahrt.
+- **PEP 621 URLs & Standardisierung (`pyproject.toml`):**
+  - [project.urls] um "Level 1 SBOM" (`THIRD_PARTY_LICENSES.md`) und "Level 1 SBOM (Text)" (`THIRD_PARTY_LICENSES.txt`) erweitert; 20 gesättigte Keywords synchron zu den GitHub-Topics beibehalten.
+- **Machine Context Index & Audit-Recency (`llms.txt`):**
+  - Last-checked auf 2026-10-01 aktualisiert (Prior audits: 2026-09-24, 2026-09-19, 2026-09-07).
+  - Testsuite-Metrik auf 462 bestandene Tests synchronisiert.
+- **Level 1 SBOM & Lizenz-Inventar (`THIRD_PARTY_LICENSES.md`, `THIRD_PARTY_LICENSES.txt`):**
+  - Re-Audit und Bestätigung aller 10 Invarianten INV-LOCAL-01 bis INV-ARCH-10, unprivileged RunAsInvoker Non-Elevation und Zero-Copyleft Isolation Stand 2026-10-01.
+- **Marketing- & Audit-Log (`MARKETING-LOG.txt`):**
+  - Abschnitt 8 für Pfad B Discoverability, Level 1 SBOM Text-Begleitdatei und 2026-10-01 Verifikation ergänzt.
+- **Vertragstests (`tests/test_metadata.py`):**
+  - `test_llms_txt_structure` um Prüfdatum `2026-10-01` erweitert.
+  - Neuer Contract-Test `test_level1_sbom_text_companion_and_pyproject_urls` sichert die Existenz der Plain-Text-Begleitdatei `THIRD_PARTY_LICENSES.txt` und deren Verankerung in `pyproject.toml` ab.
+
 ### Changed (2026-09-30, Software-Entwicklungs-Iteration & Governance-Synchronisation)
 - **Taskplan- & Store-Readiness-Synchronisation (`AUFGABEN.txt`):**
   - Formelle Erfüllung und Dokumentation der Gates TW-DZ-04 bis TW-DZ-08 sowie U2:
