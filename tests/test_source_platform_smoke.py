@@ -59,7 +59,7 @@ class SourcePlatformSmokeTest(unittest.TestCase):
             self.window.close()
             # Destroy widgets on the GUI thread while QApplication is still alive.
             self.window.deleteLater()
-            QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+            QCoreApplication.sendPostedEvents(self.window, QEvent.Type.DeferredDelete)
             self.assertFalse(isValid(self.window))
         finally:
             PersistenceManager.DEFAULT_STATE_FILE = self.original_state_file
