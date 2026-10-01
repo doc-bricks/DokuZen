@@ -37,7 +37,7 @@ def test_collection_preserves_all_originals(tmp_path, monkeypatch, kind):
     assert target.read_bytes() == original
     assert set(tmp_path.iterdir()) == ({source} if target == source else {source, target})
 
-@pytest.mark.parametrize('stage', ['partial', 'empty', 'truncated', 'publish'])
+@pytest.mark.parametrize('stage', ['partial', 'empty', 'truncated', 'image', 'publish'])
 @pytest.mark.parametrize('existing', [False, True])
 def test_failed_collection_preserves_previous_output(tmp_path, monkeypatch, stage, existing):
     source = tmp_path / 'source.pdf'
@@ -51,6 +51,10 @@ def test_failed_collection_preserves_previous_output(tmp_path, monkeypatch, stag
     def save(doc, path, *args, **kwargs):
         if stage == 'publish':
             return real_save(doc, path, *args, **kwargs)
+        if stage == 'image':
+            from PIL import Image
+            Image.new('RGB', (10, 10), 'white').save(path, format='PNG')
+            return
         Path(path).write_bytes(b'' if stage == 'empty' else b'%PDF-incomplete')
         if stage == 'partial':
             raise OSError('Interrupted output write')

@@ -204,7 +204,7 @@ class CollectionExporter(LoggerMixin):
                 staged = Path(directory) / "collection.pdf"
                 output_doc.save(str(staged), garbage=3, deflate=True)
                 with fitz.open(str(staged)) as verified:
-                    if verified.is_encrypted or len(verified) != total_pages:
+                    if not verified.is_pdf or verified.is_encrypted or len(verified) != total_pages:
                         raise ValueError("Die erzeugte Sammel-PDF ist unvollständig.")
                 self._check_output_sources(out_p, originals)
                 os.replace(staged, out_p)
