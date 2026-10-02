@@ -257,38 +257,47 @@ class MainWindow(QMainWindow, LoggerMixin):
         # === Hilfe-Menü ===
         self._menu_help = menubar.addMenu(tr("&Hilfe"))
         
+        self._action_shortcuts = QAction(tr("Tastaturkürzel & Barrierefreiheit (F1)"), self)
+        self._action_shortcuts.setShortcut(QKeySequence("F1"))
+        self._action_shortcuts.triggered.connect(self._on_shortcuts_dialog)
+        self._menu_help.addAction(self._action_shortcuts)
+
         self._action_about = QAction(tr("Über DokuZen"), self)
         self._action_about.triggered.connect(self._on_about)
         self._menu_help.addAction(self._action_about)
     
     def _setup_toolbar(self):
         """Erstellt die Toolbar."""
-        toolbar = QToolBar(tr("Hauptwerkzeuge"))
-        toolbar.setMovable(False)
-        toolbar.setIconSize(QSize(24, 24))
-        self.addToolBar(toolbar)
+        self._toolbar = QToolBar(tr("Hauptwerkzeuge"))
+        self._toolbar.setAccessibleName(tr("Hauptwerkzeuge"))
+        self._toolbar.setMovable(False)
+        self._toolbar.setIconSize(QSize(24, 24))
+        self.addToolBar(self._toolbar)
         
         # Import-Button
         self._btn_import = QAction(tr("Importieren"), self)
         self._btn_import.setToolTip(tr("Dateien zur Bibliothek hinzufügen (Ctrl+I)"))
+        self._btn_import.setStatusTip(tr("Dokumente importieren"))
         self._btn_import.triggered.connect(self._on_import)
-        toolbar.addAction(self._btn_import)
+        self._toolbar.addAction(self._btn_import)
 
         # Smart Ingest Button
         self._btn_smart_ingest = QAction(tr("Smart Ingest"), self)
         self._btn_smart_ingest.setToolTip(
             tr("Dateien und Ordner mit automatischer Formaterkennung importieren (Ctrl+Shift+I)")
         )
+        self._btn_smart_ingest.setStatusTip(tr("Smart Ingest Dropzone"))
         self._btn_smart_ingest.triggered.connect(self._on_smart_ingest)
-        toolbar.addAction(self._btn_smart_ingest)
+        self._toolbar.addAction(self._btn_smart_ingest)
         
         # Neues Thema
         self._btn_new_theme = QAction(tr("Neues Thema"), self)
         self._btn_new_theme.setToolTip(tr("Neues Thema erstellen (Ctrl+N)"))
+        self._btn_new_theme.setStatusTip(tr("Neues Thema erstellen"))
         self._btn_new_theme.triggered.connect(self._on_new_theme)
-        toolbar.addAction(self._btn_new_theme)
+        self._toolbar.addAction(self._btn_new_theme)
         
-        toolbar.addSeparator()
+        self._toolbar.addSeparator()
         
         # Suchfeld
         self._search_box = QLineEdit()
@@ -299,14 +308,25 @@ class MainWindow(QMainWindow, LoggerMixin):
             tr("Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren.")
         )
         self._search_box.setMaximumWidth(250)
-        toolbar.addWidget(self._search_box)
+        self._toolbar.addWidget(self._search_box)
         self._search_box.textChanged.connect(self._on_search_changed)
         
         # Aktualisieren
         self._btn_refresh = QAction(tr("Aktualisieren"), self)
         self._btn_refresh.setToolTip(tr("Ansicht aktualisieren (F5)"))
+        self._btn_refresh.setStatusTip(tr("Ansicht aktualisieren"))
         self._btn_refresh.triggered.connect(self._on_refresh)
-        toolbar.addAction(self._btn_refresh)
+        self._toolbar.addAction(self._btn_refresh)
+
+        for act, a11y_name in [
+            (self._btn_import, tr("Dokumente importieren")),
+            (self._btn_smart_ingest, tr("Smart Ingest Dropzone")),
+            (self._btn_new_theme, tr("Neues Thema erstellen")),
+            (self._btn_refresh, tr("Ansicht aktualisieren")),
+        ]:
+            act_btn = self._toolbar.widgetForAction(act)
+            if act_btn:
+                act_btn.setAccessibleName(a11y_name)
 
     def _setup_panels(self):
         """Erstellt das 3-Panel-Layout."""
@@ -316,14 +336,17 @@ class MainWindow(QMainWindow, LoggerMixin):
         
         # Panel 1: Bibliothek (Themen-Baum)
         self._library_panel = LibraryPanel(self._library)
+        self._library_panel.setAccessibleName(tr("Bibliotheks-Panel"))
         self._splitter.addWidget(self._library_panel)
         
         # Panel 2: Dokumentenliste
         self._document_panel = DocumentListPanel(self._library)
+        self._document_panel.setAccessibleName(tr("Dokumentenlisten-Panel"))
         self._splitter.addWidget(self._document_panel)
         
         # Panel 3: Vorschau
         self._preview_panel = PreviewPanel()
+        self._preview_panel.setAccessibleName(tr("Vorschau-Panel"))
         self._splitter.addWidget(self._preview_panel)
         
         # Größenverhältnis setzen (200:600:400)
@@ -338,11 +361,15 @@ class MainWindow(QMainWindow, LoggerMixin):
         """Erstellt die Statusleiste."""
         self._statusbar = QStatusBar()
         self.setStatusBar(self._statusbar)
+        self._statusbar.setAccessibleName(tr("Statusleiste"))
         
         # Permanente Labels
         self._status_theme = QLabel(f"{tr('Thema')}: -")
+        self._status_theme.setAccessibleName(tr("Aktives Thema"))
         self._status_docs = QLabel(f"{tr('Dokumente')}: 0")
+        self._status_docs.setAccessibleName(tr("Anzahl der Dokumente"))
         self._status_filter = QLabel(f"{tr('Filter')}: {tr('Alle')}")
+        self._status_filter.setAccessibleName(tr("Aktiver Filter"))
         
         self._statusbar.addPermanentWidget(self._status_theme)
         self._statusbar.addPermanentWidget(QLabel(" | "))
@@ -371,11 +398,15 @@ class MainWindow(QMainWindow, LoggerMixin):
     def _update_statusbar(self):
         """Aktualisiert die Statusleiste."""
         theme = self._library.themes.get_current_theme()
-        self._status_theme.setText(f"{tr('Thema')}: {theme or '-'}")
+        theme_str = theme or "-"
+        self._status_theme.setText(f"{tr('Thema')}: {theme_str}")
+        self._status_theme.setAccessibleDescription(f"{tr('Aktives Thema')}: {theme_str}")
         
         docs = self._library.get_documents()
         self._status_docs.setText(f"{tr('Dokumente')}: {len(docs)}")
+        self._status_docs.setAccessibleDescription(f"{len(docs)} {tr('Dokument(e)')}")
         self._status_filter.setText(f"{tr('Filter')}: {tr('Alle')}")
+        self._status_filter.setAccessibleDescription(f"{tr('Aktiver Filter')}: {tr('Alle')}")
     
     def retranslate_ui(self):
         """Aktualisiert alle UI-Texte dynamisch gemäß aktuellem TranslationSystem."""
@@ -428,22 +459,41 @@ class MainWindow(QMainWindow, LoggerMixin):
             
         if hasattr(self, "_menu_help"):
             self._menu_help.setTitle(t("&Hilfe"))
+            if hasattr(self, "_action_shortcuts"):
+                self._action_shortcuts.setText(t("Tastaturkürzel & Barrierefreiheit (F1)"))
             self._action_about.setText(t("Über DokuZen"))
             
+        if hasattr(self, "_toolbar"):
+            self._toolbar.setWindowTitle(t("Hauptwerkzeuge"))
+            self._toolbar.setAccessibleName(t("Hauptwerkzeuge"))
         if hasattr(self, "_btn_import"):
             self._btn_import.setText(t("Importieren"))
             self._btn_import.setToolTip(t("Dateien zur Bibliothek hinzufügen (Ctrl+I)"))
+            self._btn_import.setStatusTip(t("Dokumente importieren"))
         if hasattr(self, "_btn_smart_ingest"):
             self._btn_smart_ingest.setText(t("Smart Ingest"))
             self._btn_smart_ingest.setToolTip(
                 t("Dateien und Ordner mit automatischer Formaterkennung importieren (Ctrl+Shift+I)")
             )
+            self._btn_smart_ingest.setStatusTip(t("Smart Ingest Dropzone"))
         if hasattr(self, "_btn_new_theme"):
             self._btn_new_theme.setText(t("Neues Thema"))
             self._btn_new_theme.setToolTip(t("Neues Thema erstellen (Ctrl+N)"))
+            self._btn_new_theme.setStatusTip(t("Neues Thema erstellen"))
         if hasattr(self, "_btn_refresh"):
             self._btn_refresh.setText(t("Aktualisieren"))
             self._btn_refresh.setToolTip(t("Ansicht aktualisieren (F5)"))
+            self._btn_refresh.setStatusTip(t("Ansicht aktualisieren"))
+        if hasattr(self, "_toolbar"):
+            for act, a11y_name in [
+                (self._btn_import, t("Dokumente importieren")),
+                (self._btn_smart_ingest, t("Smart Ingest Dropzone")),
+                (self._btn_new_theme, t("Neues Thema erstellen")),
+                (self._btn_refresh, t("Ansicht aktualisieren")),
+            ]:
+                act_btn = self._toolbar.widgetForAction(act)
+                if act_btn:
+                    act_btn.setAccessibleName(a11y_name)
         if hasattr(self, "_search_box"):
             self._search_box.setPlaceholderText(t("Suchen..."))
             self._search_box.setToolTip(t("Dokumente in der Bibliothek durchsuchen (Ctrl+F)"))
@@ -451,13 +501,28 @@ class MainWindow(QMainWindow, LoggerMixin):
             self._search_box.setAccessibleDescription(
                 t("Filtert die angezeigten Dokumente beim Eingeben. Mit Ctrl+F fokussieren.")
             )
-            
-        if hasattr(self, "_library_panel") and hasattr(self._library_panel, "retranslate_ui"):
-            self._library_panel.retranslate_ui()
-        if hasattr(self, "_document_panel") and hasattr(self._document_panel, "retranslate_ui"):
-            self._document_panel.retranslate_ui()
-        if hasattr(self, "_preview_panel") and hasattr(self._preview_panel, "retranslate_ui"):
-            self._preview_panel.retranslate_ui()
+
+        if hasattr(self, "_statusbar"):
+            self._statusbar.setAccessibleName(t("Statusleiste"))
+        if hasattr(self, "_status_theme"):
+            self._status_theme.setAccessibleName(t("Aktives Thema"))
+        if hasattr(self, "_status_docs"):
+            self._status_docs.setAccessibleName(t("Anzahl der Dokumente"))
+        if hasattr(self, "_status_filter"):
+            self._status_filter.setAccessibleName(t("Aktiver Filter"))
+
+        if hasattr(self, "_library_panel"):
+            self._library_panel.setAccessibleName(t("Bibliotheks-Panel"))
+            if hasattr(self._library_panel, "retranslate_ui"):
+                self._library_panel.retranslate_ui()
+        if hasattr(self, "_document_panel"):
+            self._document_panel.setAccessibleName(t("Dokumentenlisten-Panel"))
+            if hasattr(self._document_panel, "retranslate_ui"):
+                self._document_panel.retranslate_ui()
+        if hasattr(self, "_preview_panel"):
+            self._preview_panel.setAccessibleName(t("Vorschau-Panel"))
+            if hasattr(self._preview_panel, "retranslate_ui"):
+                self._preview_panel.retranslate_ui()
             
         self._update_statusbar()
     
@@ -940,6 +1005,116 @@ class MainWindow(QMainWindow, LoggerMixin):
         dialog = SignatureOverlayDialog(self, pdf_path=initial_pdf)
         dialog.exec()
         self._on_refresh()
+
+    def show_shortcuts_dialog(self):
+        """Öffnet den barrierefreien Dialog für Tastaturkürzel und Accessibility (F1)."""
+        return self._on_shortcuts_dialog()
+
+    def _on_shortcuts_dialog(self):
+        """Öffnet den barrierefreien Dialog für Tastaturkürzel und Accessibility (F1)."""
+        from PySide6.QtWidgets import (
+            QDialog, QTreeWidget, QTreeWidgetItem, QPushButton, QAbstractItemView
+        )
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(tr("Tastaturkürzel und Barrierefreiheit"))
+        dialog.setAccessibleName(tr("Tastaturkürzel und Barrierefreiheit"))
+        dialog.setModal(True)
+        dialog.resize(680, 520)
+
+        layout = QVBoxLayout(dialog)
+        layout.setContentsMargins(14, 14, 14, 14)
+        layout.setSpacing(10)
+
+        header = QLabel(f"<h3>{tr('Tastaturkürzel und Barrierefreiheit')}</h3>")
+        layout.addWidget(header)
+
+        tree = QTreeWidget(dialog)
+        tree.setHeaderLabels([tr("Aktion"), tr("Tastaturkürzel")])
+        tree.setAccessibleName(tr("Tastaturkürzel und Barrierefreiheit"))
+        tree.setAccessibleDescription(
+            tr("Übersicht aller verfügbaren Tastaturkürzel und Barrierefreiheitsfunktionen")
+        )
+        tree.setColumnWidth(0, 380)
+        tree.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        tree.setAlternatingRowColors(True)
+
+        shortcut_groups = {
+            tr("Datei"): [
+                (tr("Importieren"), "Ctrl+I"),
+                (tr("Smart Ingest (Dropzone)..."), "Ctrl+Shift+I"),
+                (tr("Arbeitsbereich exportieren..."), "Ctrl+Shift+E"),
+                (tr("Einstellungen"), "Ctrl+,"),
+                (tr("Beenden"), "Ctrl+Q"),
+            ],
+            tr("Bearbeiten"): [
+                (tr("Suchen"), "Ctrl+F"),
+                (tr("Alles auswählen"), "Ctrl+A"),
+                (tr("Rückgängig"), "Ctrl+Z"),
+                (tr("Wiederholen"), "Ctrl+Y"),
+            ],
+            tr("Ansicht"): [
+                (tr("Aktualisieren"), "F5"),
+                (tr("Vorschau ein/aus"), "Ctrl+P"),
+                (tr("Vollbild"), "F11"),
+            ],
+            tr("Themen"): [
+                (tr("Neues Thema"), "Ctrl+N"),
+                (tr("Thema umbenennen"), "F2"),
+                (tr("Thema löschen"), "Delete / Backspace"),
+            ],
+            tr("Dokumente"): [
+                (tr("Dokument öffnen"), "Return / Enter"),
+                (tr("Pfad in Zwischenablage kopieren"), "Ctrl+C"),
+                (tr("Aus Bibliothek entfernen"), "Delete / Backspace"),
+            ],
+            tr("Werkzeuge"): [
+                (tr("PDF-Werkstatt"), "Ctrl+Shift+P"),
+                (tr("OCR-Texterkennung"), "Ctrl+Shift+O"),
+                (tr("PDF schwärzen"), "Ctrl+Shift+R"),
+                (tr("Format-Konvertierung"), "Ctrl+Shift+C"),
+                (tr("PDFs zusammenführen"), "Ctrl+Shift+M"),
+                (tr("Formular-Builder"), "Ctrl+Shift+F"),
+                (tr("PDF-Marker"), "Ctrl+Shift+K"),
+            ],
+            tr("Hilfe"): [
+                (tr("Tastaturkürzel & Barrierefreiheit (F1)"), "F1"),
+            ],
+        }
+
+        for category, items in shortcut_groups.items():
+            cat_item = QTreeWidgetItem([category])
+            cat_item.setExpanded(True)
+            for action_text, key_seq in items:
+                child = QTreeWidgetItem([action_text, key_seq])
+                cat_item.addChild(child)
+            tree.addTopLevelItem(cat_item)
+
+        layout.addWidget(tree)
+
+        a11y_info = QLabel(
+            f"<p style='color: #444;'><i>{tr('Konformität: WCAG 2.1 AA & BITV 2.0 barrierefrei bedienbar.')}</i></p>"
+        )
+        layout.addWidget(a11y_info)
+
+        footer_layout = QHBoxLayout()
+        footer_layout.addStretch()
+
+        btn_close = QPushButton(tr("Schließen"), dialog)
+        btn_close.setDefault(True)
+        btn_close.setToolTip(tr("Dialog schließen (Esc / Enter)"))
+        btn_close.setAccessibleName(tr("Schließen"))
+        btn_close.clicked.connect(dialog.accept)
+        footer_layout.addWidget(btn_close)
+
+        layout.addLayout(footer_layout)
+
+        if os.environ.get("QT_QPA_PLATFORM") == "offscreen":
+            dialog.show()
+            return dialog
+
+        dialog.exec()
+        return dialog
 
     def _on_about(self):
         """Zeigt About-Dialog."""

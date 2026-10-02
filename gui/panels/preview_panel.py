@@ -62,12 +62,18 @@ class PreviewPanel(QWidget, LoggerMixin):
         self._btn_open.setFixedWidth(70)
         self._btn_open.clicked.connect(self._open_external)
         self._btn_open.setEnabled(False)
+        self._btn_open.setToolTip(tr("Öffnet das aktuelle Dokument in der Standardanwendung"))
+        self._btn_open.setAccessibleName(tr("Dokument extern öffnen"))
+        self._btn_open.setAccessibleDescription(
+            tr("Öffnet die ausgewählte Datei mit der Standardanwendung des Betriebssystems.")
+        )
         header_layout.addWidget(self._btn_open)
         
         layout.addLayout(header_layout)
         
         # Stacked Widget für verschiedene Vorschau-Typen
         self._stack = QStackedWidget()
+        self._stack.setAccessibleName(tr("Vorschau-Panel"))
         layout.addWidget(self._stack)
         
         # Seite 0: Kein Dokument
@@ -76,6 +82,7 @@ class PreviewPanel(QWidget, LoggerMixin):
         self._empty_label = QLabel(tr("Kein Dokument ausgewählt"))
         self._empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._empty_label.setStyleSheet("color: #888;")
+        self._empty_label.setAccessibleName(tr("Keine Vorschau"))
         empty_layout.addWidget(self._empty_label)
         self._stack.addWidget(self._empty_widget)
         
@@ -83,6 +90,10 @@ class PreviewPanel(QWidget, LoggerMixin):
         self._text_widget = QTextEdit()
         self._text_widget.setReadOnly(True)
         self._text_widget.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)
+        self._text_widget.setAccessibleName(tr("Text-Vorschau"))
+        self._text_widget.setAccessibleDescription(
+            tr("Schreibgeschützte Textvorschau des ausgewählten Dokuments.")
+        )
         self._text_widget.setStyleSheet("""
             QTextEdit {
                 font-family: Consolas, 'Courier New', monospace;
@@ -95,8 +106,10 @@ class PreviewPanel(QWidget, LoggerMixin):
         self._image_scroll = QScrollArea()
         self._image_scroll.setWidgetResizable(True)
         self._image_scroll.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._image_scroll.setAccessibleName(tr("Bild-Vorschau"))
         self._image_label = QLabel()
         self._image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._image_label.setAccessibleName(tr("Bild-Vorschau"))
         self._image_scroll.setWidget(self._image_label)
         self._stack.addWidget(self._image_scroll)
         
@@ -150,8 +163,11 @@ class PreviewPanel(QWidget, LoggerMixin):
         """Aktualisiert alle UI-Texte im PreviewPanel dynamisch."""
         if hasattr(self, "_btn_open"):
             self._btn_open.setText(tr("Öffnen"))
+            self._btn_open.setToolTip(tr("Öffnet das aktuelle Dokument in der Standardanwendung"))
+            self._btn_open.setAccessibleName(tr("Dokument extern öffnen"))
         if hasattr(self, "_empty_label"):
             self._empty_label.setText(tr("Kein Dokument ausgewählt"))
+            self._empty_label.setAccessibleName(tr("Keine Vorschau"))
         if hasattr(self, "_unsupported_info"):
             self._unsupported_info.setText(tr("Doppelklick zum Öffnen"))
             
@@ -162,6 +178,7 @@ class PreviewPanel(QWidget, LoggerMixin):
                 self._header_label.setText(f"<b>{tr('Vorschau')}</b>")
             if hasattr(self, "_unsupported_label"):
                 self._unsupported_label.setText(tr("Vorschau nicht verfügbar"))
+                self._unsupported_label.setAccessibleName(tr("Keine Vorschau"))
 
     def clear(self):
         """Leert die Vorschau."""

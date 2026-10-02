@@ -3118,5 +3118,573 @@
     "zh": "从库中移除",
     "ja": "ライブラリから削除",
     "ru": "Удалить из библиотеки"
+  },
+  "Tastaturkürzel & Barrierefreiheit (F1)": {
+    "de": "Tastaturkürzel & Barrierefreiheit (F1)",
+    "en": "Keyboard Shortcuts & Accessibility (F1)",
+    "es": "Atajos de teclado y accesibilidad (F1)",
+    "zh": "快捷键与无障碍 (F1)",
+    "ja": "キーボードショートカットとアクセシビリティ (F1)",
+    "ru": "Горячие клавиши и специальные возможности (F1)"
+  },
+  "Tastaturkürzel und Barrierefreiheit": {
+    "de": "Tastaturkürzel und Barrierefreiheit",
+    "en": "Keyboard Shortcuts and Accessibility",
+    "es": "Atajos de teclado y accesibilidad",
+    "zh": "快捷键与无障碍",
+    "ja": "キーボードショートカットとアクセシビリティ",
+    "ru": "Горячие клавиши и специальные возможности"
+  },
+  "Statusleiste": {
+    "de": "Statusleiste",
+    "en": "Status Bar",
+    "es": "Barra de estado",
+    "zh": "状态栏",
+    "ja": "ステータスバー",
+    "ru": "Строка состояния"
+  },
+  "Themen-Bibliothek": {
+    "de": "Themen-Bibliothek",
+    "en": "Theme Library",
+    "es": "Biblioteca de temas",
+    "zh": "主题库",
+    "ja": "テーマライブラリ",
+    "ru": "Библиотека тем"
+  },
+  "Dokumentenliste": {
+    "de": "Dokumentenliste",
+    "en": "Document List",
+    "es": "Lista de documentos",
+    "zh": "文档列表",
+    "ja": "ドキュメントリスト",
+    "ru": "Список документов"
+  },
+  "Dokumentenanzahl": {
+    "de": "Dokumentenanzahl",
+    "en": "Document Count",
+    "es": "Cantidad de documentos",
+    "zh": "文档数量",
+    "ja": "ドキュメント数",
+    "ru": "Количество документов"
+  },
+  "Dokumentenfilter": {
+    "de": "Dokumentenfilter",
+    "en": "Document Filter",
+    "es": "Filtro de documentos",
+    "zh": "文档过滤器",
+    "ja": "ドキュメントフィルター",
+    "ru": "Фильтр документов"
+  },
+  "Dokumentensortierung": {
+    "de": "Dokumentensortierung",
+    "en": "Document Sorting",
+    "es": "Ordenación de documentos",
+    "zh": "文档排序",
+    "ja": "ドキュメントの並び替え",
+    "ru": "Сортировка документов"
+  },
+  "Vorschau-Panel": {
+    "de": "Vorschau-Panel",
+    "en": "Preview Panel",
+    "es": "Panel de vista previa",
+    "zh": "预览面板",
+    "ja": "プレビューパネル",
+    "ru": "Панель предпросмотра"
+  },
+  "Bibliotheks-Panel": {
+    "de": "Bibliotheks-Panel",
+    "en": "Library Panel",
+    "es": "Panel de biblioteca",
+    "zh": "库面板",
+    "ja": "ライブラリパネル",
+    "ru": "Панель библиотеки"
+  },
+  "Dokumentenlisten-Panel": {
+    "de": "Dokumentenlisten-Panel",
+    "en": "Document List Panel",
+    "es": "Panel de lista de documentos",
+    "zh": "文档列表面板",
+    "ja": "ドキュメントリストパネル",
+    "ru": "Панель списка документов"
+  },
+  "Text-Vorschau": {
+    "de": "Text-Vorschau",
+    "en": "Text Preview",
+    "es": "Vista previa de texto",
+    "zh": "文本预览",
+    "ja": "テキストプレビュー",
+    "ru": "Предпросмотр текста"
+  },
+  "Bild-Vorschau": {
+    "de": "Bild-Vorschau",
+    "en": "Image Preview",
+    "es": "Vista previa de imagen",
+    "zh": "图像预览",
+    "ja": "画像プレビュー",
+    "ru": "Предпросмотр изображения"
+  },
+  "Keine Vorschau": {
+    "de": "Keine Vorschau",
+    "en": "No Preview",
+    "es": "Sin vista previa",
+    "zh": "无预览",
+    "ja": "プレビューなし",
+    "ru": "Нет предпросмотра"
+  },
+  "Dokument extern öffnen": {
+    "de": "Dokument extern öffnen",
+    "en": "Open Document Externally",
+    "es": "Abrir documento externamente",
+    "zh": "在外部打开文档",
+    "ja": "外部でドキュメントを開く",
+    "ru": "Открыть документ во внешней программе"
+  },
+  "Aktives Thema": {
+    "de": "Aktives Thema",
+    "en": "Active Theme",
+    "es": "Tema activo",
+    "zh": "当前主题",
+    "ja": "アクティブテーマ",
+    "ru": "Активная тема"
+  },
+  "Anzahl der Dokumente": {
+    "de": "Anzahl der Dokumente",
+    "en": "Number of Documents",
+    "es": "Número de documentos",
+    "zh": "文档数量",
+    "ja": "ドキュメント数",
+    "ru": "Количество документов"
+  },
+  "Aktiver Filter": {
+    "de": "Aktiver Filter",
+    "en": "Active Filter",
+    "es": "Filtro activo",
+    "zh": "当前过滤器",
+    "ja": "アクティブフィルター",
+    "ru": "Активный фильтр"
+  },
+  "Dokumente importieren": {
+    "de": "Dokumente importieren",
+    "en": "Import Documents",
+    "es": "Importar documentos",
+    "zh": "导入文档",
+    "ja": "ドキュメントのインポート",
+    "ru": "Импортировать документы"
+  },
+  "Neues Thema erstellen": {
+    "de": "Neues Thema erstellen",
+    "en": "Create New Theme",
+    "es": "Crear nuevo tema",
+    "zh": "创建新主题",
+    "ja": "新規テーマを作成",
+    "ru": "Создать новую тему"
+  },
+  "Ansicht aktualisieren": {
+    "de": "Ansicht aktualisieren",
+    "en": "Refresh View",
+    "es": "Actualizar vista",
+    "zh": "刷新视图",
+    "ja": "ビューを更新",
+    "ru": "Обновить вид"
+  },
+  "Pfad in Zwischenablage kopiert": {
+    "de": "Pfad in Zwischenablage kopiert",
+    "en": "Path copied to clipboard",
+    "es": "Ruta copiada al portapapeles",
+    "zh": "路径已复制到剪贴板",
+    "ja": "パスがクリップボードにコピーされました",
+    "ru": "Путь скопирован в буфер обмена"
+  },
+  "Konformität: WCAG 2.1 AA & BITV 2.0 barrierefrei bedienbar.": {
+    "de": "Konformität: WCAG 2.1 AA & BITV 2.0 barrierefrei bedienbar.",
+    "en": "Conformance: WCAG 2.1 AA & BITV 2.0 fully accessible.",
+    "es": "Conformidad: Accesible según WCAG 2.1 AA y BITV 2.0.",
+    "zh": "符合规范：符合 WCAG 2.1 AA 和 BITV 2.0 无障碍标准。",
+    "ja": "準拠：WCAG 2.1 AA および BITV 2.0 アクセシビリティ対応。",
+    "ru": "Соответствие: доступно согласно WCAG 2.1 AA и BITV 2.0."
+  },
+  "Schrift": {
+    "de": "Schrift",
+    "en": "Font",
+    "es": "Fuente",
+    "zh": "字体",
+    "ja": "フォント",
+    "ru": "Шрифт"
+  },
+  "Icons": {
+    "de": "Icons",
+    "en": "Icons",
+    "es": "Iconos",
+    "zh": "图标",
+    "ja": "アイコン",
+    "ru": "Значки"
+  },
+  "Bibliothekspfad": {
+    "de": "Bibliothekspfad",
+    "en": "Library Path",
+    "es": "Ruta de la biblioteca",
+    "zh": "库路径",
+    "ja": "ライブラリパス",
+    "ru": "Путь к библиотеке"
+  },
+  "Exportpfad": {
+    "de": "Exportpfad",
+    "en": "Export Path",
+    "es": "Ruta de exportación",
+    "zh": "导出路径",
+    "ja": "エクスポートパス",
+    "ru": "Путь экспорта"
+  },
+  "Spawner-Ordnerpfad": {
+    "de": "Spawner-Ordnerpfad",
+    "en": "Spawner Folder Path",
+    "es": "Ruta de carpeta de spawner",
+    "zh": "生成器文件夹路径",
+    "ja": "スポナーフォルダーパス",
+    "ru": "Путь к папке спавнера"
+  },
+  "Design-Farbschema": {
+    "de": "Design-Farbschema",
+    "en": "Design Color Scheme",
+    "es": "Esquema de colores",
+    "zh": "设计配色方案",
+    "ja": "配色テーマ",
+    "ru": "Цветовая схема"
+  },
+  "Schriftart": {
+    "de": "Schriftart",
+    "en": "Font Family",
+    "es": "Familia de fuentes",
+    "zh": "字体系列",
+    "ja": "フォントファミリ",
+    "ru": "Семейство шрифтов"
+  },
+  "Schriftgröße": {
+    "de": "Schriftgröße",
+    "en": "Font Size",
+    "es": "Tamaño de fuente",
+    "zh": "字号",
+    "ja": "フォントサイズ",
+    "ru": "Размер шрифта"
+  },
+  "Icon-Größe": {
+    "de": "Icon-Größe",
+    "en": "Icon Size",
+    "es": "Tamaño de icono",
+    "zh": "图标大小",
+    "ja": "アイコンサイズ",
+    "ru": "Размер значков"
+  },
+  "Tastaturkürzel-Konfiguration": {
+    "de": "Tastaturkürzel-Konfiguration",
+    "en": "Keyboard Shortcuts Configuration",
+    "es": "Configuración de atajos de teclado",
+    "zh": "快捷键配置",
+    "ja": "キーボードショートカット設定",
+    "ru": "Настройка горячих клавиш"
+  },
+  "Alle zurücksetzen": {
+    "de": "Alle zurücksetzen",
+    "en": "Reset All",
+    "es": "Restablecer todo",
+    "zh": "重置全部",
+    "ja": "すべてリセット",
+    "ru": "Сбросить все"
+  },
+  "Baumansicht aller Ordner und Themen. Pfeiltasten zur Navigation, F2 zum Umbenennen, Entf zum Löschen.": {
+    "de": "Baumansicht aller Ordner und Themen. Pfeiltasten zur Navigation, F2 zum Umbenennen, Entf zum Löschen.",
+    "en": "Tree view of all folders and themes. Arrow keys for navigation, F2 to rename, Delete to delete.",
+    "es": "Vista de árbol de todas las carpetas y temas. Teclas de flecha para navegar, F2 para renombrar, Supr para eliminar.",
+    "zh": "所有文件夹和主题的树状视图。使用方向键导航，F2重命名，Delete删除。",
+    "ja": "すべてのフォルダーとテーマのツリービュー。矢印キーで移動、F2で名前変更、Deleteで削除。",
+    "ru": "Дерево всех папок и тем. Стрелки для навигации, F2 для переименования, Delete для удаления."
+  },
+  "Filtert Dokumente nach Status (Alle, Ungelesen, Gelesen)": {
+    "de": "Filtert Dokumente nach Status (Alle, Ungelesen, Gelesen)",
+    "en": "Filters documents by status (All, Unread, Read)",
+    "es": "Filtra documentos por estado (Todos, No leídos, Leídos)",
+    "zh": "按状态过滤文档（全部、未读、已读）",
+    "ja": "ステータス別にドキュメントを絞り込み（すべて、未読、既読）",
+    "ru": "Фильтрация документов по статусу (Все, Непрочитанные, Прочитанные)"
+  },
+  "Filter nach Lesestatus auswählen": {
+    "de": "Filter nach Lesestatus auswählen",
+    "en": "Select filter by read status",
+    "es": "Seleccionar filtro por estado de lectura",
+    "zh": "选择阅读状态过滤器",
+    "ja": "既読ステータスでフィルターを選択",
+    "ru": "Выбрать фильтр по статусу прочтения"
+  },
+  "Sortiert Dokumente nach Name, Datum, Größe oder Typ": {
+    "de": "Sortiert Dokumente nach Name, Datum, Größe oder Typ",
+    "en": "Sorts documents by name, date, size, or type",
+    "es": "Ordena documentos por nombre, fecha, tamaño o tipo",
+    "zh": "按名称、日期、大小或类型排序文档",
+    "ja": "名前、日付、サイズ、種類でドキュメントを並び替え",
+    "ru": "Сортирует документы по имени, дате, размеру или типу"
+  },
+  "Sortierkriterium auswählen": {
+    "de": "Sortierkriterium auswählen",
+    "en": "Select sorting criteria",
+    "es": "Seleccionar criterio de ordenación",
+    "zh": "选择排序条件",
+    "ja": "並び替え基準を選択",
+    "ru": "Выбрать критерий сортировки"
+  },
+  "Tabelle aller Dokumente im aktiven Thema. Pfeiltasten zur Navigation, Enter zum Öffnen, Strg+C zum Kopieren des Pfads, Entf zum Entfernen.": {
+    "de": "Tabelle aller Dokumente im aktiven Thema. Pfeiltasten zur Navigation, Enter zum Öffnen, Strg+C zum Kopieren des Pfads, Entf zum Entfernen.",
+    "en": "Table of all documents in the active theme. Arrow keys to navigate, Enter to open, Ctrl+C to copy path, Delete to remove.",
+    "es": "Tabla de todos los documentos en el tema activo. Flechas para navegar, Enter para abrir, Ctrl+C para copiar ruta, Supr para eliminar.",
+    "zh": "当前主题中的所有文档表格。方向键导航，Enter打开，Ctrl+C复制路径，Delete移除。",
+    "ja": "アクティブテーマ内のすべてのドキュメントの表。矢印キーで移動、Enterで開く、Ctrl+Cでパスをコピー、Deleteで削除。",
+    "ru": "Таблица всех документов в активной теме. Стрелки для навигации, Enter для открытия, Ctrl+C для копирования пути, Delete для удаления."
+  },
+  "Öffnet das aktuelle Dokument in der Standardanwendung": {
+    "de": "Öffnet das aktuelle Dokument in der Standardanwendung",
+    "en": "Opens the current document in the default application",
+    "es": "Abre el documento actual en la aplicación predeterminada",
+    "zh": "在默认应用程序中打开当前文档",
+    "ja": "現在のドキュメントをデフォルトアプリで開く",
+    "ru": "Открывает текущий документ в программе по умолчанию"
+  },
+  "Öffnet die ausgewählte Datei mit der Standardanwendung des Betriebssystems.": {
+    "de": "Öffnet die ausgewählte Datei mit der Standardanwendung des Betriebssystems.",
+    "en": "Opens the selected file with the operating system default application.",
+    "es": "Abre el archivo seleccionado con la aplicación predeterminada del sistema operativo.",
+    "zh": "使用操作系统默认应用程序打开选定文件。",
+    "ja": "選択したファイルをOSのデフォルトアプリで開きます。",
+    "ru": "Открывает выбранный файл в стандартной программе операционной системы."
+  },
+  "Schreibgeschützte Textvorschau des ausgewählten Dokuments.": {
+    "de": "Schreibgeschützte Textvorschau des ausgewählten Dokuments.",
+    "en": "Read-only text preview of the selected document.",
+    "es": "Vista previa de texto de solo lectura del documento seleccionado.",
+    "zh": "选定文档的只读文本预览。",
+    "ja": "選択したドキュメントの読み取り専用テキストプレビュー。",
+    "ru": "Текстовый предпросмотр выбранного документа только для чтения."
+  },
+  "Dateipfad zum Verzeichnis der DokuZen-Bibliothek.": {
+    "de": "Dateipfad zum Verzeichnis der DokuZen-Bibliothek.",
+    "en": "File path to the DokuZen library directory.",
+    "es": "Ruta del archivo al directorio de la biblioteca DokuZen.",
+    "zh": "DokuZen 库目录的文件路径。",
+    "ja": "DokuZen ライブラリディレクトリへのファイルパス。",
+    "ru": "Путь к каталогу библиотеки DokuZen."
+  },
+  "Bibliotheksordner auswählen": {
+    "de": "Bibliotheksordner auswählen",
+    "en": "Select library folder",
+    "es": "Seleccionar carpeta de biblioteca",
+    "zh": "选择库文件夹",
+    "ja": "ライブラリフォルダーを選択",
+    "ru": "Выбрать папку библиотеки"
+  },
+  "Öffnet den Ordnerdialog für den Speicherort der DokuZen-Bibliothek.": {
+    "de": "Öffnet den Ordnerdialog für den Speicherort der DokuZen-Bibliothek.",
+    "en": "Opens the folder dialog for the DokuZen library storage location.",
+    "es": "Abre el cuadro de diálogo para la ubicación de almacenamiento de la biblioteca DokuZen.",
+    "zh": "打开 DokuZen 库存储位置的文件夹对话框。",
+    "ja": "DokuZen ライブラリの保存場所のフォルダーダイアログを開きます。",
+    "ru": "Открывает диалог выбора папки для хранения библиотеки DokuZen."
+  },
+  "Standard-Dateipfad für exportierte Dokumente.": {
+    "de": "Standard-Dateipfad für exportierte Dokumente.",
+    "en": "Default file path for exported documents.",
+    "es": "Ruta de archivo predeterminada para documentos exportados.",
+    "zh": "导出文档的默认文件路径。",
+    "ja": "エクスポートされたドキュメントのデフォルトファイルパス。",
+    "ru": "Стандартный путь для экспортированных документов."
+  },
+  "Export-Ordner auswählen": {
+    "de": "Export-Ordner auswählen",
+    "en": "Select export folder",
+    "es": "Seleccionar carpeta de exportación",
+    "zh": "选择导出文件夹",
+    "ja": "エクスポートフォルダーを選択",
+    "ru": "Выбрать папку экспорта"
+  },
+  "Öffnet den Ordnerdialog für den Standardpfad exportierter Dateien.": {
+    "de": "Öffnet den Ordnerdialog für den Standardpfad exportierter Dateien.",
+    "en": "Opens the folder dialog for the default path of exported files.",
+    "es": "Abre el cuadro de diálogo para la ruta predeterminada de archivos exportados.",
+    "zh": "打开导出文件默认路径的文件夹对话框。",
+    "ja": "エクスポートされたファイルのデフォルトパスのフォルダーダイアログを開きます。",
+    "ru": "Открывает диалог выбора папки для экспортируемых файлов."
+  },
+  "Export-Standard": {
+    "de": "Export-Standard",
+    "en": "Export Default",
+    "es": "Predeterminado de exportación",
+    "zh": "导出默认值",
+    "ja": "エクスポートの既定値",
+    "ru": "Стандарт экспорта"
+  },
+  "Ablageordner für generierte Textbausteine.": {
+    "de": "Ablageordner für generierte Textbausteine.",
+    "en": "Storage folder for generated text modules.",
+    "es": "Carpeta de almacenamiento para bloques de texto generados.",
+    "zh": "生成的文本块存储文件夹。",
+    "ja": "生成されたテキストモジュールの保存先フォルダー。",
+    "ru": "Папка хранения созданных текстовых модулей."
+  },
+  "Spawner-Ordner auswählen": {
+    "de": "Spawner-Ordner auswählen",
+    "en": "Select Spawner folder",
+    "es": "Seleccionar carpeta del generador",
+    "zh": "选择生成器文件夹",
+    "ja": "スポナーフォルダーを選択",
+    "ru": "Выбрать папку спавнера"
+  },
+  "Öffnet den Ordnerdialog für den Ablageordner des TextSpawners.": {
+    "de": "Öffnet den Ordnerdialog für den Ablageordner des TextSpawners.",
+    "en": "Opens the folder dialog for the TextSpawner storage folder.",
+    "es": "Abre el cuadro de diálogo para la carpeta de almacenamiento de TextSpawner.",
+    "zh": "打开 TextSpawner 存储文件夹的对话框。",
+    "ja": "TextSpawner の保存フォルダーダイアログを開きます。",
+    "ru": "Открывает диалог папки для хранения TextSpawner."
+  },
+  "Sprache auswählen": {
+    "de": "Sprache auswählen",
+    "en": "Select Language",
+    "es": "Seleccionar idioma",
+    "zh": "选择语言",
+    "ja": "言語を選択",
+    "ru": "Выбрать язык"
+  },
+  "Wählt die Benutzeroberflächen-Sprache der Anwendung aus.": {
+    "de": "Wählt die Benutzeroberflächen-Sprache der Anwendung aus.",
+    "en": "Selects the user interface language of the application.",
+    "es": "Selecciona el idioma de la interfaz de usuario de la aplicación.",
+    "zh": "选择应用程序的用户界面语言。",
+    "ja": "アプリケーションのUI言語を選択します。",
+    "ru": "Выбирает язык интерфейса приложения."
+  },
+  "Wählt das visuelle Farbschema der Anwendung.": {
+    "de": "Wählt das visuelle Farbschema der Anwendung.",
+    "en": "Selects the visual color scheme of the application.",
+    "es": "Selecciona el esquema de colores visual de la aplicación.",
+    "zh": "选择应用程序的视觉配色方案。",
+    "ja": "アプリケーションの視覚テーマを選択します。",
+    "ru": "Выбирает визуальную цветовую схему приложения."
+  },
+  "Doppelklick zum Bearbeiten eines Kürzels": {
+    "de": "Doppelklick zum Bearbeiten eines Kürzels",
+    "en": "Double-click to edit a shortcut",
+    "es": "Doble clic para editar un atajo",
+    "zh": "双击编辑快捷键",
+    "ja": "ダブルクリックしてショートカットを編集",
+    "ru": "Дважды щелкните для редактирования горячей клавиши"
+  },
+  "Übersicht aller anpassbaren Tastaturkürzel. Doppelklick zum Bearbeiten.": {
+    "de": "Übersicht aller anpassbaren Tastaturkürzel. Doppelklick zum Bearbeiten.",
+    "en": "Overview of all customizable keyboard shortcuts. Double-click to edit.",
+    "es": "Resumen de todos los atajos de teclado personalizables. Doble clic para editar.",
+    "zh": "所有可自定义快捷键概览。双击编辑。",
+    "ja": "カスタマイズ可能なすべてのショートカットの概要。ダブルクリックして編集。",
+    "ru": "Обзор всех настраиваемых горячих клавиш. Дважды щелкните для редактирования."
+  },
+  "Datei": {
+    "de": "Datei",
+    "en": "File",
+    "es": "Archivo",
+    "zh": "文件",
+    "ja": "ファイル",
+    "ru": "Файл"
+  },
+  "Datei öffnen": {
+    "de": "Datei öffnen",
+    "en": "Open File",
+    "es": "Abrir archivo",
+    "zh": "打开文件",
+    "ja": "ファイルを開く",
+    "ru": "Открыть файл"
+  },
+  "Bearbeiten": {
+    "de": "Bearbeiten",
+    "en": "Edit",
+    "es": "Editar",
+    "zh": "编辑",
+    "ja": "編集",
+    "ru": "Правка"
+  },
+  "Rückgängig": {
+    "de": "Rückgängig",
+    "en": "Undo",
+    "es": "Deshacer",
+    "zh": "撤消",
+    "ja": "元に戻す",
+    "ru": "Отменить"
+  },
+  "Ansicht": {
+    "de": "Ansicht",
+    "en": "View",
+    "es": "Ver",
+    "zh": "查看",
+    "ja": "表示",
+    "ru": "Вид"
+  },
+  "Vergrößern": {
+    "de": "Vergrößern",
+    "en": "Zoom In",
+    "es": "Acercar",
+    "zh": "放大",
+    "ja": "拡大",
+    "ru": "Увеличить"
+  },
+  "Zoom zurücksetzen": {
+    "de": "Zoom zurücksetzen",
+    "en": "Reset Zoom",
+    "es": "Restablecer zoom",
+    "zh": "重置缩放",
+    "ja": "ズームをリセット",
+    "ru": "Сбросить масштаб"
+  },
+  "Schwärzen": {
+    "de": "Schwärzen",
+    "en": "Redact",
+    "es": "Redactar",
+    "zh": "涂黑涂黑",
+    "ja": "黒塗り",
+    "ru": "Закрасить"
+  },
+  "Übersicht aller verfügbaren Tastaturkürzel und Barrierefreiheitsfunktionen": {
+    "de": "Übersicht aller verfügbaren Tastaturkürzel und Barrierefreiheitsfunktionen",
+    "en": "Overview of all available keyboard shortcuts and accessibility features",
+    "es": "Descripción general de todos los atajos de teclado y funciones de accesibilidad disponibles",
+    "zh": "所有可用快捷键和无障碍功能概览",
+    "ja": "利用可能なすべてのキーボードショートカットとアクセシビリティ機能の概要",
+    "ru": "Обзор всех доступных сочетаний клавиш и специальных возможностей"
+  },
+  "Dokument öffnen": {
+    "de": "Dokument öffnen",
+    "en": "Open document",
+    "es": "Abrir documento",
+    "zh": "打开文档",
+    "ja": "ドキュメントを開く",
+    "ru": "Открыть документ"
+  },
+  "PDF schwärzen": {
+    "de": "PDF schwärzen",
+    "en": "Redact PDF",
+    "es": "Redactar PDF",
+    "zh": "涂黑 PDF",
+    "ja": "PDF墨消し",
+    "ru": "Цензурировать PDF"
+  },
+  "Hilfe": {
+    "de": "Hilfe",
+    "en": "Help",
+    "es": "Ayuda",
+    "zh": "帮助",
+    "ja": "ヘルプ",
+    "ru": "Справка"
+  },
+  "Dialog schließen (Esc / Enter)": {
+    "de": "Dialog schließen (Esc / Enter)",
+    "en": "Close dialog (Esc / Enter)",
+    "es": "Cerrar diálogo (Esc / Enter)",
+    "zh": "关闭对话框 (Esc / Enter)",
+    "ja": "ダイアログを閉じる (Esc / Enter)",
+    "ru": "Закрыть диалог (Esc / Enter)"
   }
 }

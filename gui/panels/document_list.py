@@ -69,6 +69,12 @@ class DocumentListPanel(QWidget, LoggerMixin):
         self._filter_combo.addItem(tr("Ungelesen"), FilterMode.UNREAD)
         self._filter_combo.addItem(tr("Gelesen"), FilterMode.READ)
         self._filter_combo.setFixedWidth(100)
+        self._filter_combo.setAccessibleName(tr("Dokumentenfilter"))
+        self._filter_combo.setAccessibleDescription(
+            tr("Filtert Dokumente nach Status (Alle, Ungelesen, Gelesen)")
+        )
+        self._filter_combo.setToolTip(tr("Filter nach Lesestatus auswählen"))
+        self._filter_label.setBuddy(self._filter_combo)
         header_layout.addWidget(self._filter_combo)
         
         # Sortierung
@@ -80,6 +86,12 @@ class DocumentListPanel(QWidget, LoggerMixin):
         self._sort_combo.addItem(tr("Größe"), SortMode.SIZE)
         self._sort_combo.addItem(tr("Typ"), SortMode.TYPE)
         self._sort_combo.setFixedWidth(100)
+        self._sort_combo.setAccessibleName(tr("Dokumentensortierung"))
+        self._sort_combo.setAccessibleDescription(
+            tr("Sortiert Dokumente nach Name, Datum, Größe oder Typ")
+        )
+        self._sort_combo.setToolTip(tr("Sortierkriterium auswählen"))
+        self._sort_label.setBuddy(self._sort_combo)
         header_layout.addWidget(self._sort_combo)
         
         layout.addLayout(header_layout)
@@ -96,6 +108,11 @@ class DocumentListPanel(QWidget, LoggerMixin):
         self._table.setDragEnabled(True)
         self._table.setAcceptDrops(True)
         self._table.setDropIndicatorShown(True)
+        self._table.setAccessibleName(tr("Dokumentenliste"))
+        self._table.setAccessibleDescription(
+            tr("Tabelle aller Dokumente im aktiven Thema. Pfeiltasten zur Navigation, Enter zum Öffnen, Strg+C zum Kopieren des Pfads, Entf zum Entfernen.")
+        )
+        self._table.keyPressEvent = self._on_table_key_press
         
         # Spaltenbreiten
         header = self._table.horizontalHeader()
@@ -114,6 +131,7 @@ class DocumentListPanel(QWidget, LoggerMixin):
         
         # Status-Label
         self._status_label = QLabel(f"0 {tr('Dokumente')}")
+        self._status_label.setAccessibleName(tr("Dokumentenanzahl"))
         layout.addWidget(self._status_label)
     
     def _connect_signals(self):
@@ -168,6 +186,37 @@ class DocumentListPanel(QWidget, LoggerMixin):
         # Status aktualisieren
         self._status_label.setText(f"{len(documents)} {tr('Dokument(e)')}")
     
+    def _on_table_key_press(self, event):
+        """Tastaturbedienung für die Dokumententabelle (WCAG 2.1 AA)."""
+        key = event.key()
+        modifiers = event.modifiers()
+        if key in (Qt.Key.Key_Delete, Qt.Key.Key_Backspace):
+            paths = self.get_selected_paths()
+            if paths:
+                self._remove_documents(paths)
+                event.accept()
+                return
+        elif key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            paths = self.get_selected_paths()
+            if paths:
+                self.document_double_clicked.emit(paths[0])
+                event.accept()
+                return
+        elif key == Qt.Key.Key_C and (modifiers & Qt.KeyboardModifier.ControlModifier):
+            paths = self.get_selected_paths()
+            if paths:
+                from PySide6.QtWidgets import QApplication
+                clipboard = QApplication.clipboard()
+                if clipboard:
+                    clipboard.setText("\n".join(paths))
+                event.accept()
+                return
+        elif key == Qt.Key.Key_F5:
+            self.refresh()
+            event.accept()
+            return
+        QTableWidget.keyPressEvent(self._table, event)
+
     def retranslate_ui(self):
         """Aktualisiert alle UI-Texte im DocumentListPanel dynamisch."""
         if hasattr(self, "_header_label"):
@@ -184,6 +233,11 @@ class DocumentListPanel(QWidget, LoggerMixin):
             self._filter_combo.addItem(tr("Alle"), FilterMode.ALL)
             self._filter_combo.addItem(tr("Ungelesen"), FilterMode.UNREAD)
             self._filter_combo.addItem(tr("Gelesen"), FilterMode.READ)
+            self._filter_combo.setAccessibleName(tr("Dokumentenfilter"))
+            self._filter_combo.setAccessibleDescription(
+                tr("Filtert Dokumente nach Status (Alle, Ungelesen, Gelesen)")
+            )
+            self._filter_combo.setToolTip(tr("Filter nach Lesestatus auswählen"))
             idx = self._filter_combo.findData(current_filter)
             if idx >= 0:
                 self._filter_combo.setCurrentIndex(idx)
@@ -197,6 +251,11 @@ class DocumentListPanel(QWidget, LoggerMixin):
             self._sort_combo.addItem(tr("Datum"), SortMode.DATE_ADDED)
             self._sort_combo.addItem(tr("Größe"), SortMode.SIZE)
             self._sort_combo.addItem(tr("Typ"), SortMode.TYPE)
+            self._sort_combo.setAccessibleName(tr("Dokumentensortierung"))
+            self._sort_combo.setAccessibleDescription(
+                tr("Sortiert Dokumente nach Name, Datum, Größe oder Typ")
+            )
+            self._sort_combo.setToolTip(tr("Sortierkriterium auswählen"))
             idx = self._sort_combo.findData(current_sort)
             if idx >= 0:
                 self._sort_combo.setCurrentIndex(idx)
@@ -204,6 +263,13 @@ class DocumentListPanel(QWidget, LoggerMixin):
             
         if hasattr(self, "_table"):
             self._table.setHorizontalHeaderLabels([tr(col) for col in self.COLUMN_KEYS])
+            self._table.setAccessibleName(tr("Dokumentenliste"))
+            self._table.setAccessibleDescription(
+                tr("Tabelle aller Dokumente im aktiven Thema. Pfeiltasten zur Navigation, Enter zum Öffnen, Strg+C zum Kopieren des Pfads, Entf zum Entfernen.")
+            )
+
+        if hasattr(self, "_status_label"):
+            self._status_label.setAccessibleName(tr("Dokumentenanzahl"))
             
         self.refresh()
     

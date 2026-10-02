@@ -22,7 +22,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QKeySequence
 
 from utils.logger import LoggerMixin
-from translator import TranslationSystem
+from translator import TranslationSystem, tr
 
 
 class SettingsDialog(QDialog, LoggerMixin):
@@ -49,7 +49,9 @@ class SettingsDialog(QDialog, LoggerMixin):
     
     def _setup_ui(self):
         """Erstellt die UI."""
-        self.setWindowTitle("Einstellungen")
+        self.setWindowTitle(tr("Einstellungen"))
+        self.setAccessibleName(tr("Einstellungen"))
+        self.setModal(True)
         self.setMinimumSize(700, 500)
         self.resize(800, 600)
         
@@ -57,27 +59,31 @@ class SettingsDialog(QDialog, LoggerMixin):
         
         # Tab-Widget
         self._tabs = QTabWidget()
+        self._tabs.setAccessibleName(tr("Einstellungen"))
         layout.addWidget(self._tabs)
         
         # Tabs erstellen
-        self._tabs.addTab(self._create_general_tab(), "Allgemein")
-        self._tabs.addTab(self._create_appearance_tab(), "Darstellung")
-        self._tabs.addTab(self._create_shortcuts_tab(), "Tastaturkürzel")
-        self._tabs.addTab(self._create_advanced_tab(), "Erweitert")
+        self._tabs.addTab(self._create_general_tab(), tr("Allgemein"))
+        self._tabs.addTab(self._create_appearance_tab(), tr("Darstellung"))
+        self._tabs.addTab(self._create_shortcuts_tab(), tr("Tastaturkürzel"))
+        self._tabs.addTab(self._create_advanced_tab(), tr("Erweitert"))
         
         # Buttons
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
         
-        btn_reset = QPushButton("Zurücksetzen")
+        btn_reset = QPushButton(tr("Zurücksetzen"))
+        btn_reset.setAccessibleName(tr("Zurücksetzen"))
         btn_reset.clicked.connect(self._reset_settings)
         btn_layout.addWidget(btn_reset)
         
-        btn_cancel = QPushButton("Abbrechen")
+        btn_cancel = QPushButton(tr("Abbrechen"))
+        btn_cancel.setAccessibleName(tr("Abbrechen"))
         btn_cancel.clicked.connect(self.reject)
         btn_layout.addWidget(btn_cancel)
         
-        btn_ok = QPushButton("OK")
+        btn_ok = QPushButton(tr("OK"))
+        btn_ok.setAccessibleName(tr("OK"))
         btn_ok.clicked.connect(self._save_and_close)
         btn_ok.setDefault(True)
         btn_layout.addWidget(btn_ok)
@@ -103,77 +109,97 @@ class SettingsDialog(QDialog, LoggerMixin):
         layout = QVBoxLayout(widget)
         
         # Pfade
-        paths_group = QGroupBox("Pfade")
+        paths_group = QGroupBox(tr("Pfade"))
         paths_layout = QFormLayout(paths_group)
         
         self._library_path = QLineEdit()
+        self._library_path.setAccessibleName(tr("Bibliothekspfad"))
+        self._library_path.setAccessibleDescription(tr("Dateipfad zum Verzeichnis der DokuZen-Bibliothek."))
         btn_library = QPushButton("...")
         self._configure_compact_browse_button(
             btn_library,
-            tooltip="Bibliotheksordner auswählen",
-            description="Öffnet den Ordnerdialog für den Speicherort der DokuZen-Bibliothek.",
+            tooltip=tr("Bibliotheksordner auswählen"),
+            description=tr("Öffnet den Ordnerdialog für den Speicherort der DokuZen-Bibliothek."),
         )
         btn_library.clicked.connect(lambda: self._browse_folder(self._library_path))
         
         lib_layout = QHBoxLayout()
         lib_layout.addWidget(self._library_path)
         lib_layout.addWidget(btn_library)
-        paths_layout.addRow("Bibliothek:", lib_layout)
+        lbl_lib = QLabel(f"{tr('Bibliothek')}:")
+        lbl_lib.setBuddy(self._library_path)
+        paths_layout.addRow(lbl_lib, lib_layout)
         
         self._export_path = QLineEdit()
+        self._export_path.setAccessibleName(tr("Exportpfad"))
+        self._export_path.setAccessibleDescription(tr("Standard-Dateipfad für exportierte Dokumente."))
         btn_export = QPushButton("...")
         self._configure_compact_browse_button(
             btn_export,
-            tooltip="Export-Ordner auswählen",
-            description="Öffnet den Ordnerdialog für den Standardpfad exportierter Dateien.",
+            tooltip=tr("Export-Ordner auswählen"),
+            description=tr("Öffnet den Ordnerdialog für den Standardpfad exportierter Dateien."),
         )
         btn_export.clicked.connect(lambda: self._browse_folder(self._export_path))
         
         exp_layout = QHBoxLayout()
         exp_layout.addWidget(self._export_path)
         exp_layout.addWidget(btn_export)
-        paths_layout.addRow("Export-Standard:", exp_layout)
+        lbl_exp = QLabel(f"{tr('Export-Standard')}:")
+        lbl_exp.setBuddy(self._export_path)
+        paths_layout.addRow(lbl_exp, exp_layout)
         
         self._spawn_path = QLineEdit()
+        self._spawn_path.setAccessibleName(tr("Spawner-Ordnerpfad"))
+        self._spawn_path.setAccessibleDescription(tr("Ablageordner für generierte Textbausteine."))
         btn_spawn = QPushButton("...")
         self._configure_compact_browse_button(
             btn_spawn,
-            tooltip="Spawner-Ordner auswählen",
-            description="Öffnet den Ordnerdialog für den Ablageordner des TextSpawners.",
+            tooltip=tr("Spawner-Ordner auswählen"),
+            description=tr("Öffnet den Ordnerdialog für den Ablageordner des TextSpawners."),
         )
         btn_spawn.clicked.connect(lambda: self._browse_folder(self._spawn_path))
         
         spawn_layout = QHBoxLayout()
         spawn_layout.addWidget(self._spawn_path)
         spawn_layout.addWidget(btn_spawn)
-        paths_layout.addRow("Spawner-Ordner:", spawn_layout)
+        lbl_spawn = QLabel(f"{tr('Spawner-Ordner')}:")
+        lbl_spawn.setBuddy(self._spawn_path)
+        paths_layout.addRow(lbl_spawn, spawn_layout)
         
         layout.addWidget(paths_group)
         
         # Sprache
-        lang_group = QGroupBox("Sprache")
+        lang_group = QGroupBox(tr("Sprache"))
         lang_layout = QFormLayout(lang_group)
         
         self._language = QComboBox()
+        self._language.setAccessibleName(tr("Sprache auswählen"))
+        self._language.setAccessibleDescription(tr("Wählt die Benutzeroberflächen-Sprache der Anwendung aus."))
         self._language.addItems(["Deutsch", "English", "Español", "中文", "日本語", "Русский"])
-        lang_layout.addRow("Sprache:", self._language)
+        lbl_lang = QLabel(f"{tr('Sprache')}:")
+        lbl_lang.setBuddy(self._language)
+        lang_layout.addRow(lbl_lang, self._language)
         
         layout.addWidget(lang_group)
         
         # Verhalten
-        behavior_group = QGroupBox("Verhalten")
+        behavior_group = QGroupBox(tr("Verhalten"))
         behavior_layout = QVBoxLayout(behavior_group)
         
-        self._auto_save = QCheckBox("Automatisch speichern")
+        self._auto_save = QCheckBox(tr("Automatisch speichern"))
+        self._auto_save.setAccessibleName(tr("Automatisch speichern"))
         behavior_layout.addWidget(self._auto_save)
         
-        self._confirm_delete = QCheckBox("Vor Löschen bestätigen")
+        self._confirm_delete = QCheckBox(tr("Vor Löschen bestätigen"))
+        self._confirm_delete.setAccessibleName(tr("Vor Löschen bestätigen"))
         behavior_layout.addWidget(self._confirm_delete)
         
-        self._remember_window = QCheckBox("Fensterposition merken")
+        self._remember_window = QCheckBox(tr("Fensterposition merken"))
+        self._remember_window.setAccessibleName(tr("Fensterposition merken"))
         behavior_layout.addWidget(self._remember_window)
         
-        self._start_minimized = QCheckBox("Minimiert starten")
+        self._start_minimized = QCheckBox(tr("Minimiert starten"))
+        self._start_minimized.setAccessibleName(tr("Minimiert starten"))
         behavior_layout.addWidget(self._start_minimized)
         
         layout.addWidget(behavior_group)
@@ -187,14 +213,18 @@ class SettingsDialog(QDialog, LoggerMixin):
         layout = QVBoxLayout(widget)
         
         # Theme
-        theme_group = QGroupBox("Design")
+        theme_group = QGroupBox(tr("Design"))
         theme_layout = QVBoxLayout(theme_group)
         
         theme_form = QFormLayout()
         self._theme = QComboBox()
+        self._theme.setAccessibleName(tr("Design-Farbschema"))
+        self._theme.setAccessibleDescription(tr("Wählt das visuelle Farbschema der Anwendung."))
         self._theme.addItems(["Hell", "Dunkel", "Sepia", "Nord", "Ozean"])
         self._theme.currentTextChanged.connect(self._on_theme_preview)
-        theme_form.addRow("Theme:", self._theme)
+        lbl_theme = QLabel(f"{tr('Theme')}:")
+        lbl_theme.setBuddy(self._theme)
+        theme_form.addRow(lbl_theme, self._theme)
         theme_layout.addLayout(theme_form)
         
         # Theme-Vorschau
@@ -209,35 +239,44 @@ class SettingsDialog(QDialog, LoggerMixin):
         """)
         
         preview_layout = QHBoxLayout(self._theme_preview)
-        preview_layout.addWidget(QLabel("Vorschau"))
+        preview_layout.addWidget(QLabel(tr("Vorschau")))
         
         theme_layout.addWidget(self._theme_preview)
         layout.addWidget(theme_group)
         
         # Schrift
-        font_group = QGroupBox("Schrift")
+        font_group = QGroupBox(tr("Schrift"))
         font_layout = QFormLayout(font_group)
         
         self._font_family = QComboBox()
+        self._font_family.setAccessibleName(tr("Schriftart"))
         self._font_family.addItems(["Segoe UI", "Arial", "Helvetica", "Roboto", "Open Sans"])
-        font_layout.addRow("Schriftart:", self._font_family)
+        lbl_font = QLabel(f"{tr('Schriftart')}:")
+        lbl_font.setBuddy(self._font_family)
+        font_layout.addRow(lbl_font, self._font_family)
         
         self._font_size = QSpinBox()
+        self._font_size.setAccessibleName(tr("Schriftgröße"))
         self._font_size.setRange(8, 18)
         self._font_size.setValue(10)
         self._font_size.setSuffix(" pt")
-        font_layout.addRow("Größe:", self._font_size)
+        lbl_size = QLabel(f"{tr('Größe')}:")
+        lbl_size.setBuddy(self._font_size)
+        font_layout.addRow(lbl_size, self._font_size)
         
         layout.addWidget(font_group)
         
         # Icons
-        icon_group = QGroupBox("Icons")
+        icon_group = QGroupBox(tr("Icons"))
         icon_layout = QFormLayout(icon_group)
         
         self._icon_size = QComboBox()
+        self._icon_size.setAccessibleName(tr("Icon-Größe"))
         self._icon_size.addItems(["Klein (16px)", "Mittel (24px)", "Groß (32px)"])
         self._icon_size.setCurrentIndex(1)
-        icon_layout.addRow("Icon-Größe:", self._icon_size)
+        lbl_icon = QLabel(f"{tr('Icon-Größe')}:")
+        lbl_icon.setBuddy(self._icon_size)
+        icon_layout.addRow(lbl_icon, self._icon_size)
         
         layout.addWidget(icon_group)
         layout.addStretch()
@@ -250,45 +289,49 @@ class SettingsDialog(QDialog, LoggerMixin):
         layout = QVBoxLayout(widget)
         
         # Info
-        info = QLabel("Doppelklick zum Bearbeiten eines Kürzels")
+        info = QLabel(tr("Doppelklick zum Bearbeiten eines Kürzels"))
         info.setStyleSheet("color: gray;")
         layout.addWidget(info)
         
         # Tree für Shortcuts
         self._shortcuts_tree = QTreeWidget()
-        self._shortcuts_tree.setHeaderLabels(["Aktion", "Tastaturkürzel"])
+        self._shortcuts_tree.setHeaderLabels([tr("Aktion"), tr("Tastaturkürzel")])
+        self._shortcuts_tree.setAccessibleName(tr("Tastaturkürzel-Konfiguration"))
+        self._shortcuts_tree.setAccessibleDescription(
+            tr("Übersicht aller anpassbaren Tastaturkürzel. Doppelklick zum Bearbeiten.")
+        )
         self._shortcuts_tree.setColumnWidth(0, 300)
         self._shortcuts_tree.itemDoubleClicked.connect(self._edit_shortcut)
         
         # Kategorien und Shortcuts einfügen
         categories = {
-            "Datei": [
-                ("Datei öffnen", "Ctrl+O"),
-                ("Speichern", "Ctrl+S"),
-                ("Importieren", "Ctrl+I"),
-                ("Exportieren", "Ctrl+E"),
-                ("Beenden", "Ctrl+Q"),
+            tr("Datei"): [
+                (tr("Datei öffnen"), "Ctrl+O"),
+                (tr("Speichern"), "Ctrl+S"),
+                (tr("Importieren"), "Ctrl+I"),
+                (tr("Exportieren"), "Ctrl+E"),
+                (tr("Beenden"), "Ctrl+Q"),
             ],
-            "Bearbeiten": [
-                ("Rückgängig", "Ctrl+Z"),
-                ("Wiederholen", "Ctrl+Y"),
-                ("Suchen", "Ctrl+F"),
-                ("Alles auswählen", "Ctrl+A"),
+            tr("Bearbeiten"): [
+                (tr("Rückgängig"), "Ctrl+Z"),
+                (tr("Wiederholen"), "Ctrl+Y"),
+                (tr("Suchen"), "Ctrl+F"),
+                (tr("Alles auswählen"), "Ctrl+A"),
             ],
-            "Ansicht": [
-                ("Vergrößern", "Ctrl++"),
-                ("Verkleinern", "Ctrl+-"),
-                ("Zoom zurücksetzen", "Ctrl+0"),
-                ("Vollbild", "F11"),
+            tr("Ansicht"): [
+                (tr("Vergrößern"), "Ctrl++"),
+                (tr("Verkleinern"), "Ctrl+-"),
+                (tr("Zoom zurücksetzen"), "Ctrl+0"),
+                (tr("Vollbild"), "F11"),
             ],
-            "Werkzeuge": [
-                ("PDF-Werkstatt", "Ctrl+Shift+P"),
-                ("OCR", "Ctrl+Shift+O"),
-                ("Schwärzen", "Ctrl+Shift+R"),
-                ("Konvertieren", "Ctrl+Shift+C"),
-                ("Formular-Builder", "Ctrl+Shift+F"),
-                ("PDF-Marker", "Ctrl+Shift+K"),
-                ("Einstellungen", "Ctrl+,"),
+            tr("Werkzeuge"): [
+                (tr("PDF-Werkstatt"), "Ctrl+Shift+P"),
+                (tr("OCR"), "Ctrl+Shift+O"),
+                (tr("Schwärzen"), "Ctrl+Shift+R"),
+                (tr("Konvertieren"), "Ctrl+Shift+C"),
+                (tr("Formular-Builder"), "Ctrl+Shift+F"),
+                (tr("PDF-Marker"), "Ctrl+Shift+K"),
+                (tr("Einstellungen"), "Ctrl+,"),
             ],
         }
         
@@ -308,7 +351,8 @@ class SettingsDialog(QDialog, LoggerMixin):
         # Buttons
         btn_layout = QHBoxLayout()
         
-        btn_reset_shortcuts = QPushButton("Alle zurücksetzen")
+        btn_reset_shortcuts = QPushButton(tr("Alle zurücksetzen"))
+        btn_reset_shortcuts.setAccessibleName(tr("Alle zurücksetzen"))
         btn_reset_shortcuts.clicked.connect(self._reset_shortcuts)
         btn_layout.addWidget(btn_reset_shortcuts)
         

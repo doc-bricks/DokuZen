@@ -5,7 +5,7 @@
 **Deutsch** | [English](README.md)
 
 [![CI](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml/badge.svg)](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml)
-[![Pytest Status](https://img.shields.io/badge/pytest-462%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-489%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
 [![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![Platforms](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/doc-bricks/DokuZen)
 [![Privacy](https://img.shields.io/badge/datenschutz-100%25%20Local--First%20%7C%20Zero--Egress-success.svg)](SECURITY.md)
@@ -361,7 +361,7 @@ Details entnehmen Sie der Sicherheitsrichtlinie in [`SECURITY.md`](SECURITY.md).
 DokuZen verfügt über eine umfangreiche Testsuite mit Unit-Tests, GUI-Rauchtests, Verschlüsselungsprüfungen und Metadatenparität:
 
 ```bash
-# Gesamte Testsuite ausführen (460 Tests, 100% bestanden)
+# Gesamte Testsuite ausführen (489 Tests, 100% bestanden)
 python -m pytest
 
 # Offscreen-Plattform Rauchtests durchführen

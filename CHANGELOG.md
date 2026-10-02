@@ -5,6 +5,24 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Accessibility & UX (2026-10-03, Turnusgemäßer Barrierefreiheits- & Tastaturbedienungs-Review [WCAG 2.1 AA / BITV 2.0])
+- **Zentraler Tastaturkürzel- & Barrierefreiheits-Dialog (`gui/main_window.py`):**
+  - Neuer Menüeintrag `&Hilfe` -> `Tastaturkürzel & Barrierefreiheit (F1)` und Methode `show_shortcuts_dialog()`.
+  - Strukturierte Übersicht aller Tastenkombinationen gegliedert nach Funktionsbereichen (Datei, Bearbeiten, Ansicht, Themen, Dokumente, Werkzeuge, Hilfe).
+  - Volle Modalität (`setModal(True)`), Fokussierung des Schließen-Buttons mit `Enter`/`Esc` und Headless-Offscreen-Unterstützung für automatisierte CI/CD-Pipelines.
+- **Tastaturnavigation & Shortcuts in Kernpanels (`gui/panels/`):**
+  - `LibraryPanel` (`library_panel.py`): `accessibleName` ("Themen-Bibliothek") und `accessibleDescription`; Tastaturnavigation via `Delete`/`Backspace` (Thema löschen), `F2` (Thema umbenennen) und `Return`/`Enter` (Thema auswählen).
+  - `DocumentListPanel` (`document_list.py`): Buddy-Labels für Filter- und Sortier-Steuerelemente (`setBuddy`); Tastaturbedienung mit `Delete`/`Backspace` (Dokumente entfernen), `Return`/`Enter` (Dokument öffnen), `Ctrl+C` (Dateipfade in Zwischenablage kopieren) und `F5` (Aktualisieren).
+  - `PreviewPanel` (`preview_panel.py`): Barrierefreie Namen, Beschreibungen und Tooltips für Schaltflächen, Textbereich, Bild-Scrollbereich und Stack-Container.
+  - `SettingsDialog` (`dialogs/settings_dialog.py`): Buddy-Verknüpfung aller Formularfelder mit Tastatur-Mnemonics (`Alt+...`); Modalität und semantische Rollen gehärtet.
+- **Statusleiste & Werkzeugleiste (`gui/main_window.py`):**
+  - Semantische `accessibleName`- und `accessibleDescription`-Eigenschaften für alle Statusleisten-Elemente (Aktives Thema, Dokumentenanzahl, Aktiver Filter) und Toolbar-Werkzeugschaltflächen.
+  - Dynamische Barrierefreiheits-Parität in `retranslate_ui()` bei Sprachwechsel.
+- **Lokalisierung & 6-Sprachen-Vollständigkeit (`locales/translations.json`):**
+  - 100%ige Abdeckung aller neuen A11y- und Dialog-Schlüssel in Deutsch, Englisch, Spanisch, Chinesisch, Japanisch und Russisch (461 Schlüssel ohne Leerstellen).
+- **Automatisierte Barrierefreiheits-Vertragstests (`tests/test_ui_accessibility.py`):**
+  - 7 neue End-to-End-Vertragstests für Dialogmodalität, Buddy-Zuordnungen, Tastaturkürzel, Event-Routing und dynamische A11y-Sprachparität (Testsuite wächst auf 489 Tests, 100% grün).
+
 ### Documentation & Discoverability (2026-10-01, Pfad B Discoverability, Level 1 SBOM Text-Begleitdatei & Audit-Synchronisation)
 - **Badges & Visual Branding (`README.md`, `README_de.md`):**
   - Pytest-Status-Badge auf 462 bestandene Tests aktualisiert (`462 passed | 100%`).

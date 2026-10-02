@@ -68,6 +68,11 @@ class LibraryPanel(QWidget, LoggerMixin):
         self._tree.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self._tree.setIndentation(15)
         self._tree.setAnimated(True)
+        self._tree.setAccessibleName(tr("Themen-Bibliothek"))
+        self._tree.setAccessibleDescription(
+            tr("Baumansicht aller Ordner und Themen. Pfeiltasten zur Navigation, F2 zum Umbenennen, Entf zum Löschen.")
+        )
+        self._tree.keyPressEvent = self._on_tree_key_press
         layout.addWidget(self._tree)
     
     def _connect_signals(self):
@@ -97,6 +102,35 @@ class LibraryPanel(QWidget, LoggerMixin):
             if theme.name == current_theme:
                 self._tree.setCurrentItem(item)
     
+    def _on_tree_key_press(self, event):
+        """Tastaturnavigation und Aktionen für den Themenbaum (WCAG 2.1 AA)."""
+        key = event.key()
+        if key in (Qt.Key.Key_Delete, Qt.Key.Key_Backspace):
+            item = self._tree.currentItem()
+            if item:
+                theme_name = item.data(0, Qt.ItemDataRole.UserRole)
+                if theme_name and theme_name not in self._library.themes.RESERVED_THEMES:
+                    self._delete_theme(theme_name)
+                    event.accept()
+                    return
+        elif key == Qt.Key.Key_F2:
+            item = self._tree.currentItem()
+            if item:
+                theme_name = item.data(0, Qt.ItemDataRole.UserRole)
+                if theme_name and theme_name not in self._library.themes.RESERVED_THEMES:
+                    self._rename_theme(theme_name)
+                    event.accept()
+                    return
+        elif key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            item = self._tree.currentItem()
+            if item:
+                theme_name = item.data(0, Qt.ItemDataRole.UserRole)
+                if theme_name:
+                    self.theme_selected.emit(theme_name)
+                    event.accept()
+                    return
+        QTreeWidget.keyPressEvent(self._tree, event)
+
     def retranslate_ui(self):
         """Aktualisiert alle UI-Texte im LibraryPanel dynamisch."""
         if hasattr(self, "_header_label"):
@@ -106,6 +140,11 @@ class LibraryPanel(QWidget, LoggerMixin):
             self._btn_add.setAccessibleName(tr("Neues Thema erstellen"))
             self._btn_add.setAccessibleDescription(
                 tr("Öffnet einen Dialog zum Anlegen eines neuen Bibliotheksthemas.")
+            )
+        if hasattr(self, "_tree"):
+            self._tree.setAccessibleName(tr("Themen-Bibliothek"))
+            self._tree.setAccessibleDescription(
+                tr("Baumansicht aller Ordner und Themen. Pfeiltasten zur Navigation, F2 zum Umbenennen, Entf zum Löschen.")
             )
         self.refresh()
 

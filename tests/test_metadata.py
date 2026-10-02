@@ -98,7 +98,7 @@ def test_llms_txt_structure():
     assert "doc-bricks" in content
     assert "open-bricks" in content
     assert "Last-checked:" in content or "Last-checked:**" in content
-    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24", "2026-10-01"])
+    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24", "2026-10-01", "2026-10-03"])
     assert "NOTICE" in content
     assert "PySide6" in content
     assert "PyMuPDF" in content
