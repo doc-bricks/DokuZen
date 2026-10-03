@@ -5,6 +5,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed (2026-10-04, dev/bugsweep — PDF-Security-Pipeline, In-Place-Resilienz & Verzeichnis-Erstellung)
+- **PDF-Sicherheits-Pipeline (`core/pdf/security.py`):**
+  - **pikepdf TypeError bei leerem Passwort behoben:** Modernes `pikepdf.open()` verbietet `password=None` (`TypeError: incompatible function arguments, kwargs = {password: NoneType}`); nun durch `safe_pw = str(password or "")` in `_unlock_pikepdf` und `remove_restrictions` abgesichert.
+  - **In-Place FileLock & PyMuPDF-Resilienz:** Bei identischem Ein- und Ausgabepfad (`src == dst`) stürzten PyMuPDF und pikepdf mit FileDataError/Sperren ab; behoben durch Erkennung identischer kanonischer Pfade, atomares Schreiben in Temp-Dateien im Zielverzeichnis, Schließen aktiver Handles und atomaren `shutil.move()`.
+  - **Automatische Verzeichnis-Erstellung:** In `_unlock_pymupdf`, `_unlock_pikepdf`, `encrypt` und `remove_restrictions` wird das Elternverzeichnis via `dst.parent.mkdir(parents=True, exist_ok=True)` defensiv vor dem Speichern angelegt.
+  - **Vollständiges Permission-Mapping in `encrypt()`:** Unterstützung aller 8 Berechtigungsflags (`PRINT`, `COPY`, `MODIFY`, `ANNOTATE`, `FILL_FORMS`, `EXTRACT`, `ASSEMBLE`, `PRINT_HIGH_QUALITY`) sowohl als Enums als auch als Strings/Aliases.
+  - **Tempfile- und Handle-Hygiene:** Sicheres Schließen via `not getattr(doc, "is_closed", False)` und defensive Bereinigung von Tempfiles in `except`- und `finally`-Blöcken.
+- **PDF-Processor Resilienz (`core/pdf/processor.py`):**
+  - **In-Place- und Verzeichnis-Absicherung:** Methoden `extract_pages`, `rotate_pages`, `delete_pages` und `set_metadata` auf atomares Speichern via `_save_doc` umgestellt; verhindert Dateikorruption und Windows-FileLocks auf geöffneten Dokumenten (`self._reader`).
+  - **Zustands-Konsistenz:** Automatisches Re-Open des internen Readers bei In-Place-Modifikation unter Erhalt von Passwort und Metadaten.
+- **Test-Isolation & Regressionstests (`tests/`):**
+  - `tests/test_pdf_security_unlock.py`: Package-Hierarchie-Isolation gefixt (`import core.pdf`), um Nebeneffekte auf nachfolgende pikepdf-Testmodule zu verhindern.
+  - `tests/test_bugsweep_security_and_processor_resilience_20261004.py`: 11 neue automatisierte Regressionstests für In-Place-Sicherheit, leere Passwörter, Berechtigungs-Mapping und Verzeichnis-Erstellung (Gesamttestsuite wächst auf 500 Tests, 100% grün).
+
 ### Accessibility & UX (2026-10-03, Turnusgemäßer Barrierefreiheits- & Tastaturbedienungs-Review [WCAG 2.1 AA / BITV 2.0])
 - **Zentraler Tastaturkürzel- & Barrierefreiheits-Dialog (`gui/main_window.py`):**
   - Neuer Menüeintrag `&Hilfe` -> `Tastaturkürzel & Barrierefreiheit (F1)` und Methode `show_shortcuts_dialog()`.

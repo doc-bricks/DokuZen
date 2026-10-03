@@ -41,6 +41,11 @@ if "utils.logger" not in sys.modules:
 
 import importlib.util as _ilu
 
+try:
+    import core.pdf
+except Exception:
+    pass
+
 # Fitz temporär durch Mock ersetzen, damit security.py immer unsere
 # Mock-Variante von fitz.open() erhält — unabhängig davon, ob das reale
 # PyMuPDF bereits von einem anderen Test (z. B. test_dialog_smoke) geladen
@@ -55,6 +60,8 @@ _spec = _ilu.spec_from_file_location(
 )
 _sec_mod = _ilu.module_from_spec(_spec)
 sys.modules["core.pdf.security"] = _sec_mod
+if "core.pdf" in sys.modules:
+    sys.modules["core.pdf"].security = _sec_mod
 _spec.loader.exec_module(_sec_mod)
 
 # sys.modules["fitz"] wiederherstellen (damit z. B. test_source_platform_smoke

@@ -6,8 +6,11 @@ DokuZen Pro - PDF Security
 Verwaltet PDF-Verschlüsselung und Passwortschutz.
 """
 
+import os
+import shutil
+import tempfile
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 from dataclasses import dataclass
 from enum import Enum
 
@@ -157,31 +160,65 @@ class PDFSecurity(LoggerMixin):
         if not PYMUPDF_AVAILABLE:
             return UnlockResult(False, output_path, False, "PyMuPDF nicht verfügbar")
         
+        doc = None
+        temp_file = None
         try:
             doc = fitz.open(input_path)
-            try:
-                was_encrypted = doc.is_encrypted
+            was_encrypted = doc.is_encrypted
 
-                if was_encrypted:
-                    # Versuche zu authentifizieren
-                    if doc.needs_pass:
-                        if not doc.authenticate(password):
-                            return UnlockResult(False, output_path, True, "Falsches Passwort")
-                    else:
-                        # Nur Owner-Passwort, kein User-Passwort nötig
-                        doc.authenticate(password)
+            if was_encrypted:
+                # Versuche zu authentifizieren
+                if doc.needs_pass:
+                    if not doc.authenticate(password):
+                        return UnlockResult(False, output_path, True, "Falsches Passwort")
+                else:
+                    # Nur Owner-Passwort, kein User-Passwort nötig
+                    doc.authenticate(password)
 
-                # Unverschlüsselt speichern
-                doc.save(output_path, encryption=fitz.PDF_ENCRYPT_NONE)
-            finally:
+            src = Path(input_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
+
+            if src == dst:
+                with tempfile.NamedTemporaryFile(
+                    dir=dst.parent,
+                    prefix="dokuzen_sec_",
+                    suffix=".tmp",
+                    delete=False
+                ) as tmp:
+                    temp_file = Path(tmp.name)
+                doc.save(str(temp_file), encryption=fitz.PDF_ENCRYPT_NONE)
+            else:
+                doc.save(str(dst), encryption=fitz.PDF_ENCRYPT_NONE)
+
+            if doc is not None:
                 doc.close()
+                doc = None
+
+            if temp_file and temp_file.exists():
+                shutil.move(str(temp_file), str(dst))
+                temp_file = None
 
             self.logger.info(f"PDF entsperrt: {output_path}")
             return UnlockResult(True, output_path, was_encrypted)
 
         except Exception as e:
             self.logger.debug(f"PyMuPDF Unlock fehlgeschlagen: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return UnlockResult(False, output_path, True, str(e))
+        finally:
+            if doc is not None and not getattr(doc, "is_closed", False):
+                doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
     
     def _unlock_pikepdf(self, input_path: str, output_path: str,
                         password: str) -> UnlockResult:
@@ -190,13 +227,36 @@ class PDFSecurity(LoggerMixin):
             return UnlockResult(False, output_path, False, "pikepdf nicht verfügbar")
 
         pdf = None
+        temp_file = None
         try:
-            # pikepdf kann PDFs mit nur Owner-Passwort direkt öffnen
-            pdf = pikepdf.open(input_path, password=password or None,
-                               allow_overwriting_input=False)
+            src = Path(input_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
 
-            # Unverschlüsselt speichern
-            pdf.save(output_path)
+            safe_pw = str(password or "")
+            # pikepdf kann PDFs mit nur Owner-Passwort direkt öffnen
+            pdf = pikepdf.open(input_path, password=safe_pw,
+                               allow_overwriting_input=True)
+
+            if src == dst:
+                with tempfile.NamedTemporaryFile(
+                    dir=dst.parent,
+                    prefix="dokuzen_sec_pike_",
+                    suffix=".tmp",
+                    delete=False
+                ) as tmp:
+                    temp_file = Path(tmp.name)
+                pdf.save(str(temp_file))
+            else:
+                pdf.save(str(dst))
+
+            if pdf is not None:
+                pdf.close()
+                pdf = None
+
+            if temp_file and temp_file.exists():
+                shutil.move(str(temp_file), str(dst))
+                temp_file = None
 
             self.logger.info(f"PDF mit pikepdf entsperrt: {output_path}")
             return UnlockResult(True, output_path, True)
@@ -205,10 +265,21 @@ class PDFSecurity(LoggerMixin):
             return UnlockResult(False, output_path, True, "Passwort erforderlich")
         except Exception as e:
             self.logger.debug(f"pikepdf Unlock fehlgeschlagen: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return UnlockResult(False, output_path, True, str(e))
         finally:
             if pdf is not None:
                 pdf.close()
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
     
     def encrypt(self, input_path: str, output_path: str,
                 user_password: str = "",
@@ -235,53 +306,109 @@ class PDFSecurity(LoggerMixin):
         if not user_password and not owner_password:
             return UnlockResult(False, output_path, False, "Mindestens ein Passwort erforderlich")
         
+        doc = None
+        temp_file = None
         try:
             doc = fitz.open(input_path)
-            try:
-                # Wenn bereits verschlüsselt, erst entsperren
-                if doc.is_encrypted:
-                    if not doc.authenticate(""):
-                        return UnlockResult(False, output_path, True,
-                                           "Originaldatei ist passwortgeschützt")
+            # Wenn bereits verschlüsselt, erst entsperren
+            if doc.is_encrypted:
+                if not doc.authenticate(""):
+                    return UnlockResult(False, output_path, True,
+                                       "Originaldatei ist passwortgeschützt")
 
-                # Verschlüsselungsmethode wählen
-                encrypt_method = {
-                    EncryptionMethod.AES_256: fitz.PDF_ENCRYPT_AES_256,
-                    EncryptionMethod.AES_128: fitz.PDF_ENCRYPT_AES_128,
-                    EncryptionMethod.RC4_128: fitz.PDF_ENCRYPT_RC4_128,
-                    EncryptionMethod.RC4_40: fitz.PDF_ENCRYPT_RC4_40
-                }.get(method, fitz.PDF_ENCRYPT_AES_256)
+            # Verschlüsselungsmethode wählen
+            encrypt_method = {
+                EncryptionMethod.AES_256: fitz.PDF_ENCRYPT_AES_256,
+                EncryptionMethod.AES_128: fitz.PDF_ENCRYPT_AES_128,
+                EncryptionMethod.RC4_128: fitz.PDF_ENCRYPT_RC4_128,
+                EncryptionMethod.RC4_40: fitz.PDF_ENCRYPT_RC4_40
+            }.get(method, fitz.PDF_ENCRYPT_AES_256)
 
-                # Berechtigungen
-                perm = fitz.PDF_PERM_PRINT | fitz.PDF_PERM_COPY  # Standard
-                if permissions:
-                    perm = 0
-                    if Permission.PRINT in permissions:
-                        perm |= fitz.PDF_PERM_PRINT
-                    if Permission.COPY in permissions:
-                        perm |= fitz.PDF_PERM_COPY
-                    if Permission.MODIFY in permissions:
-                        perm |= fitz.PDF_PERM_MODIFY
-                    if Permission.ANNOTATE in permissions:
-                        perm |= fitz.PDF_PERM_ANNOTATE
+            # Berechtigungen
+            perm = fitz.PDF_PERM_PRINT | fitz.PDF_PERM_COPY  # Standard
+            if permissions:
+                perm = 0
+                perm_items = set()
+                for p in permissions:
+                    if isinstance(p, Permission):
+                        perm_items.add(p)
+                        perm_items.add(p.value)
+                    elif isinstance(p, str):
+                        perm_items.add(p.strip().lower())
 
-                # Verschlüsselt speichern
+                if Permission.PRINT in perm_items or "print" in perm_items:
+                    perm |= fitz.PDF_PERM_PRINT
+                if Permission.COPY in perm_items or "copy" in perm_items:
+                    perm |= fitz.PDF_PERM_COPY
+                if Permission.MODIFY in perm_items or "modify" in perm_items:
+                    perm |= fitz.PDF_PERM_MODIFY
+                if Permission.ANNOTATE in perm_items or "annotate" in perm_items:
+                    perm |= fitz.PDF_PERM_ANNOTATE
+                if Permission.FILL_FORMS in perm_items or "fill_forms" in perm_items:
+                    perm |= getattr(fitz, "PDF_PERM_FORM", 256)
+                if Permission.EXTRACT in perm_items or "extract" in perm_items:
+                    perm |= getattr(fitz, "PDF_PERM_ACCESSIBILITY", 16)
+                if Permission.ASSEMBLE in perm_items or "assemble" in perm_items:
+                    perm |= getattr(fitz, "PDF_PERM_ASSEMBLE", 1024)
+                if Permission.PRINT_HIGH_QUALITY in perm_items or "print_highres" in perm_items:
+                    perm |= getattr(fitz, "PDF_PERM_PRINT_HQ", 2048)
+
+            src = Path(input_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
+
+            if src == dst:
+                with tempfile.NamedTemporaryFile(
+                    dir=dst.parent,
+                    prefix="dokuzen_enc_",
+                    suffix=".tmp",
+                    delete=False
+                ) as tmp:
+                    temp_file = Path(tmp.name)
                 doc.save(
-                    output_path,
+                    str(temp_file),
                     encryption=encrypt_method,
                     user_pw=user_password,
                     owner_pw=owner_password or user_password,
                     permissions=perm
                 )
-            finally:
+            else:
+                doc.save(
+                    str(dst),
+                    encryption=encrypt_method,
+                    user_pw=user_password,
+                    owner_pw=owner_password or user_password,
+                    permissions=perm
+                )
+
+            if doc is not None:
                 doc.close()
+                doc = None
+
+            if temp_file and temp_file.exists():
+                shutil.move(str(temp_file), str(dst))
+                temp_file = None
 
             self.logger.info(f"PDF verschlüsselt: {output_path}")
             return UnlockResult(True, output_path, False)
 
         except Exception as e:
             self.logger.error(f"Verschlüsselungsfehler: {e}")
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return UnlockResult(False, output_path, False, str(e))
+        finally:
+            if doc is not None and not getattr(doc, "is_closed", False):
+                doc.close()
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
     
     def remove_restrictions(self, input_path: str, output_path: str,
                            owner_password: str = "") -> UnlockResult:
@@ -300,19 +427,53 @@ class PDFSecurity(LoggerMixin):
             return UnlockResult(False, output_path, False, "pikepdf erforderlich")
 
         pdf = None
+        temp_file = None
         try:
-            pdf = pikepdf.open(input_path, password=owner_password or None)
+            src = Path(input_path).resolve()
+            dst = Path(output_path).resolve()
+            dst.parent.mkdir(parents=True, exist_ok=True)
 
-            # Ohne Verschlüsselung speichern entfernt auch Einschränkungen
-            pdf.save(output_path)
+            safe_pw = str(owner_password or "")
+            pdf = pikepdf.open(input_path, password=safe_pw, allow_overwriting_input=True)
+
+            if src == dst:
+                with tempfile.NamedTemporaryFile(
+                    dir=dst.parent,
+                    prefix="dokuzen_restr_",
+                    suffix=".tmp",
+                    delete=False
+                ) as tmp:
+                    temp_file = Path(tmp.name)
+                pdf.save(str(temp_file))
+            else:
+                pdf.save(str(dst))
+
+            if pdf is not None:
+                pdf.close()
+                pdf = None
+
+            if temp_file and temp_file.exists():
+                shutil.move(str(temp_file), str(dst))
+                temp_file = None
 
             return UnlockResult(True, output_path, True)
 
         except Exception as e:
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
+            temp_file = None
             return UnlockResult(False, output_path, True, str(e))
         finally:
             if pdf is not None:
                 pdf.close()
+            if temp_file and temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except Exception:
+                    pass
 
 
 # === Hilfsfunktionen ===

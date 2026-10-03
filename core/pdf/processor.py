@@ -8,6 +8,8 @@ Kombiniert Reader, Merger und Security-Funktionalitaet.
 """
 
 from pathlib import Path
+import shutil
+import tempfile
 from typing import List, Optional, Dict, Any
 
 from utils.logger import LoggerMixin
@@ -45,6 +47,7 @@ class PDFProcessor(LoggerMixin):
             self.logger.warning("PyMuPDF nicht installiert! pip install PyMuPDF")
         self._reader = PDFReader()
         self._path: Optional[str] = None
+        self._password: str = ""
 
     def open(self, path: str, password: str = "") -> bool:
         """
@@ -58,12 +61,14 @@ class PDFProcessor(LoggerMixin):
             True bei Erfolg
         """
         self._path = path
+        self._password = password
         return self._reader.open(path, password)
 
     def close(self):
         """Schließt die aktuelle PDF."""
         self._reader.close()
         self._path = None
+        self._password = ""
 
     @property
     def is_open(self) -> bool:
@@ -144,6 +149,57 @@ class PDFProcessor(LoggerMixin):
         """
         return self._reader.search_text(query, case_sensitive)
 
+    def _save_doc(self, doc, output_path: str) -> bool:
+        """
+        Speichert ein fitz-Dokument sicher, inklusive Erstellung von
+        Zielverzeichnissen und atomarem In-Place-Schreiben.
+        """
+        target = Path(output_path).resolve()
+        target.parent.mkdir(parents=True, exist_ok=True)
+
+        is_inplace = False
+        if self._path:
+            try:
+                is_inplace = target == Path(self._path).resolve()
+            except Exception:
+                is_inplace = str(output_path) == str(self._path)
+
+        if is_inplace:
+            temp_file = None
+            try:
+                with tempfile.NamedTemporaryFile(
+                    dir=target.parent,
+                    prefix="dokuzen_proc_",
+                    suffix=".tmp",
+                    delete=False
+                ) as tmp:
+                    temp_file = Path(tmp.name)
+
+                doc.save(str(temp_file))
+                if not getattr(doc, "is_closed", False):
+                    doc.close()
+
+                # self._reader hält einen File-Lock auf Windows -> vor move schließen!
+                self._reader.close()
+                shutil.move(str(temp_file), str(target))
+                temp_file = None
+
+                # Wieder öffnen, damit self._reader für weitere Operationen verfügbar bleibt
+                self._reader.open(str(target), self._password)
+                self._path = str(target)
+                return True
+            except Exception as e:
+                self.logger.error(f"Fehler beim in-place Speichern: {e}")
+                if temp_file and temp_file.exists():
+                    try:
+                        temp_file.unlink()
+                    except Exception:
+                        pass
+                raise
+        else:
+            doc.save(str(target))
+            return True
+
     def extract_pages(self, page_numbers: List[int], output_path: str) -> bool:
         """
         Extrahiert bestimmte Seiten in eine neue PDF.
@@ -176,14 +232,16 @@ class PDFProcessor(LoggerMixin):
                         )
 
                 if output_doc.page_count > 0:
-                    output_doc.save(output_path)
-                    self.logger.info(f"Seiten extrahiert nach: {output_path}")
-                    return True
+                    if self._save_doc(output_doc, output_path):
+                        self.logger.info(f"Seiten extrahiert nach: {output_path}")
+                        return True
+                    return False
                 else:
                     self.logger.warning("Keine gültigen Seiten zum Extrahieren")
                     return False
             finally:
-                output_doc.close()
+                if output_doc is not None and not getattr(output_doc, "is_closed", False):
+                    output_doc.close()
 
         except Exception as e:
             self.logger.error(f"Fehler beim Extrahieren: {e}")
@@ -223,11 +281,13 @@ class PDFProcessor(LoggerMixin):
                         page = output_doc[page_num - 1]
                         page.set_rotation(page.rotation + angle)
 
-                output_doc.save(output_path)
-                self.logger.info(f"Seiten rotiert, gespeichert nach: {output_path}")
-                return True
+                if self._save_doc(output_doc, output_path):
+                    self.logger.info(f"Seiten rotiert, gespeichert nach: {output_path}")
+                    return True
+                return False
             finally:
-                output_doc.close()
+                if output_doc is not None and not getattr(output_doc, "is_closed", False):
+                    output_doc.close()
 
         except Exception as e:
             self.logger.error(f"Fehler beim Rotieren: {e}")
@@ -265,14 +325,16 @@ class PDFProcessor(LoggerMixin):
                     output_doc.delete_page(page_idx)
 
                 if output_doc.page_count > 0:
-                    output_doc.save(output_path)
-                    self.logger.info(f"Seiten geloescht, gespeichert nach: {output_path}")
-                    return True
+                    if self._save_doc(output_doc, output_path):
+                        self.logger.info(f"Seiten geloescht, gespeichert nach: {output_path}")
+                        return True
+                    return False
                 else:
                     self.logger.warning("Alle Seiten wurden geloescht")
                     return False
             finally:
-                output_doc.close()
+                if output_doc is not None and not getattr(output_doc, "is_closed", False):
+                    output_doc.close()
 
         except Exception as e:
             self.logger.error(f"Fehler beim Loeschen: {e}")
@@ -305,11 +367,13 @@ class PDFProcessor(LoggerMixin):
                 # Metadaten setzen
                 output_doc.set_metadata(metadata)
 
-                output_doc.save(output_path)
-                self.logger.info(f"Metadaten gesetzt, gespeichert nach: {output_path}")
-                return True
+                if self._save_doc(output_doc, output_path):
+                    self.logger.info(f"Metadaten gesetzt, gespeichert nach: {output_path}")
+                    return True
+                return False
             finally:
-                output_doc.close()
+                if output_doc is not None and not getattr(output_doc, "is_closed", False):
+                    output_doc.close()
 
         except Exception as e:
             self.logger.error(f"Fehler beim Setzen der Metadaten: {e}")
