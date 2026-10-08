@@ -5,7 +5,7 @@
 **Deutsch** | [English](README.md)
 
 [![CI](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml/badge.svg)](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml)
-[![Pytest Status](https://img.shields.io/badge/pytest-489%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-514%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
 [![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![Platforms](https://img.shields.io/badge/plattform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/doc-bricks/DokuZen)
 [![Privacy](https://img.shields.io/badge/datenschutz-100%25%20Local--First%20%7C%20Zero--Egress-success.svg)](SECURITY.md)
@@ -292,10 +292,11 @@ python main.py
 ---
 
 <a id="cli-entry-points"></a>
-## 🖥️ GUI-CLI Startoptionen
+## 🖥️ GUI-CLI Startoptionen & Headless-Automatisierung
 
-DokuZen unterstützt direkte Kommandozeilen-Parameter zur sofortigen Öffnung bestimmter Arbeitsabläufe in der grafischen Benutzeroberfläche:
+DokuZen unterstützt direkte Kommandozeilen-Parameter zur sofortigen Öffnung bestimmter Arbeitsabläufe in der grafischen Benutzeroberfläche sowie einen vollständig entkoppelten Headless-Batch-Modus (`--headless` bzw. `--batch`) für Server-, Skript- und Agenten-Pipelines ohne grafische Anzeige:
 
+### GUI-Direktstart-Optionen
 ```bash
 # Dokumente direkt in die Bibliothek importieren
 python main.py --import dokument.pdf notizen.md
@@ -313,8 +314,24 @@ python main.py --redact vertrag.pdf
 python main.py --merge teil1.pdf teil2.pdf
 ```
 
+### Headless Batch-CLI (Automatisierung & Agenten-Integration)
+```bash
+# Headless PDF-Zusammenführung (Multi-File)
+python main.py --headless --merge a.pdf b.pdf -o zusammengefuehrt.pdf
+
+# Headless OCR zu durchsuchbarem PDF oder Textextraktion
+python main.py --headless --ocr scan.pdf -o ausgabe.pdf --lang deu
+python main.py --headless --ocr scan.pdf --ocr-format text -o extrakt.txt
+
+# Headless Schwärzung mit PII-Erkennung und benutzerdefinierter Blacklist
+python main.py --headless --redact vertrag.pdf -o geschwaerzt.pdf --sensitive-types iban email phone
+
+# Headless PDF-Metadaten- & Seitenanalyse (strukturierte JSON-Ausgabe)
+python main.py --headless --info dok.pdf --json
+```
+
 > [!NOTE]
-> **Automationsgrenze:** DokuZen ist als vollwertige Desktop-Arbeitsumgebung für Menschen konzipiert. Die CLI-Parameter dienen dem schnellen GUI-Start. Headless-Batch-Schnittstellen und REST-APIs werden bewusst nicht vorgehalten, um die strengen Zero-Egress-Sicherheitsmodelle zu wahren.
+> **Automationsgrenze:** DokuZen unterstützt sowohl interaktive Desktop-Abläufe als auch automatisierte Headless-Operationen via `--headless`/`--batch`. Alle Operationen unterliegen ausnahmslos der Zero-Egress-Garantie (`INV-LOCAL-01`). Remote REST-APIs werden erst bei explizitem Bedarf mit geprüften Sicherheitsmodellen umgesetzt.
 
 ---
 
@@ -361,7 +378,7 @@ Details entnehmen Sie der Sicherheitsrichtlinie in [`SECURITY.md`](SECURITY.md).
 DokuZen verfügt über eine umfangreiche Testsuite mit Unit-Tests, GUI-Rauchtests, Verschlüsselungsprüfungen und Metadatenparität:
 
 ```bash
-# Gesamte Testsuite ausführen (489 Tests, 100% bestanden)
+# Gesamte Testsuite ausführen (514 Tests, 100% bestanden)
 python -m pytest
 
 # Offscreen-Plattform Rauchtests durchführen

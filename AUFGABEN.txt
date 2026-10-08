@@ -67,7 +67,12 @@
     - Copyleft-/Store-Grenzen für PyMuPDF/AGPL, PyQt6-WebEngine/GPL und PySide6/Qt dokumentiert.
     - Guard: `tests/test_third_party_licenses.py`.
 
-[ ] P2: Falls echte Automations- oder Remote-Usecases entstehen, headless Batch-CLI oder projektlokale REST-API gezielt statt als Template-Claim implementieren.
+[x] P2: Falls echte Automations- oder Remote-Usecases entstehen, headless Batch-CLI oder projektlokale REST-API gezielt statt als Template-Claim implementieren. -- DONE 2026-10-08
+    - Headless Batch-CLI in `core/batch_cli.py` und `main.py` mit `--headless` / `--batch` implementiert.
+    - Vollständig entkoppelt von PySide6/QApplication/Display für Server-, CI- und Agenten-Einsatz.
+    - Operationen: `--merge` (PDFMerger), `--ocr` (OCREngine, Text/PDF), `--redact` (RedactionDetector/Applier mit Blacklist & sensitiven Typen), `--info` (Metadaten- & Seitenanalyse).
+    - Strukturierte JSON-Rückgabe via `--json` und Unix-Exit-Codes (0 = Erfolg, 1 = Fehler, 2 = ungültige Parameter).
+    - Hermetisch abgesichert durch `tests/test_batch_cli.py` (15/15 Tests).
 [ ] P3: Mobile/Web nur neu bewerten, wenn später eine getrennte Produktidee entsteht; aktuell keine PWA-, Android- oder iOS-Aufgabe anlegen.
 [x] Empfohlene Architekturänderung oder FALLBACK für Poppler
 Du kannst Poppler komplett streichen, indem du:
@@ -86,7 +91,10 @@ Stand: 11.01.2026
 ## API/CLI-STEUERBARKEIT (2026-03-15)
 
 [x] GUI-CLI-Startoptionen in `main.py`: `--import`, `--open`, `--ocr`, `--redact`, `--merge` -- DONE 2026-06-01
-[ ] Headless Batch-CLI für OCR/Schwärzung/Merge nur bei echtem Automationsbedarf ergänzen.
+[x] Headless Batch-CLI für OCR/Schwärzung/Merge nur bei echtem Automationsbedarf ergänzen. -- DONE 2026-10-08
+    - Headless Batch-CLI in `core/batch_cli.py` und `main.py` mit `--headless` / `--batch` implementiert.
+    - Unterstützt `--merge`, `--ocr`, `--redact`, `--info` mit `--json`-Support ohne Display/Qt-Widgets.
+    - Getestet durch 15 neue Unit- und Integrationstests in `tests/test_batch_cli.py` (Gesamtsuite 514 passed).
 [ ] Projektlokale REST-API nur dann bauen, wenn ein belegter Remote- oder Agenten-Usecase vorliegt.
 [ ] API-Dokumentation erst zusammen mit einer realen REST-API anlegen.
 

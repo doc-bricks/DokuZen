@@ -10,12 +10,17 @@ Version: 1.0.1
 Lizenz: AGPL-3.0-or-later
 """
 
+from __future__ import annotations
+
 import argparse
 import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Optional, Sequence, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from gui.main_window import MainWindow
 
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent
@@ -34,18 +39,13 @@ try:
     from PySide6.QtWidgets import QApplication
     from PySide6.QtCore import Qt, QTimer
     from PySide6.QtGui import QIcon
+    PYSIDE6_AVAILABLE = True
+    PYSIDE6_IMPORT_ERROR = None
 except ImportError as e:
-    # BUGSWEEP-34: nach stderr (stdout ist unter pythonw/PyInstaller-windowed wirkungslos) + Ursache (e)
-    # ausgeben (fehlende DLL vs. fehlendes Paket unterscheidbar).
-    print("=" * 60, file=sys.stderr)
-    print("FEHLER: PySide6 nicht verfügbar!", file=sys.stderr)
-    print(f"Details: {e}", file=sys.stderr)
-    print("Bitte installieren mit: pip install PySide6", file=sys.stderr)
-    print("=" * 60, file=sys.stderr)
-    sys.exit(1)
+    PYSIDE6_AVAILABLE = False
+    PYSIDE6_IMPORT_ERROR = e
 
 from utils.logger import setup_logger, get_logger
-from gui.main_window import MainWindow
 
 
 @dataclass(frozen=True)
@@ -90,11 +90,74 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         metavar="DATEI",
         help="Dateien beim Start in das aktuelle Thema importieren.",
     )
+    group.add_argument(
+        "--info",
+        dest="info_path",
+        metavar="PDF",
+        help="Metadaten und Seitenanzahl einer PDF headlessly abfragen.",
+    )
     parser.add_argument(
         "paths",
         nargs="*",
         metavar="DATEI",
         help="Kurzform für `--import DATEI ...`.",
+    )
+
+    # Batch- und Headless-Optionen
+    parser.add_argument(
+        "--headless",
+        "--batch",
+        dest="headless",
+        action="store_true",
+        help="Führt DokuZen im Headless-Batch-Modus ohne GUI aus.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        dest="output_path",
+        metavar="ZIEL",
+        help="Ausgabedatei für Merge-, OCR- oder Schwärzungs-Aktionen.",
+    )
+    parser.add_argument(
+        "--lang",
+        "--ocr-lang",
+        dest="ocr_lang",
+        default="deu+eng",
+        metavar="SPRACHE",
+        help="Sprachcode für OCR (Standard: deu+eng).",
+    )
+    parser.add_argument(
+        "--ocr-format",
+        dest="ocr_format",
+        choices=["text", "pdf"],
+        default="text",
+        help="Ausgabeformat für OCR: text (Standard) oder pdf (durchsuchbare PDF).",
+    )
+    parser.add_argument(
+        "--redact-terms",
+        dest="redact_terms",
+        nargs="+",
+        metavar="BEGRIFF",
+        help="Benutzerdefinierte Begriffe zum Schwärzen.",
+    )
+    parser.add_argument(
+        "--blacklist-file",
+        dest="blacklist_file",
+        metavar="DATEI",
+        help="Pfad zu einer Textdatei mit Schwärzungsbegriffen.",
+    )
+    parser.add_argument(
+        "--sensitive-types",
+        dest="sensitive_types",
+        nargs="+",
+        metavar="TYP",
+        help="Sensible Datentypen zum Schwärzen (email, phone, iban, date).",
+    )
+    parser.add_argument(
+        "--json",
+        dest="json_output",
+        action="store_true",
+        help="Gibt das Ergebnis als JSON für Automatisierungen/Agenten aus.",
     )
 
     args = parser.parse_args(argv)
@@ -106,10 +169,11 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
             args.annotate_path,
             args.merge_paths,
             args.import_paths,
+            args.info_path,
         )
     )
     if args.paths and has_option_action:
-        parser.error("Positionspfade können nicht mit --open/--ocr/--redact/--annotate/--merge/--import kombiniert werden.")
+        parser.error("Positionspfade können nicht mit --open/--ocr/--redact/--annotate/--merge/--import/--info kombiniert werden.")
 
     return args
 
@@ -159,9 +223,31 @@ def apply_startup_command(window: MainWindow, command: StartupCommand) -> None:
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
-    """Initialize logging, create the QApplication, and launch DokuZen Pro."""
+    """Initialize logging, create the QApplication, and launch DokuZen Pro or execute headless batch."""
 
     args = parse_cli_args(argv)
+
+    # Prüfen, ob Headless-Modus angefordert ist
+    is_headless = bool(
+        getattr(args, "headless", False)
+        or getattr(args, "json_output", False)
+        or os.environ.get("DOKUZEN_HEADLESS") == "1"
+    )
+
+    if is_headless:
+        from core.batch_cli import execute_headless_cli
+        return execute_headless_cli(args)
+
+    if not PYSIDE6_AVAILABLE:
+        print("=" * 60, file=sys.stderr)
+        print("FEHLER: PySide6 nicht verfügbar!", file=sys.stderr)
+        print(f"Details: {PYSIDE6_IMPORT_ERROR}", file=sys.stderr)
+        print("Bitte installieren mit: pip install PySide6", file=sys.stderr)
+        print("=" * 60, file=sys.stderr)
+        return 1
+
+    from gui.main_window import MainWindow
+
     startup_command = build_startup_command(args)
 
     # Logger initialisieren

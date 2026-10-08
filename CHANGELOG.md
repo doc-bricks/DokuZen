@@ -5,6 +5,19 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-10-08, turnusgemäßer High-End-Architekturlauf [SOFTWARE_HIGH_END] — Headless Batch-CLI & Automation-API)
+- **Headless Batch-CLI (`core/batch_cli.py`, `main.py`):**
+  - **Architektur & Server-/CI-/Agenten-Readiness:** Neue Headless-Steuerung via `--headless` bzw. `--batch` vollständig ohne `QApplication`, Qt-Widgets oder X11/Wayland-Display lauffähig.
+  - **Dataclass `BatchResult`:** Strukturierte Rückgabeergebnisse (`success`, `operation`, `output_file`, `details`, `error`, `warnings`) mit automatischer JSON-Serialisierung via `--json`.
+  - **Operationen:**
+    - `--merge`: Headless PDF-Zusammenführung mehrerer Eingabedateien via `PDFMerger`.
+    - `--ocr`: Headless Textextraktion (`--ocr-format text`) oder Erzeugung durchsuchbarer PDFs (`--ocr-format pdf`) via `OCREngine` und konfigurierbarer Sprache (`--lang`).
+    - `--redact`: Headless Schwärzung sensibler PII (IBAN, E-Mail, Telefon, etc.) und konfigurierbarer Blacklist-Dateien/Begriffe via `RedactionDetector` und `RedactionApplier.redact_pdf`.
+    - `--info`: Schnelle Metadaten- und Seitenanalyse via `get_pdf_info` mit strukturierter JSON-Ausgabe.
+  - **CLI-Dispatching & Exit-Codes:** Robuste Fehlerbehandlung mit Unix-Standard-Codes (0 = Erfolg, 1 = Laufzeitfehler, 2 = ungültige CLI-Parameter).
+  - **Unit- & Integrationstests (`tests/test_batch_cli.py`):**
+    - 15 hermetische Tests für alle Batch-Operationen, Parameter-Validierungen, JSON-Formate und CLI-Entrypoint (Gesamttestsuite wächst von 499 auf 514 Tests, 100% grün).
+
 ### Fixed (2026-10-04, dev/bugsweep — PDF-Security-Pipeline, In-Place-Resilienz & Verzeichnis-Erstellung)
 - **PDF-Sicherheits-Pipeline (`core/pdf/security.py`):**
   - **pikepdf TypeError bei leerem Passwort behoben:** Modernes `pikepdf.open()` verbietet `password=None` (`TypeError: incompatible function arguments, kwargs = {password: NoneType}`); nun durch `safe_pw = str(password or "")` in `_unlock_pikepdf` und `remove_restrictions` abgesichert.

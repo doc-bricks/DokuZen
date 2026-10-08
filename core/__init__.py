@@ -17,5 +17,6 @@ __all__ = [
     "converter",
     "forms",
     "workspace_export",
+    "batch_cli",
 ]
 

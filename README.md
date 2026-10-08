@@ -5,7 +5,7 @@
 [Deutsch](README_de.md) | **English**
 
 [![CI](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml/badge.svg)](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml)
-[![Pytest Status](https://img.shields.io/badge/pytest-489%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
+[![Pytest Status](https://img.shields.io/badge/pytest-514%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)
 [![Python Versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/doc-bricks/DokuZen)
 [![Privacy](https://img.shields.io/badge/privacy-100%25%20Local--First%20%7C%20Zero--Egress-success.svg)](SECURITY.md)
@@ -292,10 +292,11 @@ python main.py
 ---
 
 <a id="cli-entry-points"></a>
-## 🖥️ GUI-CLI Direct Entry Points
+## 🖥️ GUI-CLI Direct Entry Points & Headless Automation
 
-DokuZen provides direct CLI flags that launch the desktop application and navigate immediately into specific workflows:
+DokuZen provides direct CLI flags that launch the desktop application and navigate immediately into specific workflows, as well as a headless batch mode (`--headless` or `--batch`) for automated server, script, and agent pipelines without requiring a display or Qt event loop:
 
+### GUI Direct Launch Shortcuts
 ```bash
 # Import documents into library
 python main.py --import document.pdf notes.md
@@ -313,8 +314,24 @@ python main.py --redact contract.pdf
 python main.py --merge part1.pdf part2.pdf
 ```
 
+### Headless Batch CLI (Automation & Agent Integration)
+```bash
+# Headless PDF merge (multi-file)
+python main.py --headless --merge a.pdf b.pdf -o merged.pdf
+
+# Headless OCR to searchable PDF or text extraction
+python main.py --headless --ocr scan.pdf -o output.pdf --lang deu
+python main.py --headless --ocr scan.pdf --ocr-format text -o extracted.txt
+
+# Headless Redaction with PII detection and custom blacklist
+python main.py --headless --redact contract.pdf -o sanitized.pdf --sensitive-types iban email phone
+
+# Headless PDF Metadata & Page Inspection (JSON output)
+python main.py --headless --info doc.pdf --json
+```
+
 > [!NOTE]
-> **Automation Boundary:** The evidenced use case is a local desktop document and PDF workstation. The CLI entry points above are GUI startup shortcuts. Headless batch CLI and REST API endpoints remain intentionally unasserted until explicit remote use cases and approved security models are established.
+> **Automation Boundary:** DokuZen supports both interactive desktop workflows and automated headless operations via `--headless`/`--batch`. All operations strictly adhere to local-first and zero-egress invariants (`INV-LOCAL-01`). Remote REST API endpoints remain intentionally unasserted until explicit remote use cases and approved security models are established.
 
 ---
 
@@ -361,7 +378,7 @@ Detailed security and disclosure policies are available in [`SECURITY.md`](SECUR
 DokuZen maintains an automated test suite covering unit operations, GUI dialog smoke tests, PDF encryption lifecycles, and metadata parity:
 
 ```bash
-# Run complete test suite (489 passed, 100% green)
+# Run complete test suite (514 passed, 100% green)
 python -m pytest
 
 # Run offscreen platform smoke tests
