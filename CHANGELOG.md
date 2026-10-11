@@ -5,6 +5,16 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed (2026-10-11, dev/bugsweep — Form-Builder, AcroForm-Resilienz, Background-PDF-Overlay & Datentyp-Sicherheit)
+- **Form-Builder & AcroForm-Generierung (`core/forms/builder.py`):**
+  - **Background-PDF-Overlay repariert:** `FormTemplate.background_pdf` wurde bei `generate_pdf()` ignoriert; nun wird das Canvas auf ein temporäres Dokument gerendert, via PyMuPDF `show_pdf_page` über die Hintergrundseite gelegt und interaktive Widgets passgenau eingebunden.
+  - **Typsicherheit & defensive Wertebehandlung (`_draw_field`, `fill_form`):** Behebung von `TypeError`/`AttributeError` bei numerischen Werten, Booleans oder `None`; typisierte Vorformatierung von String-, Checkbox- und Radio-Werten sowie geschützte `widget.update()`-Aufrufe.
+  - **AcroForm Field-Flags & Textlängen:** `read_only`, `required` und `max_length` werden nun korrekt als Widget-Attribute und PDF-Feldflags (`PDF_FIELD_IS_READ_ONLY`, `PDF_FIELD_IS_REQUIRED`) gesetzt.
+  - **Windows FileLock & In-Place Speicherung:** Robuster Fallback bei Scheitern von `doc.saveIncr()` durch Schließen aktiver Handles vor dem atomaren Datei-Austausch (`replace`).
+  - **Defensive Deserialisierung & Enum-Stabilität:** `FormField.from_dict` und `FormTemplate.from_dict` fangen ungültige Datentypen, `null`-Werte und Case-Mismatch ab; `FieldType(str, Enum)` verhindert Mehrfach-Import-Inkompatibilitäten.
+- **Hermetische Regressionstests (`tests/test_bugsweep_form_builder_resilience_20261011.py`):**
+  - 8 neue Regressionstests für Background-PDF-Einbindung, Typkoerzierung (Bool/Int), AcroForm-Flags, In-Place-Speicherung und Template-Serialisierung (Gesamttestsuite: 522 passed, 1 skipped [MSIX]).
+
 ### Added (2026-10-08, turnusgemäßer High-End-Architekturlauf [SOFTWARE_HIGH_END] — Headless Batch-CLI & Automation-API)
 - **Headless Batch-CLI (`core/batch_cli.py`, `main.py`):**
   - **Architektur & Server-/CI-/Agenten-Readiness:** Neue Headless-Steuerung via `--headless` bzw. `--batch` vollständig ohne `QApplication`, Qt-Widgets oder X11/Wayland-Display lauffähig.

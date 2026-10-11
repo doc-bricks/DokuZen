@@ -36,7 +36,7 @@ except ImportError:
     REPORTLAB_AVAILABLE = False
 
 
-class FieldType(Enum):
+class FieldType(str, Enum):
     """Feldtypen für Formulare."""
     TEXT = "text"
     TEXTAREA = "textarea"
@@ -85,21 +85,71 @@ class FormField:
     
     @classmethod
     def from_dict(cls, data: Dict) -> 'FormField':
-        """Erstellt aus Dictionary."""
+        """Erstellt aus Dictionary mit defensiver Validierung."""
+        ft_raw = data.get("field_type", "text")
+        if isinstance(ft_raw, FieldType):
+            field_type = ft_raw
+        elif isinstance(ft_raw, str):
+            try:
+                field_type = FieldType(ft_raw.lower())
+            except ValueError:
+                field_type = FieldType.TEXT
+        else:
+            field_type = FieldType.TEXT
+
+        raw_opts = data.get("options")
+        options = [str(o) for o in raw_opts] if isinstance(raw_opts, (list, tuple)) else []
+
+        raw_def = data.get("default_value")
+        default_val = str(raw_def) if raw_def is not None else ""
+
+        raw_lbl = data.get("label")
+        lbl = str(raw_lbl) if raw_lbl is not None else ""
+
+        try:
+            x_val = float(data.get("x", 0.0))
+        except (ValueError, TypeError):
+            x_val = 0.0
+
+        try:
+            y_val = float(data.get("y", 0.0))
+        except (ValueError, TypeError):
+            y_val = 0.0
+
+        try:
+            w_val = float(data.get("width", 10.0))
+        except (ValueError, TypeError):
+            w_val = 10.0
+
+        try:
+            h_val = float(data.get("height", 10.0))
+        except (ValueError, TypeError):
+            h_val = 10.0
+
+        try:
+            fs_val = int(data.get("font_size", 10) or 10)
+        except (ValueError, TypeError):
+            fs_val = 10
+
+        try:
+            ml_val = int(data.get("max_length", 0) or 0)
+        except (ValueError, TypeError):
+            ml_val = 0
+
         return cls(
-            field_type=FieldType(data["field_type"]),
-            name=data["name"],
-            x=data["x"],
-            y=data["y"],
-            width=data["width"],
-            height=data["height"],
-            label=data.get("label", ""),
-            default_value=data.get("default_value", ""),
-            required=data.get("required", False),
-            options=data.get("options", []),
-            font_size=data.get("font_size", 10),
-            max_length=data.get("max_length", 0),
-            read_only=data.get("read_only", False)
+            field_type=field_type,
+            name=str(data.get("name") or "field"),
+            x=x_val,
+            y=y_val,
+            width=w_val,
+            height=h_val,
+            label=lbl,
+            default_value=default_val,
+            required=bool(data.get("required", False)),
+            options=options,
+            font_size=fs_val,
+            max_length=ml_val,
+            read_only=bool(data.get("read_only", False))
         )
 
 
@@ -141,16 +191,34 @@ class FormTemplate:
     
     @classmethod
     def from_dict(cls, data: Dict) -> 'FormTemplate':
-        """Erstellt aus Dictionary."""
+        """Erstellt aus Dictionary mit defensiven Fallbacks."""
+        if not isinstance(data, dict):
+            raise ValueError(f"Ungültige Template-Struktur (Dictionary erwartet): {type(data)}")
+
+        raw_size = data.get("page_size")
+        if isinstance(raw_size, (list, tuple)) and len(raw_size) >= 2:
+            try:
+                page_size = (float(raw_size[0]), float(raw_size[1]))
+            except (ValueError, TypeError):
+                page_size = (210.0, 297.0)
+        else:
+            page_size = (210.0, 297.0)
+
+        bg_raw = data.get("background_pdf")
+        bg_pdf = str(bg_raw) if bg_raw else None
+
         template = cls(
-            name=data["name"],
-            page_size=tuple(data.get("page_size", [210, 297])),
-            background_pdf=data.get("background_pdf"),
-            title=data.get("title", ""),
-            author=data.get("author", "")
+            name=str(data.get("name") or "Vorlage"),
+            page_size=page_size,
+            background_pdf=bg_pdf,
+            title=str(data.get("title") or ""),
+            author=str(data.get("author") or "")
         )
-        for fd in data.get("fields", []):
-            template.add_field(FormField.from_dict(fd))
+        raw_fields = data.get("fields")
+        if isinstance(raw_fields, list):
+            for fd in raw_fields:
+                if isinstance(fd, dict):
+                    template.add_field(FormField.from_dict(fd))
         return template
     
     def save(self, filepath: str):
@@ -167,11 +235,11 @@ class FormTemplate:
     @classmethod
     def load(cls, filepath: str) -> 'FormTemplate':
         """Lädt Template aus JSON."""
-        with open(filepath, 'r', encoding='utf-8') as f:
-            try:
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            except (json.JSONDecodeError, OSError) as e:
-                raise ValueError(f"Ungültige JSON-Datei: {filepath}: {e}")
+        except (json.JSONDecodeError, OSError) as e:
+            raise ValueError(f"Ungültige JSON-Datei: {filepath}: {e}")
         return cls.from_dict(data)
 
 
@@ -201,11 +269,12 @@ class FormBuilder(LoggerMixin):
     
     def create_template(self, name: str, page_size: str = "A4") -> FormTemplate:
         """Erstellt eine neue Vorlage."""
-        size = self.PAGE_SIZES.get(page_size, self.PAGE_SIZES["A4"])
+        lookup = {k.lower(): v for k, v in self.PAGE_SIZES.items()}
+        size = lookup.get(str(page_size).strip().lower(), self.PAGE_SIZES["A4"])
         return FormTemplate(name=name, page_size=size)
     
     def generate_pdf(self, template: FormTemplate, output_path: str,
-                     fill_data: Dict[str, str] = None) -> bool:
+                     fill_data: Optional[Dict[str, Any]] = None) -> bool:
         """
         Generiert PDF aus Template.
         
@@ -222,40 +291,77 @@ class FormBuilder(LoggerMixin):
             return False
         
         fill_data = fill_data or {}
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        target_path = Path(output_path)
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+
+        has_bg = False
+        bg_file = None
+        if template.background_pdf:
+            bg_candidate = Path(template.background_pdf)
+            if bg_candidate.is_file():
+                has_bg = True
+                bg_file = bg_candidate
+            else:
+                self.logger.warning(f"Hintergrund-PDF nicht gefunden: {template.background_pdf}")
+
+        # Wenn Hintergrund-PDF vorhanden ist, zeichnen wir den Canvas temporär und legen ihn darüber
+        canvas_target = str(target_path.with_name(target_path.stem + ".tmp_canvas.pdf")) if has_bg else str(target_path)
         
         try:
             # Seitengröße
             width_mm, height_mm = template.page_size
             page_size = (width_mm * mm, height_mm * mm)
             
-            c = canvas.Canvas(output_path, pagesize=page_size)
+            c = canvas.Canvas(canvas_target, pagesize=page_size)
             
             # Titel setzen
             if template.title:
-                c.setTitle(template.title)
+                c.setTitle(str(template.title))
             if template.author:
-                c.setAuthor(template.author)
+                c.setAuthor(str(template.author))
             
             # Felder zeichnen
             for field in template.fields:
-                self._draw_field(c, field, height_mm, fill_data.get(field.name, ""))
+                val = fill_data.get(field.name, field.default_value)
+                self._draw_field(c, field, height_mm, val)
             
             c.save()
+
+            if has_bg and PYMUPDF_AVAILABLE:
+                # Hintergrund-PDF laden und Canvas darüberlegen
+                bg_doc = fitz.open(str(bg_file))
+                fg_doc = fitz.open(canvas_target)
+                try:
+                    if len(bg_doc) > 0 and len(fg_doc) > 0:
+                        bg_page = bg_doc[0]
+                        bg_page.show_pdf_page(bg_page.rect, fg_doc, 0)
+                    bg_doc.save(str(target_path))
+                finally:
+                    bg_doc.close()
+                    fg_doc.close()
+                    try:
+                        Path(canvas_target).unlink(missing_ok=True)
+                    except Exception:
+                        pass
             
             # Formularfelder hinzufügen (interaktiv)
             if PYMUPDF_AVAILABLE:
-                self._add_interactive_fields(output_path, template, fill_data)
+                self._add_interactive_fields(str(target_path), template, fill_data)
             
             self.logger.info(f"PDF erstellt: {output_path}")
             return True
             
         except Exception as e:
             self.logger.error(f"PDF-Generierung fehlgeschlagen: {e}")
+            if has_bg:
+                try:
+                    Path(canvas_target).unlink(missing_ok=True)
+                except Exception:
+                    pass
             return False
     
     def _draw_field(self, c: canvas.Canvas, field: FormField, 
-                    page_height: float, value: str):
+                    page_height: float, value: Any):
         """Zeichnet ein Feld auf das Canvas."""
         x = field.x * mm
         y = (page_height - field.y - field.height) * mm  # Y von oben
@@ -264,11 +370,25 @@ class FormBuilder(LoggerMixin):
         
         c.setFont("Helvetica", field.font_size)
         
-        ft_val = field.field_type.value if hasattr(field.field_type, "value") else str(field.field_type)
+        ft_val = field.field_type.value if hasattr(field.field_type, "value") else str(field.field_type).lower()
+
+        val_str = ""
+        val_bool = False
+        if value is not None:
+            if isinstance(value, bool):
+                val_bool = value
+                val_str = "true" if value else "false"
+            elif isinstance(value, (int, float)):
+                val_bool = (value == 1)
+                val_str = str(value)
+            else:
+                val_str = str(value)
+                val_bool = val_str.strip().lower() in ['true', '1', 'yes', 'ja', 'x']
 
         if ft_val == FieldType.LABEL.value:
             # Nur Text
-            c.drawString(x, y + h - field.font_size, field.label or field.default_value)
+            lbl_text = str(field.label or field.default_value or "")
+            c.drawString(x, y + h - field.font_size, lbl_text)
         
         elif ft_val == FieldType.TEXT.value:
             # Rahmen zeichnen
@@ -278,12 +398,12 @@ class FormBuilder(LoggerMixin):
             # Label
             if field.label:
                 c.setFont("Helvetica", 8)
-                c.drawString(x, y + h + 2, field.label)
+                c.drawString(x, y + h + 2, str(field.label))
                 c.setFont("Helvetica", field.font_size)
             
             # Wert
-            if value:
-                c.drawString(x + 2, y + 4, value[:int(w/5)])
+            if val_str:
+                c.drawString(x + 2, y + 4, val_str[:int(w/5)])
         
         elif ft_val == FieldType.TEXTAREA.value:
             c.setStrokeColor(gray)
@@ -291,11 +411,11 @@ class FormBuilder(LoggerMixin):
             
             if field.label:
                 c.setFont("Helvetica", 8)
-                c.drawString(x, y + h + 2, field.label)
+                c.drawString(x, y + h + 2, str(field.label))
                 c.setFont("Helvetica", field.font_size)
-            if value:
+            if val_str:
                 c.setFont("Helvetica", field.font_size)
-                lines = value.split("\n")
+                lines = val_str.split("\n")
                 line_y = y + h - field.font_size - 4
                 for line in lines:
                     if line_y < y + 4:
@@ -309,7 +429,7 @@ class FormBuilder(LoggerMixin):
             c.rect(x, y + (h - box_size) / 2, box_size, box_size)
             
             # Häkchen wenn checked
-            if value.lower() in ['true', '1', 'yes', 'ja', 'x']:
+            if val_bool:
                 c.line(x + 2, y + (h - box_size) / 2 + box_size / 2,
                        x + box_size / 2, y + (h - box_size) / 2 + 2)
                 c.line(x + box_size / 2, y + (h - box_size) / 2 + 2,
@@ -317,18 +437,18 @@ class FormBuilder(LoggerMixin):
             
             # Label
             if field.label:
-                c.drawString(x + box_size + 4, y + (h - field.font_size) / 2 + 2, field.label)
+                c.drawString(x + box_size + 4, y + (h - field.font_size) / 2 + 2, str(field.label))
 
         elif ft_val == FieldType.RADIO.value:
             c.setStrokeColor(gray)
             radius = min(h, 12) / 2
             c.circle(x + radius, y + h / 2, radius)
-            if value.lower() in ['true', '1', 'yes', 'ja', 'x']:
+            if val_bool:
                 c.setFillColor(black)
                 c.circle(x + radius, y + h / 2, radius / 2, fill=1)
                 c.setFillColor(black)
             if field.label:
-                c.drawString(x + radius * 2 + 4, y + (h - field.font_size) / 2 + 2, field.label)
+                c.drawString(x + radius * 2 + 4, y + (h - field.font_size) / 2 + 2, str(field.label))
         
         elif ft_val == FieldType.DROPDOWN.value:
             c.setStrokeColor(gray)
@@ -340,18 +460,18 @@ class FormBuilder(LoggerMixin):
             
             if field.label:
                 c.setFont("Helvetica", 8)
-                c.drawString(x, y + h + 2, field.label)
+                c.drawString(x, y + h + 2, str(field.label))
                 c.setFont("Helvetica", field.font_size)
-            if value:
-                c.drawString(x + 2, y + 4, value[:int((w - 12) / 5)])
+            if val_str:
+                c.drawString(x + 2, y + 4, val_str[:int((w - 12) / 5)])
         
         elif ft_val == FieldType.DATE.value:
             c.setStrokeColor(gray)
             c.rect(x, y, w, h)
             
-            if value:
+            if val_str:
                 c.setFont("Helvetica", field.font_size)
-                c.drawString(x + 2, y + 4, value)
+                c.drawString(x + 2, y + 4, val_str)
             else:
                 # Placeholder
                 c.setFillColor(gray)
@@ -360,7 +480,7 @@ class FormBuilder(LoggerMixin):
             
             if field.label:
                 c.setFont("Helvetica", 8)
-                c.drawString(x, y + h + 2, field.label)
+                c.drawString(x, y + h + 2, str(field.label))
         
         elif ft_val == FieldType.SIGNATURE.value:
             c.setStrokeColor(gray)
@@ -372,19 +492,21 @@ class FormBuilder(LoggerMixin):
             c.drawString(x + 2, y + 4, "Unterschrift")
             
             if field.label:
-                c.drawString(x, y + h + 2, field.label)
+                c.drawString(x, y + h + 2, str(field.label))
     
     def _add_interactive_fields(self, pdf_path: str, template: FormTemplate,
-                                 fill_data: Dict[str, str]):
+                                 fill_data: Dict[str, Any]):
         """Fügt interaktive Formularfelder hinzu."""
         doc = fitz.open(pdf_path)
         try:
+            if len(doc) == 0:
+                return
             page = doc[0]
 
             scale = 72.0 / 25.4  # mm zu points
 
             for field in template.fields:
-                ft_val = field.field_type.value if hasattr(field.field_type, "value") else str(field.field_type)
+                ft_val = field.field_type.value if hasattr(field.field_type, "value") else str(field.field_type).lower()
 
                 if ft_val == FieldType.LABEL.value:
                     continue  # Labels sind nicht interaktiv
@@ -397,13 +519,28 @@ class FormBuilder(LoggerMixin):
 
                 rect = fitz.Rect(x, y, x + w, y + h)
 
+                raw_val = fill_data.get(field.name, field.default_value)
+                val_str = "" if raw_val is None else str(raw_val)
+                val_bool = False
+                if raw_val is not None:
+                    if isinstance(raw_val, bool):
+                        val_bool = raw_val
+                    else:
+                        val_bool = str(raw_val).strip().lower() in ['true', '1', 'yes', 'ja', 'x']
+
                 try:
                     if ft_val == FieldType.TEXT.value:
                         widget = fitz.Widget()
                         widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
                         widget.field_name = field.name
                         widget.rect = rect
-                        widget.field_value = fill_data.get(field.name, field.default_value)
+                        widget.field_value = val_str
+                        if field.max_length and field.max_length > 0:
+                            widget.text_maxlen = int(field.max_length)
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
                         page.add_widget(widget)
 
                     elif ft_val == FieldType.TEXTAREA.value:
@@ -412,7 +549,13 @@ class FormBuilder(LoggerMixin):
                         widget.field_name = field.name
                         widget.rect = rect
                         widget.field_flags |= getattr(fitz, "PDF_TX_FIELD_IS_MULTILINE", 4096)
-                        widget.field_value = fill_data.get(field.name, field.default_value)
+                        if field.max_length and field.max_length > 0:
+                            widget.text_maxlen = int(field.max_length)
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
+                        widget.field_value = val_str
                         page.add_widget(widget)
 
                     elif ft_val == FieldType.DATE.value:
@@ -421,7 +564,11 @@ class FormBuilder(LoggerMixin):
                         widget.field_name = field.name
                         widget.rect = rect
                         widget.text_format = getattr(fitz, "PDF_WIDGET_TX_FORMAT_DATE", 3)
-                        widget.field_value = fill_data.get(field.name, field.default_value)
+                        widget.field_value = val_str
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
                         page.add_widget(widget)
 
                     elif ft_val == FieldType.CHECKBOX.value:
@@ -429,9 +576,12 @@ class FormBuilder(LoggerMixin):
                         widget.field_type = fitz.PDF_WIDGET_TYPE_CHECKBOX
                         widget.field_name = field.name
                         widget.rect = rect
-                        val = str(fill_data.get(field.name, field.default_value)).strip().lower()
-                        if val in ['true', '1', 'yes', 'ja', 'x']:
+                        if val_bool:
                             widget.field_value = True
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
                         page.add_widget(widget)
 
                     elif ft_val == FieldType.RADIO.value:
@@ -439,9 +589,12 @@ class FormBuilder(LoggerMixin):
                         widget.field_type = getattr(fitz, "PDF_WIDGET_TYPE_RADIOBUTTON", 5)
                         widget.field_name = field.name
                         widget.rect = rect
-                        val = str(fill_data.get(field.name, field.default_value)).strip().lower()
-                        if val in ['true', '1', 'yes', 'ja', 'x']:
+                        if val_bool:
                             widget.field_value = True
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
                         page.add_widget(widget)
 
                     elif ft_val == FieldType.DROPDOWN.value:
@@ -449,10 +602,13 @@ class FormBuilder(LoggerMixin):
                         widget.field_type = getattr(fitz, "PDF_WIDGET_TYPE_COMBOBOX", fitz.PDF_WIDGET_TYPE_LISTBOX)
                         widget.field_name = field.name
                         widget.rect = rect
-                        widget.choice_values = field.options
-                        val = fill_data.get(field.name, field.default_value)
-                        if val:
-                            widget.field_value = val
+                        widget.choice_values = [str(opt) for opt in (field.options or [])]
+                        if val_str:
+                            widget.field_value = val_str
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
                         page.add_widget(widget)
 
                     elif ft_val == FieldType.SIGNATURE.value:
@@ -460,14 +616,30 @@ class FormBuilder(LoggerMixin):
                         widget.field_type = getattr(fitz, "PDF_WIDGET_TYPE_SIGNATURE", 6)
                         widget.field_name = field.name
                         widget.rect = rect
+                        if field.read_only:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)
+                        if field.required:
+                            widget.field_flags |= getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)
                         page.add_widget(widget)
 
                 except Exception as e:
                     self.logger.debug(f"Widget-Fehler für {field.name}: {e}")
 
-            doc.saveIncr()
+            tmp_replace = False
+            tmp_out = None
+            try:
+                doc.saveIncr()
+            except Exception:
+                tmp_out = Path(pdf_path).with_name(Path(pdf_path).name + ".tmp_incr")
+                doc.save(str(tmp_out))
+                tmp_replace = True
         finally:
             doc.close()
+            if tmp_replace and tmp_out:
+                try:
+                    tmp_out.replace(pdf_path)
+                except Exception:
+                    pass
     
     def extract_form_fields(self, pdf_path: str) -> List[Dict]:
         """Extrahiert Formularfelder aus einem PDF."""
@@ -481,13 +653,17 @@ class FormBuilder(LoggerMixin):
             try:
                 for page_num, page in enumerate(doc):
                     for widget in page.widgets():
+                        flags = widget.field_flags or 0
                         field_info = {
                             "page": page_num + 1,
                             "name": widget.field_name,
                             "type": widget.field_type_string,
                             "value": widget.field_value,
                             "rect": list(widget.rect),
-                            "flags": widget.field_flags
+                            "flags": flags,
+                            "read_only": bool(flags & getattr(fitz, "PDF_FIELD_IS_READ_ONLY", 1)),
+                            "required": bool(flags & getattr(fitz, "PDF_FIELD_IS_REQUIRED", 2)),
+                            "options": list(widget.choice_values or []) if hasattr(widget, "choice_values") else []
                         }
                         fields.append(field_info)
             finally:
@@ -499,11 +675,13 @@ class FormBuilder(LoggerMixin):
         return fields
     
     def fill_form(self, pdf_path: str, output_path: str, 
-                  data: Dict[str, str]) -> bool:
+                  data: Dict[str, Any]) -> bool:
         """Füllt ein PDF-Formular aus."""
         if not PYMUPDF_AVAILABLE:
             return False
         
+        tmp_replace = False
+        tmp = None
         try:
             doc = fitz.open(pdf_path)
             try:
@@ -511,14 +689,17 @@ class FormBuilder(LoggerMixin):
                     for widget in page.widgets():
                         if widget.field_name in data:
                             val = data[widget.field_name]
-                            if widget.field_type == fitz.PDF_WIDGET_TYPE_CHECKBOX:
+                            if widget.field_type in (fitz.PDF_WIDGET_TYPE_CHECKBOX, getattr(fitz, "PDF_WIDGET_TYPE_RADIOBUTTON", 5)):
                                 if isinstance(val, bool):
                                     widget.field_value = val
                                 else:
                                     widget.field_value = str(val).strip().lower() in ['true', '1', 'yes', 'ja', 'x']
                             else:
-                                widget.field_value = val
-                            widget.update()
+                                widget.field_value = str(val) if val is not None else ""
+                            try:
+                                widget.update()
+                            except Exception as e:
+                                self.logger.debug(f"Widget update warning für {widget.field_name}: {e}")
 
                 is_same = False
                 try:
@@ -527,12 +708,22 @@ class FormBuilder(LoggerMixin):
                     pass
 
                 if is_same:
-                    doc.saveIncr()
+                    try:
+                        doc.saveIncr()
+                    except Exception:
+                        tmp = Path(output_path).with_name(Path(output_path).name + ".tmp_fill")
+                        doc.save(str(tmp))
+                        tmp_replace = True
                 else:
                     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
                     doc.save(output_path)
             finally:
                 doc.close()
+                if tmp_replace and tmp:
+                    try:
+                        tmp.replace(output_path)
+                    except Exception:
+                        pass
 
             self.logger.info(f"Formular ausgefüllt: {output_path}")
             return True
