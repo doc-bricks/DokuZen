@@ -98,7 +98,7 @@ def test_llms_txt_structure():
     assert "doc-bricks" in content
     assert "open-bricks" in content
     assert "Last-checked:" in content or "Last-checked:**" in content
-    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24", "2026-10-01", "2026-10-03", "2026-10-08"])
+    assert any(d in content for d in ["2026-08-23", "2026-08-24", "2026-09-07", "2026-09-19", "2026-09-24", "2026-10-01", "2026-10-03", "2026-10-08", "2026-10-18"])
     assert "NOTICE" in content
     assert "PySide6" in content
     assert "PyMuPDF" in content
@@ -553,3 +553,67 @@ def test_level1_sbom_text_companion_and_pyproject_urls():
     assert "Level 1 SBOM" in urls
     assert "Level 1 SBOM (Text)" in urls
     assert urls["Level 1 SBOM (Text)"].endswith("THIRD_PARTY_LICENSES.txt")
+
+
+def test_dependabot_ecosystem_security():
+    """Verify Dependabot configuration enforces security-only limits and weekly updates."""
+    dependabot_path = ROOT / ".github" / "dependabot.yml"
+    assert dependabot_path.exists(), ".github/dependabot.yml must exist"
+    content = dependabot_path.read_text(encoding="utf-8")
+    assert "version: 2" in content
+    assert 'package-ecosystem: "pip"' in content
+    assert "open-pull-requests-limit: 0" in content
+    assert 'package-ecosystem: "github-actions"' in content
+    assert "open-pull-requests-limit: 3" in content
+    try:
+        import yaml
+        data = yaml.safe_load(content)
+        assert data.get("version") == 2
+        updates = {u["package-ecosystem"]: u for u in data.get("updates", [])}
+        assert updates["pip"]["open-pull-requests-limit"] == 0
+        assert updates["github-actions"]["open-pull-requests-limit"] == 3
+    except ImportError:
+        pass
+
+
+def test_ci_matrix_hardening_python_310():
+    """Verify CI workflow tests Python 3.10 to match requires-python specification."""
+    workflow_path = ROOT / ".github" / "workflows" / "source-platform-smoke.yml"
+    assert workflow_path.exists(), "source-platform-smoke.yml must exist"
+    content = workflow_path.read_text(encoding="utf-8")
+    assert '"3.10"' in content
+    assert '"3.11"' in content
+    assert '"3.12"' in content
+
+
+def test_pep621_ecosystem_parent_and_umbrella_urls():
+    """Verify pyproject.toml defines Parent Organization and Umbrella Ecosystem URLs."""
+    pyproject_path = ROOT / "pyproject.toml"
+    with open(pyproject_path, "rb") as f:
+        data = tomllib.load(f)
+    urls = data.get("project", {}).get("urls", {})
+    assert urls.get("Parent Organization") == "https://github.com/doc-bricks"
+    assert urls.get("Umbrella Ecosystem") == "https://github.com/open-bricks"
+
+
+def test_web_companion_documentation_parity():
+    """Verify bilingual README files exist for web_companion PWA."""
+    wc_readme_en = ROOT / "web_companion" / "README.md"
+    wc_readme_de = ROOT / "web_companion" / "README_de.md"
+    assert wc_readme_en.exists(), "web_companion/README.md must exist"
+    assert wc_readme_de.exists(), "web_companion/README_de.md must exist"
+    content_en = wc_readme_en.read_text(encoding="utf-8")
+    content_de = wc_readme_de.read_text(encoding="utf-8")
+    assert "DokuZen Web Companion" in content_en
+    assert "DokuZen Web Companion" in content_de
+    assert "README_de.md" in content_en
+    assert "README.md" in content_de
+
+
+def test_marketing_log_section_9_pfad_a_20261018():
+    """Verify Section 9 Pfad A technical hygiene entry exists in MARKETING-LOG.txt."""
+    marketing_log = ROOT / "MARKETING-LOG.txt"
+    assert marketing_log.exists(), "MARKETING-LOG.txt must exist"
+    content = marketing_log.read_text(encoding="utf-8")
+    assert "9. Pfad A Repository Hygiene" in content or "9. PFAD A" in content
+    assert "2026-10-18" in content

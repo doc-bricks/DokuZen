@@ -5,6 +5,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Changed (2026-10-18, Pfad A Repository-Hygiene & CI-Matrix-Härtung [G 2026-10-18])
+- **CI-Matrix-Härtung (`.github/workflows/source-platform-smoke.yml`):**
+  - Erweiterung der Testmatrix um Python 3.10 (Matrix: `["3.10", "3.11", "3.12"]`) für alle drei Zielplattformen (Ubuntu, macOS, Windows) zur vollständigen Abdeckung der Spezifikation `requires-python = ">=3.10"`.
+- **Dependabot Ecosystem Security (`.github/dependabot.yml`):**
+  - Einführung einer gehärteten Dependabot-Konfiguration mit `open-pull-requests-limit: 0` und gruppierten Sicherheitsupdates für `pip` sowie wöchentlichen Aktualisierungen für `github-actions` (Limit 3).
+- **PEP 621 Standardisierung (`pyproject.toml`):**
+  - Ergänzung der Projekt-Metadaten-URLs um `"Parent Organization"` (`doc-bricks`) und `"Umbrella Ecosystem"` (`open-bricks`).
+- **Web Companion Dokumentation (`web_companion/README.md`, `web_companion/README_de.md`):**
+  - Bereitstellung vollständiger zweisprachiger Dokumentation für den Web Companion (PWA) mit Details zu Service Worker, Offline-Caching und Zero-Egress Invarianten.
+- **Gitignore-Schutz (`.gitignore`):**
+  - Ergänzung defensiver Muster für `.wheel-smoke/` und `wheelhouse/`.
+- **Vertragstest-Erweiterung (`tests/test_metadata.py`):**
+  - 5 neue automatisierte Regressionstests für Dependabot-Policy, Python 3.10 CI-Matrix, PEP 621 URLs, Web-Companion-Dokumentation und Marketing-Log.
+
 ### Fixed (2026-10-11, dev/bugsweep — Form-Builder, AcroForm-Resilienz, Background-PDF-Overlay & Datentyp-Sicherheit)
 - **Form-Builder & AcroForm-Generierung (`core/forms/builder.py`):**
   - **Background-PDF-Overlay repariert:** `FormTemplate.background_pdf` wurde bei `generate_pdf()` ignoriert; nun wird das Canvas auf ein temporäres Dokument gerendert, via PyMuPDF `show_pdf_page` über die Hintergrundseite gelegt und interaktive Widgets passgenau eingebunden.

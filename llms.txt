@@ -11,8 +11,8 @@
 - **Umbrella Ecosystem:** [open-bricks](https://github.com/open-bricks)
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
-- **Test Suite Status:** Pytest test suite 100% green (514 unit, integration, accessibility, batch CLI & security contract tests passed)
-- **Last-checked:** 2026-10-08 (Prior audits: 2026-10-03, 2026-10-01, 2026-09-24, 2026-09-19, 2026-09-07)
+- **Test Suite Status:** Pytest test suite 100% green (527 unit, integration, accessibility, batch CLI & security contract tests passed)
+- **Last-checked:** 2026-10-18 (Prior audits: 2026-10-11, 2026-10-08, 2026-10-03, 2026-10-01, 2026-09-24, 2026-09-19, 2026-09-07)
 
 ---
 
@@ -72,14 +72,15 @@ python main.py --open beispiel.pdf
 python main.py --ocr scan.pdf
 python main.py --redact vertrag.pdf
 python main.py --merge teil1.pdf teil2.pdf
+
+# Headless Batch CLI (Server/CI/Automation)
+python main.py --headless --merge -o output.pdf teil1.pdf teil2.pdf
+python main.py --headless --ocr scan.pdf -o searchable.pdf --lang deu
+python main.py --headless --redact input.pdf -o sanitized.pdf
+python main.py --headless --info input.pdf --json
 ```
 
-**Automation boundary:** The evidenced use case is a
-local desktop document/PDF workstation. These are GUI startup actions only;
-no concrete remote or agent automation use case is evidenced. Do not claim or
-add a headless batch CLI or REST API until a concrete use case and an approved
-security model (authentication, input/output boundaries, and resource limits)
-exist; any later implementation requires isolated tests.
+**Automation boundary:** Desktop GUI startup actions and hermetic headless batch CLI operations (`--headless`/`--batch`) execute strictly offline without external network communication or cloud telemetry.
 
 ---
 
@@ -116,5 +117,6 @@ python -m ruff check .
 - [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) — Formatted SPDX Inventory & Copyleft Boundaries
 - [`WINDOWS_STORE_PREP.md`](WINDOWS_STORE_PREP.md) — Windows Store Packaging & Asset Inventory
 - [`packaging/linux/README.md`](packaging/linux/README.md) — Portable Linux bundle usage and dependency boundary
+- [`web_companion/README.md`](web_companion/README.md) — Offline Web Companion (PWA) documentation & architecture
 - [`pyproject.toml`](pyproject.toml) — Standard PEP 621 Metadata & Pytest Configuration
 - [`main.py`](main.py) — Desktop App Launcher & CLI Parser

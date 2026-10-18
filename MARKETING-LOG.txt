@@ -157,3 +157,15 @@ Status: 100% Verified & In Sync
 - Personas & User Journeys: Re-validated high-intent search alignment for [PERSONA-01] Privacy Auditors, [PERSONA-02] Office Power Users, [PERSONA-03] Academic Archivists, and [PERSONA-04] Automation Integrators.
 - Contract Test Expansion: Updated test_metadata.py with assertions verifying llms.txt recency for 2026-10-01 and Level 1 SBOM URL anchors in pyproject.toml.
 - Quality Gate: Pytest test suite 462 passed (1 skipped, 100% green), ruff check clean (0 errors), python -m compileall clean, git diff --check clean.
+
+9. Pfad A Repository Hygiene, CI Matrix Hardening (Python 3.10), Dependabot Ecosystem Security & Web Companion Documentation Parity
+--------------------------------------------------------------------------------------------------------------------------------------
+Stand: 2026-10-18
+Status: 100% Verified & In Sync
+- CI Matrix Hardening: Hardened .github/workflows/source-platform-smoke.yml to test Python 3.10 alongside 3.11 and 3.12 across all three runner OS platforms (Ubuntu, macOS, Windows), fully validating the declared requires-python = ">=3.10" specification in pyproject.toml.
+- Dependabot Ecosystem Security: Provisioned .github/dependabot.yml with security-only pip dependencies policy (open-pull-requests-limit: 0 with grouped security updates) and weekly GitHub Actions dependency updates (open-pull-requests-limit: 3, Europe/Berlin schedule).
+- Extended .gitignore Build & Test Artifact Defense: Added .wheel-smoke/ and wheelhouse/ build cache patterns to .gitignore to ensure hermetic clean checkout environments.
+- PEP 621 Standardisation & Ecosystem URLs: Added "Parent Organization" (https://github.com/doc-bricks) and "Umbrella Ecosystem" (https://github.com/open-bricks) to [project.urls] in pyproject.toml, standardizing namespace transparency across all Bricks repositories.
+- Web Companion Subfolder Documentation Parity: Created comprehensive bilingual documentation (web_companion/README.md and web_companion/README_de.md) detailing client-side PWA architecture, service worker offline caching, workspace snapshot ingestion, and zero-egress security invariants.
+- Contract Test Expansion: Expanded tests/test_metadata.py with automated regression tests for Python 3.10 CI matrix inclusion, Dependabot security-only policy, PEP 621 ecosystem URLs, and web companion bilingual documentation parity.
+- Quality Gate: Pytest test suite 100% green (527 passed, 1 skipped [MSIX]), ruff check clean (0 errors), python -m compileall clean (0 bytecode errors), git diff --check clean.
