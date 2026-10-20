@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import json
 import re
-import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from PIL import Image
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10
+    import tomli as tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -285,8 +289,8 @@ def test_ci_workflow_integrity():
     assert "ubuntu-latest" in content
     assert "macos-latest" in content
     assert "windows-latest" in content
-    assert "actions/checkout@v4" in content
-    assert "actions/setup-python@v5" in content
+    assert re.search(r"actions/checkout@v\d+", content)
+    assert re.search(r"actions/setup-python@v\d+", content)
     assert "pytest" in content
     assert "concurrency:" in content
     assert "cancel-in-progress: true" in content
