@@ -54,7 +54,7 @@ jobs:
           python -m pip install -r requirements.txt pyinstaller
       - name: Build portable Linux tarball
         run: python tools/build_linux_bundle.py
-      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # actions/upload-artifact@v4
         with:
           name: DokuZen-linux
           path: dist/linux/DokuZen-*.tar.gz
