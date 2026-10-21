@@ -6,6 +6,7 @@ on:
     tags: ["v*"]
   pull_request:
     paths:
+      - ".github/workflows/linux-bundle.yml"
       - "tools/build_linux_bundle.py"
       - "packaging/linux/**"
       - "translator.py"
@@ -26,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout@v4
-      - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # actions/setup-python@v7.0.0
         with:
           python-version: "3.12"
       - run: python tools/build_linux_bundle.py --check
@@ -39,8 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # actions/checkout@v4
-      - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout@v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # actions/setup-python@v7.0.0
         with:
           python-version: "3.12"
       - name: Install Linux runtime and build dependencies
@@ -54,7 +55,7 @@ jobs:
           python -m pip install -r requirements.txt pyinstaller
       - name: Build portable Linux tarball
         run: python tools/build_linux_bundle.py
-      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # actions/upload-artifact@v7.0.2
         with:
           name: DokuZen-linux
           path: dist/linux/DokuZen-*.tar.gz
