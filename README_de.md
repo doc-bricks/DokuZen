@@ -18,7 +18,7 @@
 [![LLM Ready llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
 [![Level 1 SBOM Klartext](https://img.shields.io/badge/SBOM-Level%201%20Text-blue.svg)](THIRD_PARTY_LICENSES.txt)
 [![Marketing Log](https://img.shields.io/badge/audit-Pfad%20B%20Gepr%C3%BCft-blueviolet.svg)](MARKETING-LOG.txt)
-[![Geprüft 2026-10-18](https://img.shields.io/badge/gepr%C3%BCft-2026--10--18-success.svg)](MARKETING-LOG.txt)
+[![Geprüft 2026-10-30](https://img.shields.io/badge/gepr%C3%BCft-2026--10--30-success.svg)](MARKETING-LOG.txt)
 
 > [!NOTE]
 > **KI / LLM Integrations-Index:** Maschinenlesbarer Repository-Kontext, Schnittstellengrenzen und Architekturverträge sind in [`llms.txt`](llms.txt) hinterlegt.

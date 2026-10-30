@@ -321,7 +321,7 @@ DEV_TextBrain/AUFGABEN.txt dokumentiert.
 
 ## TASKWRITER-BÜNDEL 2026-07-18 — Selektor deep
 
-Der Selektor lieferte `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DEV_DokuZen`; dieser Pfad existiert nicht. Root-Register (`PROJECT_STATUS.md`, `releases.json`) und Dateisystem belegen den kanonischen Pfad `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DOCS\DEV_DokuZen`. Das Routing wurde für diesen Lauf korrigiert; Selektor-/Registercode wurde nicht geändert.
+Der Selektor lieferte `<OneDrive>/.TOPICS/.SOFTWARE\DEV_DokuZen`; dieser Pfad existiert nicht. Root-Register (`PROJECT_STATUS.md`, `releases.json`) und Dateisystem belegen den kanonischen Pfad `<OneDrive>/.TOPICS/.SOFTWARE\DOCS\DEV_DokuZen`. Das Routing wurde für diesen Lauf korrigiert; Selektor-/Registercode wurde nicht geändert.
 
 Nachzertifizierung 2026-07-27: Der aktive OfficeHub-Katalog verwendet inzwischen `DOCS/DEV_DokuZen` als `project_path` und ersten `detection.default_paths`-Eintrag; `DOCS/DEV_DokuZentrum_SUITE` bleibt nur ein kompatibler Fallback. Der kanonische Pfad ist außerdem in `PROJECT_STATUS.md`, `releases.json` und `_tools/software_maintenance_audit.json` bestätigt. Der ursprünglich offene Selektorpunkt ist damit erfüllt; es war keine Produktcode-, Git- oder externe Änderung nötig.
 

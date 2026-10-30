@@ -18,7 +18,7 @@
 [![LLM Ready llms.txt](https://img.shields.io/badge/LLM--Ready-llms.txt-blue.svg)](llms.txt)
 [![Level 1 SBOM Plain Text](https://img.shields.io/badge/SBOM-Level%201%20Text-blue.svg)](THIRD_PARTY_LICENSES.txt)
 [![Marketing Log](https://img.shields.io/badge/audit-Pfad%20B%20Verified-blueviolet.svg)](MARKETING-LOG.txt)
-[![Verified 2026-10-18](https://img.shields.io/badge/verified-2026--10--18-success.svg)](MARKETING-LOG.txt)
+[![Verified 2026-10-30](https://img.shields.io/badge/verified-2026--10--30-success.svg)](MARKETING-LOG.txt)
 
 > [!NOTE]
 > **AI / LLM Integration Index:** Machine-readable repository context, API boundaries, and architecture contracts are indexed in [`llms.txt`](llms.txt).

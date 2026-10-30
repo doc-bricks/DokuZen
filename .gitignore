@@ -105,3 +105,6 @@ pytest*.txt
 *.exe
 *.msix
 *.appx
+
+# Agent-internal task plan status logs
+TASKPLAN_STATUS_*.md

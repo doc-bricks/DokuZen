@@ -5,6 +5,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed / Changed (2026-10-30, Turnusgemäßer Lauf [SOFTWARE_GITHUB] — Fast-Forward Sync, Privacy- & Pfadhärtung, Gitignore-Hygiene [G 2026-10-30])
+- **Upstream Fast-Forward & Remote-Sync:**
+  - Upstream-Commits #3 (Fix für Collection-Test-Lifecycle / QApplication-Isolierung) und #7 (Aktualisierung der Linux-Bundle Upload-Action auf v7.0.2) via git pull --ff-only sauber integriert.
+- **Privacy- & Secret-Audit (Zero-Leakage):**
+  - Härtung von Test-Mock-Pfaden in 	ests/test_workspace_export.py (C:\\Users\\lukas\\... durch generisches C:\\Users\\TestUser\\... ersetzt; verhindert die Offenlegung lokaler Benutzernamen im öffentlichen GitHub-Repository).
+  - Bereinigung von Entwicklerpfaden in Store-Anleitungen (
+eleases/windowsstore/BUILD.md,
+eleases/windowsstore/WACK_PROTOCOL.md) und AUFGABEN.txt auf portable Umgebungsvariablen ($env:USERPROFILE\\..., <OneDrive>/...).
+- **Repository-Hygiene & Gitignore:**
+  - Veraltete interne Taskplan-Protokolldateien (TASKPLAN_STATUS_*.md) aus dem Repo entfernt und in .gitignore dauerhaft ausgeschlossen.
+- **Dokumentations- & Metadaten-Synchronisation:**
+  - README.md, README_de.md und llms.txt auf den Verifikationsstand 2026-10-30 synchronisiert.
+  - Vollständige Testsuite mit 527 bestandenen Tests (100% grün) und Ruff-Validierung bestätigt.
+
 ### Changed (2026-10-18, Pfad A Repository-Hygiene & CI-Matrix-Härtung [G 2026-10-18])
 - **CI-Matrix-Härtung (`.github/workflows/source-platform-smoke.yml`):**
   - Erweiterung der Testmatrix um Python 3.10 (Matrix: `["3.10", "3.11", "3.12"]`) für alle drei Zielplattformen (Ubuntu, macOS, Windows) zur vollständigen Abdeckung der Spezifikation `requires-python = ">=3.10"`.
@@ -256,6 +270,20 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
   `releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix`.
 
 ## [Unreleased]
+
+### Fixed / Changed (2026-10-30, Turnusgemäßer Lauf [SOFTWARE_GITHUB] — Fast-Forward Sync, Privacy- & Pfadhärtung, Gitignore-Hygiene [G 2026-10-30])
+- **Upstream Fast-Forward & Remote-Sync:**
+  - Upstream-Commits #3 (Fix für Collection-Test-Lifecycle / QApplication-Isolierung) und #7 (Aktualisierung der Linux-Bundle Upload-Action auf v7.0.2) via git pull --ff-only sauber integriert.
+- **Privacy- & Secret-Audit (Zero-Leakage):**
+  - Härtung von Test-Mock-Pfaden in 	ests/test_workspace_export.py (C:\\Users\\lukas\\... durch generisches C:\\Users\\TestUser\\... ersetzt; verhindert die Offenlegung lokaler Benutzernamen im öffentlichen GitHub-Repository).
+  - Bereinigung von Entwicklerpfaden in Store-Anleitungen (
+eleases/windowsstore/BUILD.md,
+eleases/windowsstore/WACK_PROTOCOL.md) und AUFGABEN.txt auf portable Umgebungsvariablen ($env:USERPROFILE\\..., <OneDrive>/...).
+- **Repository-Hygiene & Gitignore:**
+  - Veraltete interne Taskplan-Protokolldateien (TASKPLAN_STATUS_*.md) aus dem Repo entfernt und in .gitignore dauerhaft ausgeschlossen.
+- **Dokumentations- & Metadaten-Synchronisation:**
+  - README.md, README_de.md und llms.txt auf den Verifikationsstand 2026-10-30 synchronisiert.
+  - Vollständige Testsuite mit 527 bestandenen Tests (100% grün) und Ruff-Validierung bestätigt.
 
 ### Behoben / Fixed (2026-09-20, Bugsweep: Multi-Format Routing, PDF-Konvertierung & Pfadnormalisierung)
 - **Multi-Format Ingest Routing (`core/ingest/detector.py`, `core/library/manager.py`):**

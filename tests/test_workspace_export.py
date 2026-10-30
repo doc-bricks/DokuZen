@@ -37,7 +37,7 @@ def test_sanitize_settings_filtering():
     raw_settings = {
         "theme": "dark",
         "language": "en",
-        "last_directory": r"C:\Users\lukas\SecretFolder",
+        "last_directory": r"C:\Users\TestUser\SecretFolder",
         "window_state": {"geometry": [100, 100, 800, 600]},
         "master_password": "super_secret_password_123",
         "tesseract_path": r"C:\Program Files\Tesseract-OCR\tesseract.exe",
@@ -65,7 +65,7 @@ def test_sanitize_document_redaction():
     """Prüft, dass Dokument-Pfade strikt redigiert werden."""
     from datetime import datetime
     doc = Document(
-        path=r"C:\Users\lukas\Documents\Kontoauszug_2026_09.pdf",
+        path=r"C:\Users\TestUser\Documents\Kontoauszug_2026_09.pdf",
         added=datetime(2026, 9, 1, 10, 0, 0),
         is_read=True,
         tags=["Finanzen", "Bank"],
