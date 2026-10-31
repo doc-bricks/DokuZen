@@ -341,6 +341,10 @@ class DocumentListPanel(QWidget, LoggerMixin):
             action_sign = QAction(tr("PDF-Signatur einbetten..."), menu)
             action_sign.triggered.connect(lambda: self._sign_pdf(pdf_path))
             menu.addAction(action_sign)
+
+            action_watermark = QAction(tr("PDF-Wasserzeichen einfügen..."), menu)
+            action_watermark.triggered.connect(lambda: self._watermark_pdf(pdf_path))
+            menu.addAction(action_watermark)
         elif len(paths) >= 2 and all(p.lower().endswith(".pdf") for p in paths):
             action_merge = QAction(tr("Ausgewählte PDFs zusammenführen..."), menu)
             action_merge.triggered.connect(lambda: self._merge_selected_pdfs(paths))
@@ -451,6 +455,13 @@ class DocumentListPanel(QWidget, LoggerMixin):
         dialog = SignatureOverlayDialog(self, pdf_path=path)
         dialog.exec()
         self.refresh()
+
+    def _watermark_pdf(self, path: str):
+        """Öffnet den Wasserzeichen-Dialog für die ausgewählte PDF-Datei."""
+        from gui.dialogs.watermark_dialog import WatermarkDialog
+        dialog = WatermarkDialog(self, pdf_path=path)
+        if dialog.exec():
+            self.refresh()
 
     def _merge_selected_pdfs(self, paths: List[str]):
         """Öffnet die PDF-Werkstatt im Merge-Tab für die ausgewählten PDFs."""

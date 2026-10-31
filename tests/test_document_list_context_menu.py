@@ -5,11 +5,11 @@ Tests für das erweiterte Kontextmenü im DocumentListPanel (DokuZen).
 
 Validiert:
 1. Kontextmenü-Aktionen bei Einzelauswahl einer PDF (Annotieren, Seiten verwalten,
-   Schwärzen, OCR, Signatur).
+   Schwärzen, OCR, Signatur, Wasserzeichen).
 2. Kontextmenü-Aktionen bei Mehrfachauswahl von PDFs (Merge-Aktion).
 3. Ausschluss von PDF-spezifischen Aktionen bei Nicht-PDF-Dateien.
 4. Korrekte Parameterübergabe an die Dialoge (_manage_pdf_pages, _redact_pdf,
-   _ocr_pdf, _sign_pdf, _merge_selected_pdfs).
+   _ocr_pdf, _sign_pdf, _watermark_pdf, _merge_selected_pdfs).
 """
 
 import os
@@ -64,6 +64,7 @@ class TestDocumentListContextMenu(unittest.TestCase):
         self.assertIn("PDF schwärzen...", actions)
         self.assertIn("OCR-Texterkennung...", actions)
         self.assertIn("PDF-Signatur einbetten...", actions)
+        self.assertIn("PDF-Wasserzeichen einfügen...", actions)
         self.assertNotIn("Ausgewählte PDFs zusammenführen...", actions)
 
     def test_context_menu_multiple_pdf_actions(self):
@@ -78,6 +79,7 @@ class TestDocumentListContextMenu(unittest.TestCase):
         self.assertNotIn("PDF schwärzen...", actions)
         self.assertNotIn("OCR-Texterkennung...", actions)
         self.assertNotIn("PDF-Signatur einbetten...", actions)
+        self.assertNotIn("PDF-Wasserzeichen einfügen...", actions)
 
     def test_context_menu_non_pdf_file_omits_pdf_actions(self):
         """Bei Text- oder Bilddateien fehlen PDF-spezifischen Aktionen."""
@@ -93,6 +95,7 @@ class TestDocumentListContextMenu(unittest.TestCase):
         self.assertNotIn("PDF schwärzen...", actions)
         self.assertNotIn("OCR-Texterkennung...", actions)
         self.assertNotIn("PDF-Signatur einbetten...", actions)
+        self.assertNotIn("PDF-Wasserzeichen einfügen...", actions)
         self.assertNotIn("Ausgewählte PDFs zusammenführen...", actions)
 
     def test_manage_pdf_pages_invokes_dialog(self):
@@ -128,6 +131,15 @@ class TestDocumentListContextMenu(unittest.TestCase):
              patch("gui.dialogs.signature_overlay_dialog.SignatureOverlayDialog.exec", return_value=0), \
              patch.object(self.panel, "refresh") as mock_refresh:
             self.panel._sign_pdf("C:/docs/sample.pdf")
+            mock_init.assert_called_once_with(self.panel, pdf_path="C:/docs/sample.pdf")
+            mock_refresh.assert_called_once()
+
+    def test_watermark_pdf_invokes_dialog(self):
+        """_watermark_pdf öffnet WatermarkDialog mit pdf_path."""
+        with patch("gui.dialogs.watermark_dialog.WatermarkDialog.__init__", return_value=None) as mock_init, \
+             patch("gui.dialogs.watermark_dialog.WatermarkDialog.exec", return_value=1), \
+             patch.object(self.panel, "refresh") as mock_refresh:
+            self.panel._watermark_pdf("C:/docs/sample.pdf")
             mock_init.assert_called_once_with(self.panel, pdf_path="C:/docs/sample.pdf")
             mock_refresh.assert_called_once()
 

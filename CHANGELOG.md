@@ -5,6 +5,30 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-10-31, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Wasserzeichen-Suite: Text- & Bild-Wasserzeichen, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-10-31])
+- **PDF-Wasserzeichen Core-Engine (`core/pdf/watermark.py`):**
+  - Neues Kernmodul `PDFWatermarker` mit `WatermarkOptions`, `WatermarkResult`, `WatermarkType`, `WatermarkPosition` und `WatermarkLayer`.
+  - Flexible Text-Wasserzeichen mit beliebiger Rotation (-90° bis +90° via PyMuPDF Matrix-Morphing), Deckkraft (0.01 bis 1.0), dynamischer Schriftgröße (Auto oder 10..160 pt), Farb-Parser (Hex, Farbnamen, RGB) und Schnellvorlagen (ENTWURF, VERTRAULICH, KOPIE, GEHEIM, DRAFT).
+  - Gekachelte/wiederholende Wasserzeichen (`WatermarkPosition.TILED`) für vollflächige Markierungen.
+  - Bild-Wasserzeichen (PNG mit Alpha-Transparenz, JPG) mit skalierbarer Breitenanpassung.
+  - Ebenen-Wahl: Vordergrund (`overlay=True`) oder Hintergrund (`overlay=False`).
+  - Seitenfilterung: 'all', 'first', 'even', 'odd', oder Bereichsnotation wie '1-3, 5'.
+  - Atomares und In-Place-Schreiben über temporäre Staging-Dateien (`dokuzen_wm_*.tmp`) mit leak-freier `doc.close()`-Garantie.
+- **Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):**
+  - `batch_watermark()` mit voller Parameterunterstützung und Unix-Exit-Codes (0 = Erfolg, 1 = Fehler, 2 = ungültige Parameter).
+  - CLI-Optionen: `--watermark <PDF>`, `--watermark-text`, `--watermark-image`, `--watermark-opacity`, `--watermark-angle`, `--watermark-pages`, `--watermark-color`, `--watermark-layer`, `--watermark-position`, `--watermark-font-size` sowie strukturierte JSON-Rückgabe via `--json`.
+  - GUI-Startbefehl `StartupCommand("watermark")` und `window.startup_watermark_path()`.
+- **GUI-Dialog (`gui/dialogs/watermark_dialog.py`):**
+  - Moderner, barrierefreier `WatermarkDialog` (WCAG 2.1 AA konform) mit Dateiwahl, Speichermodus (In-Place vs. Neue Datei), Umschaltung Text/Bild, Preset-Buttons, Slider für Deckkraft mit Prozentanzeige, Winkelschnellwahl (0°, 45°, -45°), Ebenen- und Seitenfilter.
+- **GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menü `Werkzeuge -> PDF-Wasserzeichen...` (`_on_pdf_watermark`).
+  - Kontextmenü bei Einzelauswahl einer PDF: `PDF-Wasserzeichen einfügen...` (`_watermark_pdf`).
+- **Lokalisierung (`locales/translations.json`):**
+  - 49 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (506 Keys total). Alt-Einträge `Dateien` und `Größe:` repariert.
+- **Testsuite & Verifikation:**
+  - 19 neue/erweiterte Tests: `tests/test_pdf_watermark.py` (8 Tests), `tests/test_batch_cli_watermark.py` (4 Tests), `tests/test_watermark_dialog.py` (4 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test), `tests/test_gui_menu_and_actions_coverage.py` (+1 Test).
+  - Gesamttestsuite wächst von 527 auf 546 passed, 1 skipped (100% grün in 9.87s). Ruff, Compileall und Git-Diff sauber.
+
 ### Fixed / Changed (2026-10-30, Turnusgemäßer Lauf [SOFTWARE_GITHUB] — Fast-Forward Sync, Privacy- & Pfadhärtung, Gitignore-Hygiene [G 2026-10-30])
 - **Upstream Fast-Forward & Remote-Sync:**
   - Upstream-Commits #3 (Fix für Collection-Test-Lifecycle / QApplication-Isolierung) und #7 (Aktualisierung der Linux-Bundle Upload-Action auf v7.0.2) via git pull --ff-only sauber integriert.

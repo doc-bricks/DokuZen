@@ -2483,17 +2483,17 @@
     "de": "Oben rechts",
     "en": "Top Right",
     "es": "Arriba a la derecha",
-    "zh": "右上角",
+    "zh": "右上",
     "ja": "右上",
-    "ru": "Вверху справа"
+    "ru": "Сверху справа"
   },
   "Oben links": {
     "de": "Oben links",
     "en": "Top Left",
     "es": "Arriba a la izquierda",
-    "zh": "左上角",
+    "zh": "左上",
     "ja": "左上",
-    "ru": "Вверху слева"
+    "ru": "Сверху слева"
   },
   "Mitte": {
     "de": "Mitte",
@@ -2507,17 +2507,17 @@
     "de": "Unten rechts",
     "en": "Bottom Right",
     "es": "Abajo a la derecha",
-    "zh": "右下角",
+    "zh": "右下",
     "ja": "右下",
-    "ru": "Внизу справа"
+    "ru": "Снизу справа"
   },
   "Unten links": {
     "de": "Unten links",
     "en": "Bottom Left",
     "es": "Abajo a la izquierda",
-    "zh": "左下角",
+    "zh": "左下",
     "ja": "左下",
-    "ru": "Внизу слева"
+    "ru": "Снизу слева"
   },
   "Benutzerdefiniert": {
     "de": "Benutzerdefiniert",
@@ -3686,5 +3686,381 @@
     "zh": "关闭对话框 (Esc / Enter)",
     "ja": "ダイアログを閉じる (Esc / Enter)",
     "ru": "Закрыть диалог (Esc / Enter)"
+  },
+  "PDF-&Wasserzeichen...": {
+    "de": "PDF-&Wasserzeichen...",
+    "en": "PDF &Watermark...",
+    "es": "&Marca de agua PDF...",
+    "zh": "PDF水印(&W)...",
+    "ja": "PDF透かし(&W)...",
+    "ru": "PDF-водяные &знаки..."
+  },
+  "PDF-Wasserzeichen": {
+    "de": "PDF-Wasserzeichen",
+    "en": "PDF Watermark",
+    "es": "Marca de agua PDF",
+    "zh": "PDF水印",
+    "ja": "PDF透かし",
+    "ru": "PDF-водяные знаки"
+  },
+  "PDF-Wasserzeichen einfügen...": {
+    "de": "PDF-Wasserzeichen einfügen...",
+    "en": "Insert PDF Watermark...",
+    "es": "Insertar marca de agua PDF...",
+    "zh": "插入PDF水印...",
+    "ja": "PDF透かしを挿入...",
+    "ru": "Вставить PDF-водяной знак..."
+  },
+  "PDF-Wasserzeichen verwalten": {
+    "de": "PDF-Wasserzeichen verwalten",
+    "en": "Manage PDF Watermarks",
+    "es": "Administrar marcas de agua PDF",
+    "zh": "管理PDF水印",
+    "ja": "PDF透かしの管理",
+    "ru": "Управление водяными знаками PDF"
+  },
+  "Wasserzeichen-Typ:": {
+    "de": "Wasserzeichen-Typ:",
+    "en": "Watermark Type:",
+    "es": "Tipo de marca de agua:",
+    "zh": "水印类型:",
+    "ja": "透かしの種類:",
+    "ru": "Тип водяного знака:"
+  },
+  "Text-Wasserzeichen": {
+    "de": "Text-Wasserzeichen",
+    "en": "Text Watermark",
+    "es": "Marca de agua de texto",
+    "zh": "文本水印",
+    "ja": "テキスト透かし",
+    "ru": "Текстовый водяной знак"
+  },
+  "Bild-Wasserzeichen": {
+    "de": "Bild-Wasserzeichen",
+    "en": "Image Watermark",
+    "es": "Marca de agua de imagen",
+    "zh": "图像水印",
+    "ja": "画像透かし",
+    "ru": "Графический водяной знак"
+  },
+  "Wasserzeichen-Text:": {
+    "de": "Wasserzeichen-Text:",
+    "en": "Watermark Text:",
+    "es": "Texto de marca de agua:",
+    "zh": "水印文本:",
+    "ja": "透かしテキスト:",
+    "ru": "Текст водяного знака:"
+  },
+  "Schnellauswahl (Vorlagen):": {
+    "de": "Schnellauswahl (Vorlagen):",
+    "en": "Quick Selection (Presets):",
+    "es": "Selección rápida (Plantillas):",
+    "zh": "快速选择 (预设):",
+    "ja": "クイック選択 (プリセット):",
+    "ru": "Быстрый выбор (шаблоны):"
+  },
+  "ENTWURF": {
+    "de": "ENTWURF",
+    "en": "DRAFT",
+    "es": "BORRADOR",
+    "zh": "草稿",
+    "ja": "下書き",
+    "ru": "ЧЕРНОВИК"
+  },
+  "VERTRAULICH": {
+    "de": "VERTRAULICH",
+    "en": "CONFIDENTIAL",
+    "es": "CONFIDENCIAL",
+    "zh": "机密",
+    "ja": "極秘",
+    "ru": "КОНФИДЕНЦИАЛЬНО"
+  },
+  "KOPIE": {
+    "de": "KOPIE",
+    "en": "COPY",
+    "es": "COPIA",
+    "zh": "副本",
+    "ja": "コピー",
+    "ru": "КОПИЯ"
+  },
+  "GEHEIM": {
+    "de": "GEHEIM",
+    "en": "SECRET",
+    "es": "SECRETO",
+    "zh": "秘密",
+    "ja": "秘密",
+    "ru": "СЕКРЕТНО"
+  },
+  "Bilddatei:": {
+    "de": "Bilddatei:",
+    "en": "Image File:",
+    "es": "Archivo de imagen:",
+    "zh": "图像文件:",
+    "ja": "画像ファイル:",
+    "ru": "Файл изображения:"
+  },
+  "Deckkraft (Transparenz):": {
+    "de": "Deckkraft (Transparenz):",
+    "en": "Opacity (Transparency):",
+    "es": "Opacidad (Transparencia):",
+    "zh": "不透明度 (透明度):",
+    "ja": "不透明度 (透明度):",
+    "ru": "Непрозрачность:"
+  },
+  "Winkel (Grad):": {
+    "de": "Winkel (Grad):",
+    "en": "Angle (Degrees):",
+    "es": "Ángulo (Grados):",
+    "zh": "角度 (度):",
+    "ja": "角度 (度):",
+    "ru": "Угол (градусы):"
+  },
+  "Position:": {
+    "de": "Position:",
+    "en": "Position:",
+    "es": "Posición:",
+    "zh": "位置:",
+    "ja": "位置:",
+    "ru": "Положение:"
+  },
+  "Zentriert": {
+    "de": "Zentriert",
+    "en": "Centered",
+    "es": "Centrado",
+    "zh": "居中",
+    "ja": "中央揃え",
+    "ru": "По центру"
+  },
+  "Gekachelt (Mehrfach)": {
+    "de": "Gekachelt (Mehrfach)",
+    "en": "Tiled (Multiple)",
+    "es": "En mosaico (Múltiple)",
+    "zh": "平铺 (多次)",
+    "ja": "並べて表示 (複数)",
+    "ru": "Плиткой (повтор)"
+  },
+  "Ebene:": {
+    "de": "Ebene:",
+    "en": "Layer:",
+    "es": "Capa:",
+    "zh": "图层:",
+    "ja": "レイヤー:",
+    "ru": "Слой:"
+  },
+  "Vordergrund (über Text)": {
+    "de": "Vordergrund (über Text)",
+    "en": "Foreground (over text)",
+    "es": "Primer plano (sobre el texto)",
+    "zh": "前景 (在文本上方)",
+    "ja": "前面 (テキストの上)",
+    "ru": "Передний план (над текстом)"
+  },
+  "Hintergrund (unter Text)": {
+    "de": "Hintergrund (unter Text)",
+    "en": "Background (under text)",
+    "es": "Fondo (debajo del texto)",
+    "zh": "背景 (在文本下方)",
+    "ja": "背面 (テキストの下)",
+    "ru": "Задний план (под текстом)"
+  },
+  "Seiten:": {
+    "de": "Seiten:",
+    "en": "Pages:",
+    "es": "Páginas:",
+    "zh": "页面:",
+    "ja": "ページ:",
+    "ru": "Страницы:"
+  },
+  "Alle Seiten": {
+    "de": "Alle Seiten",
+    "en": "All Pages",
+    "es": "Todas las páginas",
+    "zh": "所有页面",
+    "ja": "すべてのページ",
+    "ru": "Все страницы"
+  },
+  "Nur erste Seite": {
+    "de": "Nur erste Seite",
+    "en": "First Page Only",
+    "es": "Solo primera página",
+    "zh": "仅首页",
+    "ja": "最初のページのみ",
+    "ru": "Только первая страница"
+  },
+  "Gerade Seiten": {
+    "de": "Gerade Seiten",
+    "en": "Even Pages",
+    "es": "Páginas pares",
+    "zh": "偶数页",
+    "ja": "偶数ページ",
+    "ru": "Четные страницы"
+  },
+  "Ungerade Seiten": {
+    "de": "Ungerade Seiten",
+    "en": "Odd Pages",
+    "es": "Páginas impares",
+    "zh": "奇数页",
+    "ja": "奇数ページ",
+    "ru": "Нечетные страницы"
+  },
+  "Bereich (z. B. 1-3, 5):": {
+    "de": "Bereich (z. B. 1-3, 5):",
+    "en": "Range (e.g. 1-3, 5):",
+    "es": "Rango (p. ej. 1-3, 5):",
+    "zh": "范围 (例如 1-3, 5):",
+    "ja": "範囲 (例: 1-3, 5):",
+    "ru": "Диапазон (напр. 1-3, 5):"
+  },
+  "Wasserzeichen anwenden": {
+    "de": "Wasserzeichen anwenden",
+    "en": "Apply Watermark",
+    "es": "Aplicar marca de agua",
+    "zh": "应用水印",
+    "ja": "透かしを適用",
+    "ru": "Применить водяной знак"
+  },
+  "Wasserzeichen erfolgreich angewendet": {
+    "de": "Wasserzeichen erfolgreich angewendet",
+    "en": "Watermark applied successfully",
+    "es": "Marca de agua aplicada con éxito",
+    "zh": "水印应用成功",
+    "ja": "透かしが正常に適用されました",
+    "ru": "Водяной знак успешно применен"
+  },
+  "In-Place speichern (Quelldatei überschreiben)": {
+    "de": "In-Place speichern (Quelldatei überschreiben)",
+    "en": "Save In-Place (overwrite source file)",
+    "es": "Guardar en el lugar (sobrescribir archivo fuente)",
+    "zh": "原地保存 (覆盖源文件)",
+    "ja": "その場で保存 (元のファイルを上書き)",
+    "ru": "Сохранить на месте (перезаписать исходный файл)"
+  },
+  "Neue Datei speichern": {
+    "de": "Neue Datei speichern",
+    "en": "Save as New File",
+    "es": "Guardar como archivo nuevo",
+    "zh": "另存为新文件",
+    "ja": "新しいファイルとして保存",
+    "ru": "Сохранить как новый файл"
+  },
+  "Bilddatei (PNG/JPG) auswählen …": {
+    "de": "Bilddatei (PNG/JPG) auswählen …",
+    "en": "Select image file (PNG/JPG) …",
+    "es": "Seleccionar archivo de imagen (PNG/JPG) …",
+    "zh": "选择图像文件 (PNG/JPG) …",
+    "ja": "画像ファイル (PNG/JPG) を選択 …",
+    "ru": "Выберите файл изображения (PNG/JPG) …"
+  },
+  "Bilddatei auswählen": {
+    "de": "Bilddatei auswählen",
+    "en": "Select Image File",
+    "es": "Seleccionar archivo de imagen",
+    "zh": "选择图像文件",
+    "ja": "画像ファイルを選択",
+    "ru": "Выбрать файл изображения"
+  },
+  "Eingabe-PDF:": {
+    "de": "Eingabe-PDF:",
+    "en": "Input PDF:",
+    "es": "PDF de entrada:",
+    "zh": "输入PDF:",
+    "ja": "入力PDF:",
+    "ru": "Входной PDF:"
+  },
+  "Speichermodus:": {
+    "de": "Speichermodus:",
+    "en": "Storage Mode:",
+    "es": "Modo de almacenamiento:",
+    "zh": "存储模式:",
+    "ja": "保存モード:",
+    "ru": "Режим сохранения:"
+  },
+  "Ausgabe-PDF:": {
+    "de": "Ausgabe-PDF:",
+    "en": "Output PDF:",
+    "es": "PDF de salida:",
+    "zh": "输出PDF:",
+    "ja": "出力PDF:",
+    "ru": "Выходной PDF:"
+  },
+  "Ausgabepfad wählen …": {
+    "de": "Ausgabepfad wählen …",
+    "en": "Select output path …",
+    "es": "Seleccionar ruta de salida …",
+    "zh": "选择输出路径 …",
+    "ja": "出力パスを選択 …",
+    "ru": "Выберите путь вывода …"
+  },
+  "Wasserzeichen-Verarbeitung fehlgeschlagen.": {
+    "de": "Wasserzeichen-Verarbeitung fehlgeschlagen.",
+    "en": "Watermark processing failed.",
+    "es": "Error en el procesamiento de la marca de agua.",
+    "zh": "水印处理失败。",
+    "ja": "透かしの処理に失敗しました。",
+    "ru": "Сбой обработки водяного знака."
+  },
+  "Bitte wählen Sie eine Eingabe-PDF aus.": {
+    "de": "Bitte wählen Sie eine Eingabe-PDF aus.",
+    "en": "Please select an input PDF file.",
+    "es": "Por favor seleccione un archivo PDF de entrada.",
+    "zh": "请选择输入PDF文件。",
+    "ja": "入力PDFファイルを選択してください。",
+    "ru": "Пожалуйста, выберите входной PDF-файл."
+  },
+  "Eingabedatei nicht gefunden.": {
+    "de": "Eingabedatei nicht gefunden.",
+    "en": "Input file not found.",
+    "es": "Archivo de entrada no encontrado.",
+    "zh": "未找到输入文件。",
+    "ja": "入力ファイルが見つかりません。",
+    "ru": "Входной файл не найден."
+  },
+  "Bitte geben Sie einen Ausgabepfad an.": {
+    "de": "Bitte geben Sie einen Ausgabepfad an.",
+    "en": "Please specify an output path.",
+    "es": "Por favor especifique una ruta de salida.",
+    "zh": "请指定输出路径。",
+    "ja": "出力パスを指定してください。",
+    "ru": "Пожалуйста, укажите путь вывода."
+  },
+  "Bitte geben Sie einen Seitenbereich an.": {
+    "de": "Bitte geben Sie einen Seitenbereich an.",
+    "en": "Please specify a page range.",
+    "es": "Por favor especifique un rango de páginas.",
+    "zh": "请指定页面范围。",
+    "ja": "ページ範囲を指定してください。",
+    "ru": "Пожалуйста, укажите диапазон страниц."
+  },
+  "Automatisch anpassen": {
+    "de": "Automatisch anpassen",
+    "en": "Auto fit",
+    "es": "Ajuste automático",
+    "zh": "自动适应",
+    "ja": "自動調整",
+    "ru": "Автоматически"
+  },
+  "Seiten": {
+    "de": "Seiten",
+    "en": "pages",
+    "es": "páginas",
+    "zh": "页",
+    "ja": "ページ",
+    "ru": "страниц"
+  },
+  "Dateien": {
+    "de": "Dateien",
+    "en": "Files",
+    "es": "Archivos",
+    "zh": "文件",
+    "ja": "ファイル",
+    "ru": "Файлы"
+  },
+  "Größe:": {
+    "de": "Größe:",
+    "en": "Size:",
+    "es": "Tamaño:",
+    "zh": "大小:",
+    "ja": "サイズ:",
+    "ru": "Размер:"
   }
 }

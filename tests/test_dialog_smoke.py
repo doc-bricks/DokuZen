@@ -30,6 +30,7 @@ from gui.dialogs.signature_overlay_dialog import SignatureOverlayDialog
 from gui.dialogs.text_pool_dialog import TextPoolDialog
 from gui.dialogs.smart_ingest_dialog import SmartIngestDialog
 from gui.dialogs.sqlite_viewer_dialog import SQLiteViewerDialog
+from gui.dialogs.watermark_dialog import WatermarkDialog
 
 
 class DialogSmokeTest(unittest.TestCase):
@@ -247,6 +248,14 @@ class DialogSmokeTest(unittest.TestCase):
         dialog = SQLiteViewerDialog()
         self.assertIsNotNone(dialog)
         self.assertEqual(dialog.windowTitle(), "SQLite Viewer")
+        dialog.close()
+
+    def test_watermark_dialog_instantiates(self):
+        dialog = WatermarkDialog()
+        self.assertIsNotNone(dialog)
+        self.assertEqual(dialog.windowTitle(), "PDF-Wasserzeichen verwalten")
+        self.assertTrue(dialog._radio_text.isChecked())
+        self.assertTrue(dialog._radio_inplace.isChecked())
         dialog.close()
 
 

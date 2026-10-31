@@ -240,6 +240,10 @@ class MainWindow(QMainWindow, LoggerMixin):
         self._action_signature_overlay.triggered.connect(self._on_signature_overlay)
         self._menu_tools.addAction(self._action_signature_overlay)
 
+        self._action_watermark = QAction(tr("PDF-&Wasserzeichen..."), self)
+        self._action_watermark.triggered.connect(self._on_pdf_watermark)
+        self._menu_tools.addAction(self._action_watermark)
+
         self._menu_tools.addSeparator()
         
         self._action_image_tools = QAction(tr("&Bild-Werkzeuge..."), self)
@@ -453,6 +457,7 @@ class MainWindow(QMainWindow, LoggerMixin):
             self._action_pdf_pages.setText(t("PDF-Seiten &verwalten..."))
             self._action_pdf_annotate.setText(t("PDF-&Annotationen..."))
             self._action_signature_overlay.setText(t("PDF-Signatur &einbetten..."))
+            self._action_watermark.setText(t("PDF-&Wasserzeichen..."))
             self._action_image_tools.setText(t("&Bild-Werkzeuge..."))
             self._action_sqlite_viewer.setText(t("SQLite-&Viewer..."))
             self._action_pyinstaller.setText(t("Python &Kompilieren..."))
@@ -1005,6 +1010,26 @@ class MainWindow(QMainWindow, LoggerMixin):
         dialog = SignatureOverlayDialog(self, pdf_path=initial_pdf)
         dialog.exec()
         self._on_refresh()
+
+    def _on_pdf_watermark(self):
+        """Öffnet den PDF-Wasserzeichen-Dialog."""
+        from gui.dialogs.watermark_dialog import WatermarkDialog
+
+        selected = self._document_panel.get_selected_paths()
+        pdf_files = [f for f in selected if f.lower().endswith(".pdf")]
+        initial_pdf = pdf_files[0] if pdf_files else None
+
+        dialog = WatermarkDialog(self, pdf_path=initial_pdf)
+        if dialog.exec():
+            self._on_refresh()
+
+    def startup_watermark_path(self, pdf_path: str) -> None:
+        """Öffnet den Wasserzeichen-Dialog beim CLI-Start."""
+        from gui.dialogs.watermark_dialog import WatermarkDialog
+
+        dialog = WatermarkDialog(self, pdf_path=pdf_path)
+        if dialog.exec():
+            self._on_refresh()
 
     def show_shortcuts_dialog(self):
         """Öffnet den barrierefreien Dialog für Tastaturkürzel und Accessibility (F1)."""

@@ -96,6 +96,12 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         metavar="PDF",
         help="Metadaten und Seitenanzahl einer PDF headlessly abfragen.",
     )
+    group.add_argument(
+        "--watermark",
+        dest="watermark_path",
+        metavar="PDF",
+        help="Wasserzeichen-Dialog starten oder im Headless-Modus anwenden.",
+    )
     parser.add_argument(
         "paths",
         nargs="*",
@@ -154,6 +160,71 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="Sensible Datentypen zum Schwärzen (email, phone, iban, date).",
     )
     parser.add_argument(
+        "--watermark-text",
+        dest="watermark_text",
+        default="ENTWURF",
+        metavar="TEXT",
+        help="Text für das Wasserzeichen (Standard: ENTWURF).",
+    )
+    parser.add_argument(
+        "--watermark-image",
+        dest="watermark_image",
+        metavar="BILD",
+        help="Bilddatei (PNG/JPG) für Bild-Wasserzeichen.",
+    )
+    parser.add_argument(
+        "--watermark-opacity",
+        dest="watermark_opacity",
+        type=float,
+        default=0.25,
+        metavar="DECKKRAFT",
+        help="Deckkraft des Wasserzeichens von 0.05 bis 1.0 (Standard: 0.25).",
+    )
+    parser.add_argument(
+        "--watermark-angle",
+        dest="watermark_angle",
+        type=float,
+        default=45.0,
+        metavar="GRAD",
+        help="Rotationswinkel des Wasserzeichens in Grad (Standard: 45.0).",
+    )
+    parser.add_argument(
+        "--watermark-pages",
+        dest="watermark_pages",
+        default="all",
+        metavar="SEITEN",
+        help="Seitenbereich für Wasserzeichen (all, first, even, odd oder '1-3, 5').",
+    )
+    parser.add_argument(
+        "--watermark-color",
+        dest="watermark_color",
+        default="gray",
+        metavar="FARBE",
+        help="Farbe des Text-Wasserzeichens (gray, red, blue, black, oder Hex-Code #RRGGBB).",
+    )
+    parser.add_argument(
+        "--watermark-layer",
+        dest="watermark_layer",
+        choices=["foreground", "background"],
+        default="foreground",
+        help="Ebene: foreground (Vordergrund, über Text) oder background (Hintergrund, unter Text).",
+    )
+    parser.add_argument(
+        "--watermark-position",
+        dest="watermark_position",
+        choices=["center", "top_left", "top_right", "bottom_left", "bottom_right", "top_center", "bottom_center", "tiled"],
+        default="center",
+        help="Position des Wasserzeichens (Standard: center).",
+    )
+    parser.add_argument(
+        "--watermark-font-size",
+        dest="watermark_font_size",
+        type=float,
+        default=48.0,
+        metavar="PT",
+        help="Schriftgröße für Text-Wasserzeichen in Punkt (Standard: 48.0).",
+    )
+    parser.add_argument(
         "--json",
         dest="json_output",
         action="store_true",
@@ -170,10 +241,11 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
             args.merge_paths,
             args.import_paths,
             args.info_path,
+            args.watermark_path,
         )
     )
     if args.paths and has_option_action:
-        parser.error("Positionspfade können nicht mit --open/--ocr/--redact/--annotate/--merge/--import/--info kombiniert werden.")
+        parser.error("Positionspfade können nicht mit --open/--ocr/--redact/--annotate/--merge/--import/--info/--watermark kombiniert werden.")
 
     return args
 
@@ -189,6 +261,8 @@ def build_startup_command(args: argparse.Namespace) -> Optional[StartupCommand]:
         return StartupCommand("redact", (args.redact_path,))
     if args.annotate_path:
         return StartupCommand("annotate", (args.annotate_path,))
+    if args.watermark_path:
+        return StartupCommand("watermark", (args.watermark_path,))
     if args.merge_paths:
         return StartupCommand("merge", tuple(args.merge_paths))
     if args.import_paths:
@@ -215,6 +289,9 @@ def apply_startup_command(window: MainWindow, command: StartupCommand) -> None:
         return
     if command.action == "annotate":
         window.startup_annotate_path(command.paths[0])
+        return
+    if command.action == "watermark":
+        window.startup_watermark_path(command.paths[0])
         return
     if command.action == "merge":
         window.startup_merge_paths(command.paths)

@@ -16,6 +16,16 @@ from .collection import (
     CollectionExportResult,
     export_collection_pdf,
 )
+from .watermark import (
+    PDFWatermarker,
+    WatermarkOptions,
+    WatermarkResult,
+    WatermarkType,
+    WatermarkPosition,
+    WatermarkLayer,
+    add_watermark_to_document,
+    add_watermark_to_pdf,
+)
 
 __all__ = [
     "PDFProcessor",
@@ -46,4 +56,12 @@ __all__ = [
     "CollectionExportOptions",
     "CollectionExportResult",
     "export_collection_pdf",
+    "PDFWatermarker",
+    "WatermarkOptions",
+    "WatermarkResult",
+    "WatermarkType",
+    "WatermarkPosition",
+    "WatermarkLayer",
+    "add_watermark_to_document",
+    "add_watermark_to_pdf",
 ]
