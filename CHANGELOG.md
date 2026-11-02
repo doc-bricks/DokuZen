@@ -5,6 +5,34 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-11-02, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Sicherheits- & Passwortschutz-Suite: Verschlüsselung, Berechtigungen, Entsperrung, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-11-02])
+- **PDF-Sicherheits-Engine & Berechtigungs-Parsing (`core/pdf/security.py`):**
+  - Erweiterung von `get_security_info()` zur präzisen Inspektion von PDF-Berechtigungen (print, print_highres, modify, copy, annotate, fill_forms, extract, assemble), Verschlüsselungserkennung mit PyMuPDF und pikepdf, sowie Passwort-Authentifizierung.
+  - In-Place-Unterstützung (`output_path=None`) mit atomarer temporärer Datei-Ersetzung (`dokuzen_sec_*.tmp` / `dokuzen_enc_*.tmp`) für `encrypt()`, `unlock()` und `remove_restrictions()`.
+  - Flexible String- und Enum-basierte Parameterübergabe für Methoden (AES-256, AES-128, RC4-128) und Berechtigungen.
+  - Bereinigung von Module-Poisoning im Alt-Test `tests/test_pdf_security_unlock.py` via sauberem `unittest.mock.patch.object`.
+- **Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):**
+  - Neue CLI-Funktionen `batch_security_info()`, `batch_encrypt()`, `batch_unlock()`.
+  - Neue CLI-Optionen: `--security` / `--encrypt <PDF>`, `--unlock` / `--decrypt <PDF>`, `--security-info <PDF>`, `--user-password`, `--owner-password`, `--password`, `--encryption-method`, `--permissions`, `--json`.
+  - Integration in Startaktion `StartupCommand("security")` und `window.startup_security_path()`.
+- **Barrierefreier GUI-Dialog (`gui/dialogs/security_dialog.py`):**
+  - Vollständiger, moderner `SecurityDialog` (WCAG 2.1 AA konform) mit AccessibleName, AccessibleDescription und Tooltips auf allen Controls.
+  - Dynamisches Sicherheitsstatus-Banner mit Farbcodierung (Grün = ungeschützt, Gelb = Eigentümer-Schutz, Rot = Passwortgeschützt).
+  - Speichermodus-Wahl: In-Place speichern (Quelldatei atomar überschreiben) oder Neue Datei speichern.
+  - Zwei spezialisierte Modi über Reiter:
+    - Reiter 1: "Verschlüsseln & Schützen" mit Benutzer- und Eigentümer-Passwörtern, Passwort-Sichtbarkeits-Umschaltern (👁), Wiederholungsprüfung, Methoden-Dropdown (AES-256, AES-128, RC4-128) und 8 Berechtigungs-Checkboxen mit Schnell-Buttons (Alle erlauben, Standardrechte, Alle sperren).
+    - Reiter 2: "Entsperren / Passwort entfernen" mit Passwort-Eingabe und Erläuterung.
+- **GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menü `Werkzeuge -> PDF-Sicherheit...` (`_on_pdf_security`).
+  - Kontextmenü bei Einzelauswahl einer PDF im Dokumentenlisten-Panel: `PDF-Sicherheit & Passwort...` (`_security_pdf`).
+- **Lokalisierung (`locales/translations.json`):**
+  - 40 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (548 Keys total). Vollständige 6-Sprachen-Parität nachgewiesen.
+- **Testsuite & Qualitätssicherung:**
+  - 28 neue und erweiterte automatisierte Tests: `tests/test_pdf_security_suite.py` (11 Tests), `tests/test_batch_cli_security.py` (6 Tests), `tests/test_security_dialog.py` (9 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test).
+  - Gesamttestsuite wächst von 546 auf 574 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 16.29s).
+  - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+
 ### Added (2026-10-31, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Wasserzeichen-Suite: Text- & Bild-Wasserzeichen, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-10-31])
 - **PDF-Wasserzeichen Core-Engine (`core/pdf/watermark.py`):**
   - Neues Kernmodul `PDFWatermarker` mit `WatermarkOptions`, `WatermarkResult`, `WatermarkType`, `WatermarkPosition` und `WatermarkLayer`.
@@ -294,6 +322,34 @@ eleases/windowsstore/WACK_PROTOCOL.md) und AUFGABEN.txt auf portable Umgebungsva
   `releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix`.
 
 ## [Unreleased]
+
+### Added (2026-11-02, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Sicherheits- & Passwortschutz-Suite: Verschlüsselung, Berechtigungen, Entsperrung, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-11-02])
+- **PDF-Sicherheits-Engine & Berechtigungs-Parsing (`core/pdf/security.py`):**
+  - Erweiterung von `get_security_info()` zur präzisen Inspektion von PDF-Berechtigungen (print, print_highres, modify, copy, annotate, fill_forms, extract, assemble), Verschlüsselungserkennung mit PyMuPDF und pikepdf, sowie Passwort-Authentifizierung.
+  - In-Place-Unterstützung (`output_path=None`) mit atomarer temporärer Datei-Ersetzung (`dokuzen_sec_*.tmp` / `dokuzen_enc_*.tmp`) für `encrypt()`, `unlock()` und `remove_restrictions()`.
+  - Flexible String- und Enum-basierte Parameterübergabe für Methoden (AES-256, AES-128, RC4-128) und Berechtigungen.
+  - Bereinigung von Module-Poisoning im Alt-Test `tests/test_pdf_security_unlock.py` via sauberem `unittest.mock.patch.object`.
+- **Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):**
+  - Neue CLI-Funktionen `batch_security_info()`, `batch_encrypt()`, `batch_unlock()`.
+  - Neue CLI-Optionen: `--security` / `--encrypt <PDF>`, `--unlock` / `--decrypt <PDF>`, `--security-info <PDF>`, `--user-password`, `--owner-password`, `--password`, `--encryption-method`, `--permissions`, `--json`.
+  - Integration in Startaktion `StartupCommand("security")` und `window.startup_security_path()`.
+- **Barrierefreier GUI-Dialog (`gui/dialogs/security_dialog.py`):**
+  - Vollständiger, moderner `SecurityDialog` (WCAG 2.1 AA konform) mit AccessibleName, AccessibleDescription und Tooltips auf allen Controls.
+  - Dynamisches Sicherheitsstatus-Banner mit Farbcodierung (Grün = ungeschützt, Gelb = Eigentümer-Schutz, Rot = Passwortgeschützt).
+  - Speichermodus-Wahl: In-Place speichern (Quelldatei atomar überschreiben) oder Neue Datei speichern.
+  - Zwei spezialisierte Modi über Reiter:
+    - Reiter 1: "Verschlüsseln & Schützen" mit Benutzer- und Eigentümer-Passwörtern, Passwort-Sichtbarkeits-Umschaltern (👁), Wiederholungsprüfung, Methoden-Dropdown (AES-256, AES-128, RC4-128) und 8 Berechtigungs-Checkboxen mit Schnell-Buttons (Alle erlauben, Standardrechte, Alle sperren).
+    - Reiter 2: "Entsperren / Passwort entfernen" mit Passwort-Eingabe und Erläuterung.
+- **GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menü `Werkzeuge -> PDF-Sicherheit...` (`_on_pdf_security`).
+  - Kontextmenü bei Einzelauswahl einer PDF im Dokumentenlisten-Panel: `PDF-Sicherheit & Passwort...` (`_security_pdf`).
+- **Lokalisierung (`locales/translations.json`):**
+  - 40 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (548 Keys total). Vollständige 6-Sprachen-Parität nachgewiesen.
+- **Testsuite & Qualitätssicherung:**
+  - 28 neue und erweiterte automatisierte Tests: `tests/test_pdf_security_suite.py` (11 Tests), `tests/test_batch_cli_security.py` (6 Tests), `tests/test_security_dialog.py` (9 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test).
+  - Gesamttestsuite wächst von 546 auf 574 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 16.29s).
+  - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
 
 ### Fixed / Changed (2026-10-30, Turnusgemäßer Lauf [SOFTWARE_GITHUB] — Fast-Forward Sync, Privacy- & Pfadhärtung, Gitignore-Hygiene [G 2026-10-30])
 - **Upstream Fast-Forward & Remote-Sync:**

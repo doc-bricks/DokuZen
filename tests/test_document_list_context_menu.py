@@ -65,6 +65,7 @@ class TestDocumentListContextMenu(unittest.TestCase):
         self.assertIn("OCR-Texterkennung...", actions)
         self.assertIn("PDF-Signatur einbetten...", actions)
         self.assertIn("PDF-Wasserzeichen einfügen...", actions)
+        self.assertIn("PDF-Sicherheit & Passwort...", actions)
         self.assertNotIn("Ausgewählte PDFs zusammenführen...", actions)
 
     def test_context_menu_multiple_pdf_actions(self):
@@ -80,6 +81,7 @@ class TestDocumentListContextMenu(unittest.TestCase):
         self.assertNotIn("OCR-Texterkennung...", actions)
         self.assertNotIn("PDF-Signatur einbetten...", actions)
         self.assertNotIn("PDF-Wasserzeichen einfügen...", actions)
+        self.assertNotIn("PDF-Sicherheit & Passwort...", actions)
 
     def test_context_menu_non_pdf_file_omits_pdf_actions(self):
         """Bei Text- oder Bilddateien fehlen PDF-spezifischen Aktionen."""
@@ -96,6 +98,7 @@ class TestDocumentListContextMenu(unittest.TestCase):
         self.assertNotIn("OCR-Texterkennung...", actions)
         self.assertNotIn("PDF-Signatur einbetten...", actions)
         self.assertNotIn("PDF-Wasserzeichen einfügen...", actions)
+        self.assertNotIn("PDF-Sicherheit & Passwort...", actions)
         self.assertNotIn("Ausgewählte PDFs zusammenführen...", actions)
 
     def test_manage_pdf_pages_invokes_dialog(self):
@@ -140,6 +143,15 @@ class TestDocumentListContextMenu(unittest.TestCase):
              patch("gui.dialogs.watermark_dialog.WatermarkDialog.exec", return_value=1), \
              patch.object(self.panel, "refresh") as mock_refresh:
             self.panel._watermark_pdf("C:/docs/sample.pdf")
+            mock_init.assert_called_once_with(self.panel, pdf_path="C:/docs/sample.pdf")
+            mock_refresh.assert_called_once()
+
+    def test_security_pdf_invokes_dialog(self):
+        """_security_pdf öffnet SecurityDialog mit pdf_path."""
+        with patch("gui.dialogs.security_dialog.SecurityDialog.__init__", return_value=None) as mock_init, \
+             patch("gui.dialogs.security_dialog.SecurityDialog.exec", return_value=1), \
+             patch.object(self.panel, "refresh") as mock_refresh:
+            self.panel._security_pdf("C:/docs/sample.pdf")
             mock_init.assert_called_once_with(self.panel, pdf_path="C:/docs/sample.pdf")
             mock_refresh.assert_called_once()
 

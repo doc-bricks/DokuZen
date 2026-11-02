@@ -4062,5 +4062,325 @@
     "zh": "大小:",
     "ja": "サイズ:",
     "ru": "Размер:"
+  },
+  "PDF-&Sicherheit...": {
+    "de": "PDF-&Sicherheit...",
+    "en": "PDF &Security...",
+    "es": "&Seguridad PDF...",
+    "zh": "PDF安全性(&S)...",
+    "ja": "PDFセキュリティ(&S)...",
+    "ru": "PDF-&безопасность..."
+  },
+  "PDF-Sicherheit & Passwort...": {
+    "de": "PDF-Sicherheit & Passwort...",
+    "en": "PDF Security & Password...",
+    "es": "Seguridad y contraseña PDF...",
+    "zh": "PDF安全与密码...",
+    "ja": "PDFセキュリティとパスワード...",
+    "ru": "Безопасность и пароль PDF..."
+  },
+  "PDF-Sicherheit verwalten": {
+    "de": "PDF-Sicherheit verwalten",
+    "en": "Manage PDF Security",
+    "es": "Gestionar seguridad PDF",
+    "zh": "管理PDF安全性",
+    "ja": "PDFセキュリティを管理",
+    "ru": "Управление безопасностью PDF"
+  },
+  "Sicherheitsstatus:": {
+    "de": "Sicherheitsstatus:",
+    "en": "Security Status:",
+    "es": "Estado de seguridad:",
+    "zh": "安全状态：",
+    "ja": "セキュリティ状態:",
+    "ru": "Статус безопасности:"
+  },
+  "Status: Nicht geschützt (Vollzugriff)": {
+    "de": "Status: Nicht geschützt (Vollzugriff)",
+    "en": "Status: Not Protected (Full Access)",
+    "es": "Estado: No protegido (Acceso completo)",
+    "zh": "状态：未受保护（完全访问）",
+    "ja": "状態: 保護なし（フルアクセス）",
+    "ru": "Статус: Не защищено (Полный доступ)"
+  },
+  "Status: Passwortgeschützt / Verschlüsselt": {
+    "de": "Status: Passwortgeschützt / Verschlüsselt",
+    "en": "Status: Password Protected / Encrypted",
+    "es": "Estado: Protegido por contraseña / Cifrado",
+    "zh": "状态：受密码保护/已加密",
+    "ja": "状態: パスワード保護 / 暗号化済み",
+    "ru": "Статус: Защищено паролем / Зашифровано"
+  },
+  "Status: Nur Einschränkungen aktiv (Eigentümer-Schutz)": {
+    "de": "Status: Nur Einschränkungen aktiv (Eigentümer-Schutz)",
+    "en": "Status: Restrictions Active Only (Owner Protection)",
+    "es": "Estado: Solo restricciones activas (Protección del propietario)",
+    "zh": "状态：仅权限限制生效（所有者保护）",
+    "ja": "状態: 権限制限のみ有効（所有者保護）",
+    "ru": "Статус: Только ограничения (Защита владельца)"
+  },
+  "Verschlüsseln & Schützen": {
+    "de": "Verschlüsseln & Schützen",
+    "en": "Encrypt & Protect",
+    "es": "Cifrar y proteger",
+    "zh": "加密与保护",
+    "ja": "暗号化と保護",
+    "ru": "Шифрование и защита"
+  },
+  "Entsperren / Passwort entfernen": {
+    "de": "Entsperren / Passwort entfernen",
+    "en": "Unlock / Remove Password",
+    "es": "Desbloquear / Eliminar contraseña",
+    "zh": "解锁/移除密码",
+    "ja": "ロック解除 / パスワード削除",
+    "ru": "Разблокировать / Удалить пароль"
+  },
+  "Passwortschutz": {
+    "de": "Passwortschutz",
+    "en": "Password Protection",
+    "es": "Protección con contraseña",
+    "zh": "密码保护",
+    "ja": "パスワード保護",
+    "ru": "Защита паролем"
+  },
+  "Passwortschutz aufheben": {
+    "de": "Passwortschutz aufheben",
+    "en": "Remove Password Protection",
+    "es": "Eliminar protección por contraseña",
+    "zh": "解除密码保护",
+    "ja": "パスワード保護を解除",
+    "ru": "Снять защиту паролем"
+  },
+  "Benutzer-Passwort (zum Öffnen):": {
+    "de": "Benutzer-Passwort (zum Öffnen):",
+    "en": "User Password (to Open):",
+    "es": "Contraseña de usuario (para abrir):",
+    "zh": "用户密码（用于打开）：",
+    "ja": "ユーザーパスワード（開くため）:",
+    "ru": "Пароль пользователя (для открытия):"
+  },
+  "Passwort wiederholen:": {
+    "de": "Passwort wiederholen:",
+    "en": "Confirm Password:",
+    "es": "Confirmar contraseña:",
+    "zh": "确认密码：",
+    "ja": "パスワードを再入力:",
+    "ru": "Повторите пароль:"
+  },
+  "Eigentümer-Passwort (für Rechte):": {
+    "de": "Eigentümer-Passwort (für Rechte):",
+    "en": "Owner Password (for Permissions):",
+    "es": "Contraseña de propietario (para permisos):",
+    "zh": "所有者密码（用于权限）：",
+    "ja": "所有者パスワード（権限用）:",
+    "ru": "Пароль владельца (для разрешений):"
+  },
+  "Verschlüsselungsmethode:": {
+    "de": "Verschlüsselungsmethode:",
+    "en": "Encryption Method:",
+    "es": "Método de cifrado:",
+    "zh": "加密方式：",
+    "ja": "暗号化方式:",
+    "ru": "Метод шифрования:"
+  },
+  "Erlaubte Aktionen (Berechtigungen)": {
+    "de": "Erlaubte Aktionen (Berechtigungen)",
+    "en": "Allowed Actions (Permissions)",
+    "es": "Acciones permitidas (Permisos)",
+    "zh": "允许的操作（权限）",
+    "ja": "許可される操作（権限）",
+    "ru": "Разрешенные действия (Права)"
+  },
+  "Drucken erlauben": {
+    "de": "Drucken erlauben",
+    "en": "Allow Printing",
+    "es": "Permitir impresión",
+    "zh": "允许打印",
+    "ja": "印刷を許可",
+    "ru": "Разрешить печать"
+  },
+  "In hoher Qualität drucken": {
+    "de": "In hoher Qualität drucken",
+    "en": "Print in High Quality",
+    "es": "Imprimir en alta calidad",
+    "zh": "高质量打印",
+    "ja": "高品質で印刷",
+    "ru": "Печать высокого качества"
+  },
+  "Kopieren von Inhalt erlauben": {
+    "de": "Kopieren von Inhalt erlauben",
+    "en": "Allow Copying Content",
+    "es": "Permitir copiar contenido",
+    "zh": "允许复制内容",
+    "ja": "コンテンツのコピーを許可",
+    "ru": "Разрешить копирование содержимого"
+  },
+  "Dokumentänderung erlauben": {
+    "de": "Dokumentänderung erlauben",
+    "en": "Allow Document Modifications",
+    "es": "Permitir modificación del documento",
+    "zh": "允许修改文档",
+    "ja": "ドキュメントの変更を許可",
+    "ru": "Разрешить изменение документа"
+  },
+  "Kommentare & Annotationen erlauben": {
+    "de": "Kommentare & Annotationen erlauben",
+    "en": "Allow Comments & Annotations",
+    "es": "Permitir comentarios y anotaciones",
+    "zh": "允许注释和批注",
+    "ja": "コメントと注釈を許可",
+    "ru": "Разрешить комментарии и аннотации"
+  },
+  "Formulare ausfüllen erlauben": {
+    "de": "Formulare ausfüllen erlauben",
+    "en": "Allow Filling Forms",
+    "es": "Permitir rellenar formularios",
+    "zh": "允许填写表单",
+    "ja": "フォーム入力を許可",
+    "ru": "Разрешить заполнение форм"
+  },
+  "Barrierefreier Inhaltsextrakt (Screenreader)": {
+    "de": "Barrierefreier Inhaltsextrakt (Screenreader)",
+    "en": "Accessible Content Extraction (Screen Readers)",
+    "es": "Extracción accesible de contenido (Lectores de pantalla)",
+    "zh": "无障碍内容提取（屏幕阅读器）",
+    "ja": "アクセシビリティ対応の抽出（スクリーンリーダー）",
+    "ru": "Доступное извлечение содержимого (Программы чтения экрана)"
+  },
+  "Seiten zusammenstellen erlauben": {
+    "de": "Seiten zusammenstellen erlauben",
+    "en": "Allow Page Assembly",
+    "es": "Permitir ensamblar páginas",
+    "zh": "允许页面编排",
+    "ja": "ページの結合・再構成を許可",
+    "ru": "Разрешить сборку страниц"
+  },
+  "Alle erlauben": {
+    "de": "Alle erlauben",
+    "en": "Allow All",
+    "es": "Permitir todo",
+    "zh": "全部允许",
+    "ja": "すべて許可",
+    "ru": "Разрешить все"
+  },
+  "Standardrechte": {
+    "de": "Standardrechte",
+    "en": "Default Permissions",
+    "es": "Permisos predeterminados",
+    "zh": "默认权限",
+    "ja": "デフォルト権限",
+    "ru": "Стандартные права"
+  },
+  "Alle sperren": {
+    "de": "Alle sperren",
+    "en": "Block All",
+    "es": "Bloquear todo",
+    "zh": "全部禁止",
+    "ja": "すべてブロック",
+    "ru": "Запретить все"
+  },
+  "Sicherheit anwenden": {
+    "de": "Sicherheit anwenden",
+    "en": "Apply Security",
+    "es": "Aplicar seguridad",
+    "zh": "应用安全设置",
+    "ja": "セキュリティを適用",
+    "ru": "Применить безопасность"
+  },
+  "Passwort anzeigen/verbergen": {
+    "de": "Passwort anzeigen/verbergen",
+    "en": "Show/Hide Password",
+    "es": "Mostrar/Ocultar contraseña",
+    "zh": "显示/隐藏密码",
+    "ja": "パスワードを表示/非表示",
+    "ru": "Показать/Скрыть пароль"
+  },
+  "Passwort eingeben …": {
+    "de": "Passwort eingeben …",
+    "en": "Enter password …",
+    "es": "Introducir contraseña …",
+    "zh": "输入密码…",
+    "ja": "パスワードを入力…",
+    "ru": "Введите пароль…"
+  },
+  "PDF erfolgreich verschlüsselt.": {
+    "de": "PDF erfolgreich verschlüsselt.",
+    "en": "PDF encrypted successfully.",
+    "es": "PDF cifrado correctamente.",
+    "zh": "PDF加密成功。",
+    "ja": "PDFが正常に暗号化されました。",
+    "ru": "PDF успешно зашифрован."
+  },
+  "PDF erfolgreich entsperrt.": {
+    "de": "PDF erfolgreich entsperrt.",
+    "en": "PDF unlocked successfully.",
+    "es": "PDF desbloqueado correctamente.",
+    "zh": "PDF解锁成功。",
+    "ja": "PDFが正常にロック解除されました。",
+    "ru": "PDF успешно разблокирован."
+  },
+  "Passwörter stimmen nicht überein.": {
+    "de": "Passwörter stimmen nicht überein.",
+    "en": "Passwords do not match.",
+    "es": "Las contraseñas no coinciden.",
+    "zh": "密码不匹配。",
+    "ja": "パスワードが一致しません。",
+    "ru": "Пароли не совпадают."
+  },
+  "Benutzer-Passwort": {
+    "de": "Benutzer-Passwort",
+    "en": "User Password",
+    "es": "Contraseña de usuario",
+    "zh": "用户密码",
+    "ja": "ユーザーパスワード",
+    "ru": "Пароль пользователя"
+  },
+  "Eigentümer-Passwort": {
+    "de": "Eigentümer-Passwort",
+    "en": "Owner Password",
+    "es": "Contraseña de propietario",
+    "zh": "所有者密码",
+    "ja": "所有者パスワード",
+    "ru": "Пароль владельца"
+  },
+  "Bitte vergeben Sie mindestens ein Benutzer- oder Eigentümer-Passwort.": {
+    "de": "Bitte vergeben Sie mindestens ein Benutzer- oder Eigentümer-Passwort.",
+    "en": "Please provide at least a user or owner password.",
+    "es": "Proporcione al menos una contraseña de usuario o de propietario.",
+    "zh": "请至少设置一个用户密码或所有者密码。",
+    "ja": "ユーザーパスワードまたは所有者パスワードを少なくとも1つ設定してください。",
+    "ru": "Пожалуйста, задайте хотя бы пароль пользователя или владельца."
+  },
+  "Verschlüsselung fehlgeschlagen.": {
+    "de": "Verschlüsselung fehlgeschlagen.",
+    "en": "Encryption failed.",
+    "es": "Error de cifrado.",
+    "zh": "加密失败。",
+    "ja": "暗号化に失敗しました。",
+    "ru": "Сбой шифрования."
+  },
+  "Konnte PDF nicht entsperren": {
+    "de": "Konnte PDF nicht entsperren",
+    "en": "Could not unlock PDF",
+    "es": "No se pudo desbloquear el PDF",
+    "zh": "无法解锁PDF",
+    "ja": "PDFのロックを解除できませんでした",
+    "ru": "Не удалось разблокировать PDF"
+  },
+  "Hinweis: Wenn die PDF nur mit einem Eigentümer-Passwort geschützt ist (Rechtebeschränkung), kann das Feld leer gelassen werden.": {
+    "de": "Hinweis: Wenn die PDF nur mit einem Eigentümer-Passwort geschützt ist (Rechtebeschränkung), kann das Feld leer gelassen werden.",
+    "en": "Note: If the PDF is only protected with an owner password (permission restrictions), this field can be left blank.",
+    "es": "Nota: Si el PDF solo está protegido con contraseña de propietario (restricciones de permisos), este campo puede dejarse vacío.",
+    "zh": "提示：如果PDF仅受所有者密码保护（权限受限），此字段可留空。",
+    "ja": "注意: PDFが所有者パスワードでのみ保護されている場合（権限制限）、このフィールドは空欄のままで構いません。",
+    "ru": "Примечание: Если PDF защищен только паролем владельца (ограничение прав), поле можно оставить пустым."
+  },
+  "Entfernt den Passwortschutz oder Berechtigungsbeschränkungen aus der PDF.\nDie resultierende PDF-Datei ist unverschlüsselt und frei zugänglich.": {
+    "de": "Entfernt den Passwortschutz oder Berechtigungsbeschränkungen aus der PDF.\nDie resultierende PDF-Datei ist unverschlüsselt und frei zugänglich.",
+    "en": "Removes password protection or permission restrictions from the PDF.\nThe resulting PDF file is unencrypted and freely accessible.",
+    "es": "Elimina la protección por contraseña o restricciones de permisos del PDF.\nEl archivo PDF resultante está descifrado y libremente accesible.",
+    "zh": "从PDF中移除密码保护或权限限制。\n生成的PDF文件未加密且可自由访问。",
+    "ja": "PDFからパスワード保護または権限制限を解除します。\n生成されるPDFファイルは暗号化されておらず、自由に利用できます。",
+    "ru": "Снимает защиту паролем или ограничения разрешений с PDF.\nПолученный PDF-файл не зашифрован и общедоступен."
   }
 }

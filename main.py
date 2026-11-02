@@ -102,6 +102,26 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         metavar="PDF",
         help="Wasserzeichen-Dialog starten oder im Headless-Modus anwenden.",
     )
+    group.add_argument(
+        "--security",
+        "--encrypt",
+        dest="security_path",
+        metavar="PDF",
+        help="PDF-Sicherheits-Dialog direkt mit der angegebenen PDF starten oder verschlüsseln.",
+    )
+    group.add_argument(
+        "--unlock",
+        "--decrypt",
+        dest="unlock_path",
+        metavar="PDF",
+        help="PDF direkt entsperren oder Passwortschutz entfernen.",
+    )
+    group.add_argument(
+        "--security-info",
+        dest="security_info_path",
+        metavar="PDF",
+        help="Sicherheitsstatus und Berechtigungen einer PDF headlessly abfragen.",
+    )
     parser.add_argument(
         "paths",
         nargs="*",
@@ -225,6 +245,41 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="Schriftgröße für Text-Wasserzeichen in Punkt (Standard: 48.0).",
     )
     parser.add_argument(
+        "--user-password",
+        dest="user_password",
+        default="",
+        metavar="PASSWORT",
+        help="Benutzer-Passwort (zum Öffnen der PDF).",
+    )
+    parser.add_argument(
+        "--owner-password",
+        dest="owner_password",
+        default="",
+        metavar="PASSWORT",
+        help="Eigentümer-Passwort (für Rechteverwaltung).",
+    )
+    parser.add_argument(
+        "--password",
+        dest="password",
+        default="",
+        metavar="PASSWORT",
+        help="Allgemeines Passwort (für Unlock oder als Benutzer-Passwort).",
+    )
+    parser.add_argument(
+        "--encryption-method",
+        dest="encryption_method",
+        choices=["AES-256", "AES-128", "RC4-128"],
+        default="AES-256",
+        help="Verschlüsselungsmethode (Standard: AES-256).",
+    )
+    parser.add_argument(
+        "--permissions",
+        dest="permissions",
+        nargs="+",
+        metavar="RECHT",
+        help="Liste von Berechtigungen (print, print_highres, copy, modify, annotate, fill_forms, extract, assemble).",
+    )
+    parser.add_argument(
         "--json",
         dest="json_output",
         action="store_true",
@@ -242,6 +297,9 @@ def parse_cli_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
             args.import_paths,
             args.info_path,
             args.watermark_path,
+            args.security_path,
+            args.unlock_path,
+            args.security_info_path,
         )
     )
     if args.paths and has_option_action:
@@ -263,6 +321,10 @@ def build_startup_command(args: argparse.Namespace) -> Optional[StartupCommand]:
         return StartupCommand("annotate", (args.annotate_path,))
     if args.watermark_path:
         return StartupCommand("watermark", (args.watermark_path,))
+    if args.security_path:
+        return StartupCommand("security", (args.security_path,))
+    if args.unlock_path:
+        return StartupCommand("unlock", (args.unlock_path,))
     if args.merge_paths:
         return StartupCommand("merge", tuple(args.merge_paths))
     if args.import_paths:
@@ -292,6 +354,12 @@ def apply_startup_command(window: MainWindow, command: StartupCommand) -> None:
         return
     if command.action == "watermark":
         window.startup_watermark_path(command.paths[0])
+        return
+    if command.action == "security":
+        window.startup_security_path(command.paths[0])
+        return
+    if command.action == "unlock":
+        window.startup_security_path(command.paths[0], default_tab="unlock")
         return
     if command.action == "merge":
         window.startup_merge_paths(command.paths)

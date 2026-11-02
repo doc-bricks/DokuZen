@@ -8,73 +8,16 @@ Bugfix: Im else-Zweig (needs_pass=False) wurde doc.authenticate("") aufgerufen
 """
 
 import sys
-import types
-import unittest
 from pathlib import Path
+import unittest
 from unittest.mock import MagicMock, patch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# --- Stubs für optionale Deps (nur wenn noch nicht vorhanden) ---
-for _mod in ("pikepdf", "PIL", "PIL.Image", "docx", "openpyxl",
-             "pytesseract", "cv2", "numpy", "pptx", "chardet",
-             "cryptography", "cryptography.fernet"):
-    if _mod not in sys.modules:
-        sys.modules[_mod] = MagicMock()
-
-if "utils.logger" not in sys.modules:
-    _logger_stub = types.ModuleType("utils.logger")
-
-    class _LoggerMixin:
-        @property
-        def logger(self):
-            if not hasattr(self, "_logger"):
-                self._logger = MagicMock()
-            return self._logger
-
-    _logger_stub.LoggerMixin = _LoggerMixin
-    _logger_stub.setup_logger = lambda **kw: None
-    _logger_stub.get_logger = lambda name: MagicMock()
-    sys.modules["utils.logger"] = _logger_stub
-
-import importlib.util as _ilu
-
-try:
-    import core.pdf
-except Exception:
-    pass
-
-# Fitz temporär durch Mock ersetzen, damit security.py immer unsere
-# Mock-Variante von fitz.open() erhält — unabhängig davon, ob das reale
-# PyMuPDF bereits von einem anderen Test (z. B. test_dialog_smoke) geladen
-# wurde. sys.modules["fitz"] wird nach dem Laden wiederhergestellt.
-_orig_fitz = sys.modules.get("fitz")
-_sec_fitz = MagicMock()
-sys.modules["fitz"] = _sec_fitz
-
-_spec = _ilu.spec_from_file_location(
-    "core.pdf.security",
-    PROJECT_ROOT / "core" / "pdf" / "security.py"
-)
-_sec_mod = _ilu.module_from_spec(_spec)
-sys.modules["core.pdf.security"] = _sec_mod
-if "core.pdf" in sys.modules:
-    sys.modules["core.pdf"].security = _sec_mod
-_spec.loader.exec_module(_sec_mod)
-
-# sys.modules["fitz"] wiederherstellen (damit z. B. test_source_platform_smoke
-# weiterhin das reale fitz verwenden kann)
-if _orig_fitz is not None:
-    sys.modules["fitz"] = _orig_fitz
-else:
-    del sys.modules["fitz"]
-
-# Sicherstellen, dass PYMUPDF_AVAILABLE = True (MagicMock-Import garantiert das)
-_sec_mod.PYMUPDF_AVAILABLE = True
-
-PDFSecurity = _sec_mod.PDFSecurity
+import core.pdf.security as _sec_mod
+from core.pdf.security import PDFSecurity
 
 
 def _make_security():
@@ -86,9 +29,13 @@ def _make_security():
 class TestUnlockOwnerPassword(unittest.TestCase):
 
     def setUp(self):
-        # Vor jedem Test den fitz-Mock im Security-Modul zurücksetzen
-        _sec_fitz.reset_mock()
-        _sec_fitz.PDF_ENCRYPT_NONE = 0
+        self._sec_fitz = MagicMock()
+        self._sec_fitz.PDF_ENCRYPT_NONE = 0
+        self._patcher = patch.object(_sec_mod, "fitz", self._sec_fitz)
+        self._patcher.start()
+
+    def tearDown(self):
+        self._patcher.stop()
 
     def _mock_doc(self, is_encrypted=True, needs_pass=False, authenticate_returns=True):
         doc = MagicMock()
@@ -103,7 +50,7 @@ class TestUnlockOwnerPassword(unittest.TestCase):
         """Kerntest des Bugfixes: password wird an authenticate() übergeben, nicht ''."""
         sec = _make_security()
         mock_doc = self._mock_doc(is_encrypted=True, needs_pass=False)
-        _sec_fitz.open.return_value = mock_doc
+        self._sec_fitz.open.return_value = mock_doc
 
         with patch("builtins.open", MagicMock()):
             with patch.object(Path, "exists", return_value=True):
@@ -115,7 +62,7 @@ class TestUnlockOwnerPassword(unittest.TestCase):
         """Wenn kein Passwort übergeben: authenticate("") ist korrekt."""
         sec = _make_security()
         mock_doc = self._mock_doc(is_encrypted=True, needs_pass=False)
-        _sec_fitz.open.return_value = mock_doc
+        self._sec_fitz.open.return_value = mock_doc
 
         result = sec._unlock_pymupdf("input.pdf", "output.pdf", "")
 
@@ -125,7 +72,7 @@ class TestUnlockOwnerPassword(unittest.TestCase):
         """Wenn needs_pass=True: authenticate() wird mit übergebenem Passwort aufgerufen."""
         sec = _make_security()
         mock_doc = self._mock_doc(is_encrypted=True, needs_pass=True, authenticate_returns=True)
-        _sec_fitz.open.return_value = mock_doc
+        self._sec_fitz.open.return_value = mock_doc
 
         result = sec._unlock_pymupdf("input.pdf", "output.pdf", "userpass")
 
@@ -134,7 +81,7 @@ class TestUnlockOwnerPassword(unittest.TestCase):
     def test_wrong_password_returns_failure(self):
         sec = _make_security()
         mock_doc = self._mock_doc(is_encrypted=True, needs_pass=True, authenticate_returns=False)
-        _sec_fitz.open.return_value = mock_doc
+        self._sec_fitz.open.return_value = mock_doc
 
         result = sec._unlock_pymupdf("input.pdf", "output.pdf", "wrongpass")
 
