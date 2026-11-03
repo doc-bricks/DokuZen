@@ -5,6 +5,22 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-11-03, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — TW-DZ-18: Translation Management CLI Gate, atomare Übersetzungspersistenz in translator.py, Smoke-Gate & 16 neue Tests [G 2026-11-03])
+- **Translation Management CLI Gate (`manage_translations.py`):**
+  - Eigenständiges CLI- und Validierungs-Werkzeug im Projekt-Root mit `--check` (Exit 0/1 CI-Gate), `--stats` (Formatierte Statistik-Tabelle je Sprache mit Abdeckungsgrad), `--scan` (Automatischer Quelltext-Scanner für UI- und Dialog-Texte), `--dir` (Projektverzeichnis) und `--json` nach Policy P-006 Tier-2 (DE, EN, ES, ZH, JA, RU).
+  - Modulare Fassaden-APIs: `load_translations`, `save_translations`, `validate_catalog`, `get_catalog_stats`, `print_catalog_stats`, `find_german_strings`, `scan_and_update`, `resolve_translation_file`.
+  - Defensives Windows UTF-8 Konsolen-Encoding via `sys.stdout.reconfigure` / `sys.stderr.reconfigure`.
+  - 100% lückenlose 6-Sprachen-Parität für alle 548 Schlüssel in `locales/translations.json` verifiziert.
+- **Atomare Persistenz in `translator.py` & `manage_translations.py`:**
+  - Ersetzung unsicherer direkter Schreibzugriffe durch atomare Staging-Dateien (`.{target}.tmp.<pid>_<uuid>`), `f.flush()`, `os.fsync(f.fileno())`, `stat.S_IWRITE`-Rechtefreigabe und `os.replace` mit deterministischem `finally`-Cleanup.
+  - Neue öffentliche Fassade `save_translations()` in `TranslationSystem`.
+- **Smoke-Gate-Integration (`tests/test_source_platform_smoke.py`):**
+  - Neuer Prüfschritt `test_translation_parity_gate` integriert die Tier-2-Paritätsvalidierung hermetisch in den Plattform-Smoke.
+- **Testsuite & Qualitätssicherung:**
+  - 16 neue automatisierte Tests in `tests/test_manage_translations.py` (CLI-Optionen, Validierung, Fehler-Erkennung, Statistiken, JSON-Export, atomare Persistenz, Quellcode-Scan, Wortgrenzen-Heuristik).
+  - Gesamttestsuite wächst von 574 auf 591 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 15.87s).
+  - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
 ### Added (2026-11-02, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Sicherheits- & Passwortschutz-Suite: Verschlüsselung, Berechtigungen, Entsperrung, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-11-02])
 - **PDF-Sicherheits-Engine & Berechtigungs-Parsing (`core/pdf/security.py`):**
   - Erweiterung von `get_security_info()` zur präzisen Inspektion von PDF-Berechtigungen (print, print_highres, modify, copy, annotate, fill_forms, extract, assemble), Verschlüsselungserkennung mit PyMuPDF und pikepdf, sowie Passwort-Authentifizierung.
