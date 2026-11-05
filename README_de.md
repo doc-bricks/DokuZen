@@ -2,7 +2,7 @@
 
 # DokuZen
 
-**Deutsch** | [English](README.md)
+[English](README.md) · **Deutsch** · [Español](README_es.md)
 
 [![CI](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml/badge.svg)](https://github.com/doc-bricks/DokuZen/actions/workflows/source-platform-smoke.yml)
 [![Pytest Status](https://img.shields.io/badge/pytest-527%20passed%20%7C%20100%25-brightgreen.svg)](https://docs.pytest.org/)

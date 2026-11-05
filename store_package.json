@@ -24,6 +24,70 @@
   "execution_alias": "dokuzen.exe",
   "languages": [
     "de-DE",
-    "en-US"
+    "en-US",
+    "es-ES",
+    "zh-CN",
+    "ja-JP",
+    "ru-RU"
+  ],
+  "description_de": "Lokale PDF-Werkstatt: OCR, Schwärzung & Konvertierung. 100% lokal & offline.",
+  "description_en": "Local PDF workstation: OCR, redaction & conversion. 100% local and offline.",
+  "description_es": "Taller local de PDF: OCR, redacción y conversión. 100% local y sin conexión.",
+  "description_zh": "本地PDF工作台：OCR、涂黑与格式转换。100%离线本地处理。",
+  "description_ja": "ローカルPDF作業環境：OCR、黒塗り、変換。100%オフライン処理。",
+  "description_ru": "Локальная PDF-мастерская: OCR, скрытие и конвертация. 100% офлайн.",
+  "keywords_de": [
+    "pdf",
+    "ocr",
+    "dokumente",
+    "schwaerzung",
+    "konvertierung",
+    "datenschutz",
+    "offline"
+  ],
+  "keywords_en": [
+    "pdf",
+    "ocr",
+    "document management",
+    "redaction",
+    "conversion",
+    "privacy",
+    "offline"
+  ],
+  "keywords_es": [
+    "pdf",
+    "ocr",
+    "gestion documental",
+    "redaccion",
+    "conversion",
+    "privacidad",
+    "offline"
+  ],
+  "keywords_zh": [
+    "pdf",
+    "ocr",
+    "文档管理",
+    "涂黑",
+    "转换",
+    "隐私",
+    "离线"
+  ],
+  "keywords_ja": [
+    "pdf",
+    "ocr",
+    "文書管理",
+    "墨塗り",
+    "変換",
+    "プライバシー",
+    "オフライン"
+  ],
+  "keywords_ru": [
+    "pdf",
+    "ocr",
+    "документы",
+    "редактирование",
+    "конвертация",
+    "приватность",
+    "офлайн"
   ]
 }

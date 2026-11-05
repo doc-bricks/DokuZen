@@ -52,12 +52,33 @@ class TestStoreMaterials(unittest.TestCase):
         content = path.read_text(encoding="utf-8")
         self.assertGreater(len(content.strip()), 100, "SUPPORT.md ist zu kurz / leer")
 
-    def test_store_listing_exists_and_contains_de_and_en(self):
+    def test_store_listing_exists_and_contains_six_tier2_languages(self):
         path = PROJECT_ROOT / "STORE_LISTING.md"
         self.assertTrue(path.exists(), "STORE_LISTING.md fehlt")
         content = path.read_text(encoding="utf-8")
-        self.assertIn("Deutsch", content, "STORE_LISTING.md enthält keinen deutschen Abschnitt")
-        self.assertIn("English", content, "STORE_LISTING.md enthält keinen englischen Abschnitt")
+        for heading in ("## Deutsch", "## English", "## Español", "## 简体中文", "## 日本語", "## Русский"):
+            self.assertIn(heading, content, f"STORE_LISTING.md fehlt Abschnitt: {heading}")
+
+    def test_store_package_json_has_six_tier2_languages(self):
+        path = PROJECT_ROOT / "store_package.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        langs = data.get("languages", [])
+        for expected in ("de-DE", "en-US", "es-ES", "zh-CN", "ja-JP", "ru-RU"):
+            self.assertIn(expected, langs, f"Zielsprache {expected} fehlt in store_package.json")
+        for lang_code in ("de", "en", "es", "zh", "ja", "ru"):
+            desc_key = f"description_{lang_code}"
+            kw_key = f"keywords_{lang_code}"
+            self.assertIn(desc_key, data, f"Kurzbeschreibung {desc_key} fehlt")
+            self.assertLessEqual(len(data[desc_key]), 100, f"{desc_key} überschreitet 100 Zeichen Limit")
+            self.assertIn(kw_key, data, f"Keywords {kw_key} fehlen")
+            self.assertEqual(len(data[kw_key]), 7, f"{kw_key} muss exakt 7 Keywords deklarieren")
+
+    def test_store_staging_files_exist_for_all_six_languages(self):
+        staging_dir = PROJECT_ROOT / "releases" / "windowsstore"
+        for lang_code in ("de", "en", "es", "zh", "ja", "ru"):
+            listing_file = staging_dir / f"store_listing_{lang_code}.md"
+            self.assertTrue(listing_file.exists(), f"Staging-Datei {listing_file.name} fehlt")
+            self.assertGreater(listing_file.stat().st_size, 50, f"Staging-Datei {listing_file.name} ist zu kurz")
 
 
 if __name__ == "__main__":

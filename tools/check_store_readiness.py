@@ -1,11 +1,12 @@
 """Fail-closed Windows Store readiness gate for DokuZen.
 
 Verifies repository-owned materials:
-- store_package.json completeness, publisher CN, version parity, https URLs
-- AppxManifest.xml schema, capabilities (runFullTrust), identity, publisher
+- store_package.json completeness, publisher CN, version parity, https URLs, 6 Tier-2 languages
+- AppxManifest.xml schema, capabilities (runFullTrust), identity, publisher, 6 Tier-2 Resource languages
 - Store tile icons (44x44, 50x50, 150x150, 310x150, 310x310) PNG integrity
 - Store screenshots (1920x1080) PNG integrity and required inventory
 - Mandatory store documentation (STORE_LISTING, PRIVACY_POLICY, SUPPORT, THIRD_PARTY_LICENSES)
+- Tier-2 6-language staging materials under releases/windowsstore/ (DE, EN, ES, ZH, JA, RU)
 """
 
 from __future__ import annotations
@@ -53,7 +54,22 @@ def parse_keywords_from_listing(content: str) -> dict[str, list[str]]:
             current_lang = "de"
         elif "## English" in line_clean:
             current_lang = "en"
-        elif line_clean.startswith("**Schlüsselwörter**") or line_clean.startswith("**Keywords**"):
+        elif "## Español" in line_clean:
+            current_lang = "es"
+        elif "## 简体中文" in line_clean:
+            current_lang = "zh"
+        elif "## 日本語" in line_clean:
+            current_lang = "ja"
+        elif "## Русский" in line_clean:
+            current_lang = "ru"
+        elif (
+            line_clean.startswith("**Schlüsselwörter**")
+            or line_clean.startswith("**Keywords**")
+            or line_clean.startswith("**Palabras clave**")
+            or line_clean.startswith("**关键字**")
+            or line_clean.startswith("**キーワード**")
+            or line_clean.startswith("**Ключевые слова**")
+        ):
             collected: list[str] = []
             for next_line in lines[i + 1 :]:
                 stripped = next_line.strip()
@@ -64,6 +80,7 @@ def parse_keywords_from_listing(content: str) -> dict[str, list[str]]:
             keywords = [k.strip() for k in raw.split(",") if k.strip()]
             keywords_by_lang[current_lang] = keywords
     return keywords_by_lang
+
 
 REQUIRED_DOCUMENTS = (
     "PRIVACY_POLICY.md",
@@ -88,6 +105,10 @@ REQUIRED_RELEASE_STAGING = (
     "store_settings.json",
     "store_listing_de.md",
     "store_listing_en.md",
+    "store_listing_es.md",
+    "store_listing_zh.md",
+    "store_listing_ja.md",
+    "store_listing_ru.md",
     "StoreLogo.png",
 )
 
@@ -188,8 +209,13 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
                 findings.append(f"[repository] store_package.json field {field!r} is missing")
 
         languages = config.get("languages")
-        if not isinstance(languages, list) or len(languages) < 2:
-            findings.append("[repository] store_package.json must declare at least 2 languages")
+        if not isinstance(languages, list) or len(languages) < 6:
+            findings.append("[repository] store_package.json must declare all 6 Tier-2 languages (de-DE, en-US, es-ES, zh-CN, ja-JP, ru-RU)")
+        else:
+            required_langs = {"de-DE", "en-US", "es-ES", "zh-CN", "ja-JP", "ru-RU"}
+            missing_langs = required_langs - set(languages)
+            if missing_langs:
+                findings.append(f"[repository] store_package.json missing languages: {sorted(missing_langs)}")
 
         for field in ("privacy_url", "support_url"):
             value = config.get(field)
@@ -270,6 +296,15 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
                             f"[manifest] Properties/Logo must point to icons\\StoreLogo.png, found {actual_logo}"
                         )
 
+                resources_el = root.find("appx:Resources", ns)
+                if resources_el is None:
+                    resources_el = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Resources")
+                if resources_el is not None:
+                    manifest_langs = {r.attrib.get("Language", "") for r in list(resources_el)}
+                    for req_l in ("de-DE", "en-US", "es-ES", "zh-CN", "ja-JP", "ru-RU"):
+                        if req_l not in manifest_langs and req_l.lower() not in {ml.lower() for ml in manifest_langs}:
+                            findings.append(f"[manifest] Resource Language {req_l!r} missing in AppxManifest.xml")
+
                 caps = root.find("appx:Capabilities", ns)
                 if caps is None:
                     caps = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Capabilities")
@@ -328,12 +363,13 @@ def check_store_repository(project_root: Path, require_msix: bool = False) -> li
     # 6. Specific document content validation
     store_listing = _read_nonempty(project_root / "STORE_LISTING.md")
     if store_listing:
-        if "Deutsch" not in store_listing or "English" not in store_listing:
-            findings.append("[documentation] STORE_LISTING.md must contain both German and English sections")
+        for heading in ("## Deutsch", "## English", "## Español", "## 简体中文", "## 日本語", "## Русский"):
+            if heading not in store_listing:
+                findings.append(f"[documentation] STORE_LISTING.md must contain section {heading}")
 
         # Partner Center Policy 10.1.3 Keyword limit & trademark check
         keywords_by_lang = parse_keywords_from_listing(store_listing)
-        for lang in ("de", "en"):
+        for lang in ("de", "en", "es", "zh", "ja", "ru"):
             kw_list = keywords_by_lang.get(lang, [])
             if not kw_list:
                 findings.append(f"[policy 10.1.3] No keywords found for language {lang!r} in STORE_LISTING.md")
@@ -442,20 +478,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
     print("=== DokuZen Windows Store Readiness: PASSED ===")
-    print("  [OK] store_package.json is valid and complete")
-    print("  [OK] AppxManifest.xml matches publisher and capability constraints")
+    print("  [OK] store_package.json is valid and declares 6 Tier-2 languages")
+    print("  [OK] AppxManifest.xml matches publisher and declares 6 Tier-2 Resource languages")
     print("  [OK] 6/6 Store tile icons verified with correct pixel dimensions (incl. StoreLogo.png)")
     print("  [OK] 6/6 Store screenshots verified (1920x1080 PNG)")
-    print("  [OK] Release staging materials verified under releases/windowsstore/")
-    print("  [OK] Mandatory Store legal and support documents verified (DE + EN)")
-    print("  [OK] Policy 10.1.3 search terms conformant (<= 7 keywords/lang, no trademarks)")
+    print("  [OK] Release staging materials verified under releases/windowsstore/ (6 languages)")
+    print("  [OK] Mandatory Store legal and support documents verified (DE + EN + Tier-2)")
+    print("  [OK] Policy 10.1.3 search terms conformant (<= 7 keywords/lang across 6 languages, no trademarks)")
     msix_dir = args.project_root.resolve() / "releases" / "windowsstore"
     if msix_dir.exists() and list(msix_dir.glob("**/*.msix")):
         print("  [OK] MSIX package bundles and SHA256 checksums verified")
     else:
         print("  [OK] Release bundle gate passed (clean checkout without local binary bundle)")
     return 0
-
 
 
 if __name__ == "__main__":

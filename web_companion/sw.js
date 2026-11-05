@@ -1,5 +1,5 @@
 // Service Worker für DokuZen Web Companion (Offline Cache)
-const CACHE_NAME = 'dokuzen-companion-v1';
+const CACHE_NAME = 'dokuzen-companion-v2';
 const ASSETS = [
   './',
   './index.html',

@@ -109,6 +109,7 @@ python -m ruff check .
 
 - [`README.md`](README.md) — English Documentation & Visual Showcase
 - [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
+- [`README_es.md`](README_es.md) — Documentación completa en español (18 secciones en paridad)
 - [`NOTICE`](NOTICE) — Kanonische Open-Source-Urheberrechts- und Attributionsdatei
 - [`SECURITY.md`](SECURITY.md) — Zweisprachige Sicherheitsrichtlinie & Zero-Egress Invarianten
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Release Entries

@@ -5,6 +5,32 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added (2026-11-05, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — TW-DZ-19: Windows Store Packaging & Web-Companion Tier-2 6-Sprachen-Harmonisierung nach Policy P-006 [G 2026-11-05])
+- **Windows Store Packaging & Manifest-Harmonisierung (`store_package.json`, `AppxManifest.xml`, `store_settings.json`):**
+  - Synchronisation von `store_package.json` und `releases/windowsstore/store_settings.json` mit allen 6 Tier-2-Sprachen (`de-DE`, `en-US`, `es-ES`, `zh-CN`, `ja-JP`, `ru-RU`).
+  - Kurzbeschreibungen für alle Sprachen normiert auf strikt <= 100 Zeichen (Partner Center Constraint).
+  - Exakt 7 markenrechtsfreie Suchbegriffe je Sprache definiert (Policy 10.1.3).
+  - Deklaration aller 6 Sprachressourcen im `<Resources>`-Block von `store_package/DokuZen/AppxManifest.xml`.
+  - `.gitignore` Whitelist für Store-Listing Staging-Dateien aller 6 Sprachen.
+- **6-Sprachen Store Listings & Staging (`releases/windowsstore/`, `STORE_LISTING.md`):**
+  - Vollständige Staging-Dateien für Deutsch, Englisch, Spanisch, Chinesisch (vereinfacht), Japanisch und Russisch unter `releases/windowsstore/store_listing_<lang>.md`.
+  - `STORE_LISTING.md` um alle 6 Sprachen und aktualisierte Store-Metadaten-Tabelle erweitert.
+  - Automatisiertes Staging- & Format-Gate in `tools/check_store_readiness.py`, `tests/test_store_materials.py` und `tests/test_store_readiness.py` (17 Tests grün).
+- **Web-Companion PWA Tier-2 I18N (`web_companion/`):**
+  - Vollständiges Lokalisierungsmodul in `web_companion/app.js` mit `TRANSLATIONS`-Katalog (26 Keys in 6 Sprachen, 100% Parität), `getTranslation`, `setLanguage`, `getLanguage`, `applyTranslations` und DOM-Guards für Headless-Ausführung.
+  - Sprachauswahl `<select id="lang-select">` und `data-i18n`-Attribute in `web_companion/index.html` und Styling in `style.css`.
+  - Offline-Cache-Erneuerung auf `dokuzen-companion-v2` in `web_companion/sw.js`.
+  - Native Node.js Testsuite `web_companion/tests/companion_i18n.test.mjs` (4 Tests) und Python Test-Suite `tests/test_web_companion.py` (7 Tests).
+- **Spanische Gesamtdokumentation & Tier-2 Readme-Parität (`README_es.md`, `README.es.md`):**
+  - Vollständige spanische Gesamtdokumentation mit 1:1 Abschnitts- und Anker-Parität (alle 18 `<a id="..."></a>`-Anker), Architektur- und Lifecycle-Mermaid-Diagrammen und Feature-Matrix.
+  - GitHub-Viewer Parität `README.es.md` und Sprachleisten-Aktualisierung in `README.md` und `README_de.md`.
+  - Aufnahme in `llms.txt` und neuer Vertragstest in `tests/test_metadata.py`.
+- **Testsuite & Qualitätssicherung:**
+  - Alle Testsuiten grün (Pytest 598+ passed, 1 skipped, Node.js 4/4 passed).
+  - `manage_translations.py --check` validiert 548/548 Schlüssel (100% Parität).
+  - `scripts/check_store_readiness.py` meldet 0 Fehler.
+  - `ruff check .` sauber, `compileall` fehlerfrei, `git diff --check` sauber.
+
 ### Added (2026-11-03, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — TW-DZ-18: Translation Management CLI Gate, atomare Übersetzungspersistenz in translator.py, Smoke-Gate & 16 neue Tests [G 2026-11-03])
 - **Translation Management CLI Gate (`manage_translations.py`):**
   - Eigenständiges CLI- und Validierungs-Werkzeug im Projekt-Root mit `--check` (Exit 0/1 CI-Gate), `--stats` (Formatierte Statistik-Tabelle je Sprache mit Abdeckungsgrad), `--scan` (Automatischer Quelltext-Scanner für UI- und Dialog-Texte), `--dir` (Projektverzeichnis) und `--json` nach Policy P-006 Tier-2 (DE, EN, ES, ZH, JA, RU).
