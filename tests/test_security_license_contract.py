@@ -192,6 +192,9 @@ class TestSecurityLicenseContract(unittest.TestCase):
         self.assertIn("GNU AFFERO GENERAL PUBLIC LICENSE", license_text)
         self.assertIn("Version 3, 19 November 2007", license_text)
         self.assertIn("Lukas Geiger", license_text)
+        # Vollstaendiger Lizenztext statt Verweis-Stub: nur so erkennt GitHub die Lizenz (licenseInfo).
+        self.assertIn("13. Remote Network Interaction", license_text)
+        self.assertGreater(len(license_text.splitlines()), 600, "LICENSE must contain the full AGPL-3.0 text")
 
         pyproject_path = ROOT / "pyproject.toml"
         with open(pyproject_path, "rb") as f:
