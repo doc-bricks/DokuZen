@@ -424,7 +424,8 @@ def test_ci_lifecycle_and_hardening_workflows():
     stale_path = workflows_dir / "stale.yml"
     assert stale_path.exists(), "stale.yml must exist"
     s_content = stale_path.read_text(encoding="utf-8")
-    assert "actions/stale@v9" in s_content
+    # Major-Tag oder 40-stelliger Commit-Pin; keine feste Version, damit Dependabot-Updates nicht brechen.
+    assert re.search(r"actions/stale@(?:v\d+|[0-9a-f]{40})\b", s_content)
     assert 'cron: "30 1 * * *"' in s_content
     assert "timeout-minutes: 10" in s_content
     assert "cancel-in-progress: true" in s_content
