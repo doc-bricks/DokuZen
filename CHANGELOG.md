@@ -5,6 +5,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed (2026-11-13, CI: Action-Annotationen und Bundle-Validierung, Port von #9)
+- **Workflows (`linux-bundle.yml`, `source-platform-smoke.yml`):** Die Kommentare an den SHA-Pins nennen jetzt die tatsächlich gepinnten Releases (`actions/checkout@v7.0.1`, `actions/setup-python@v7.0.0`, `actions/upload-artifact@v7.0.2`) statt der alten `v4`/`v5`-Angaben. Die SHAs selbst sind unverändert.
+- **`linux-bundle.yml`:** Der Workflow steht in seinem eigenen Pull-Request-Pfadfilter und der Build-Job läuft auch bei Pull Requests. Änderungen am Workflow werden damit vor dem Merge geprüft.
+- **`tests/test_metadata.py`:** Die Prüfung von `stale.yml` akzeptiert jede Hauptversion von `actions/stale` (wie bereits bei `checkout` und `setup-python`).
+
 ### Added (2026-11-05, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — TW-DZ-19: Windows Store Packaging & Web-Companion Tier-2 6-Sprachen-Harmonisierung nach Policy P-006 [G 2026-11-05])
 - **Windows Store Packaging & Manifest-Harmonisierung (`store_package.json`, `AppxManifest.xml`, `store_settings.json`):**
   - Synchronisation von `store_package.json` und `releases/windowsstore/store_settings.json` mit allen 6 Tier-2-Sprachen (`de-DE`, `en-US`, `es-ES`, `zh-CN`, `ja-JP`, `ru-RU`).
