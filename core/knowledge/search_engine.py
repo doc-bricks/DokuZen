@@ -160,33 +160,33 @@ class SearchEngine(LoggerMixin):
         # Text-Suche
         if query.text:
             text_conditions = []
-            search_term = f"%{query.text.lower()}%"
+            search_term = f"%{query.text.casefold()}%"
             
             if SearchField.ALL in query.fields or SearchField.NAME in query.fields:
-                text_conditions.append("lower(name) LIKE ?")
+                text_conditions.append("casefold(name) LIKE ?")
                 params.append(search_term)
             
             if SearchField.ALL in query.fields or SearchField.PATH in query.fields:
-                text_conditions.append("lower(path) LIKE ?")
+                text_conditions.append("casefold(path) LIKE ?")
                 params.append(search_term)
 
             if SearchField.ALL in query.fields or SearchField.EXTENSION in query.fields:
-                text_conditions.append("lower(extension) LIKE ?")
+                text_conditions.append("casefold(extension) LIKE ?")
                 params.append(search_term)
             
             if SearchField.ALL in query.fields or SearchField.PDF_TITLE in query.fields:
-                text_conditions.append("lower(pdf_title) LIKE ?")
+                text_conditions.append("casefold(pdf_title) LIKE ?")
                 params.append(search_term)
             
             if SearchField.ALL in query.fields or SearchField.PDF_AUTHOR in query.fields:
-                text_conditions.append("lower(pdf_author) LIKE ?")
+                text_conditions.append("casefold(pdf_author) LIKE ?")
                 params.append(search_term)
 
             if SearchField.ALL in query.fields or SearchField.TAGS in query.fields:
                 text_conditions.append("""id IN (
                     SELECT file_id FROM file_tags ft
                     JOIN tags t ON ft.tag_id = t.id
-                    WHERE lower(t.name) LIKE ?
+                    WHERE casefold(t.name) LIKE ?
                 )""")
                 params.append(search_term)
             
@@ -202,9 +202,9 @@ class SearchEngine(LoggerMixin):
             sql_parts.append(f"""AND id IN (
                 SELECT file_id FROM file_tags ft
                 JOIN tags t ON ft.tag_id = t.id
-                WHERE lower(t.name) IN ({placeholders})
+                WHERE casefold(t.name) IN ({placeholders})
             )""")
-            params.extend([t.lower() for t in query.tags])
+            params.extend([t.casefold() for t in query.tags])
         
         # Kategorie-Filter
         if query.categories:
@@ -433,11 +433,11 @@ class SearchEngine(LoggerMixin):
                 SELECT DISTINCT f.* FROM files f
                 JOIN file_tags ft ON f.id = ft.file_id
                 JOIN tags t ON ft.tag_id = t.id
-                WHERE lower(t.name) IN ({})
+                WHERE casefold(t.name) IN ({})
             """.format(','.join(['?' for _ in query.tags]))
 
             with self._index._lock:  # BUGSWEEP-30
-                rows = self._index._conn.execute(tag_sql, [t.lower() for t in query.tags]).fetchall()
+                rows = self._index._conn.execute(tag_sql, [t.casefold() for t in query.tags]).fetchall()
 
             for row in rows:
                 if row['path'] not in found_paths:
@@ -454,11 +454,11 @@ class SearchEngine(LoggerMixin):
                 SELECT DISTINCT f.* FROM files f
                 JOIN file_tags ft ON f.id = ft.file_id
                 JOIN tags t ON ft.tag_id = t.id
-                WHERE lower(t.name) LIKE ?
+                WHERE casefold(t.name) LIKE ?
             """
             with self._index._lock:  # BUGSWEEP-30
                 rows = self._index._conn.execute(
-                    tag_text_sql, (f"%{query.text.lower()}%",)
+                    tag_text_sql, (f"%{query.text.casefold()}%",)
                 ).fetchall()
 
             for row in rows:
@@ -484,13 +484,13 @@ class SearchEngine(LoggerMixin):
             Liste von Vorschlägen
         """
         suggestions = set()
-        search_term = f"%{partial.lower()}%"
+        search_term = f"%{partial.casefold()}%"
         
         # Dateinamen
         with self._index._lock:  # BUGSWEEP-30
             rows = self._index._conn.execute("""
                 SELECT DISTINCT name FROM files
-                WHERE lower(name) LIKE ?
+                WHERE casefold(name) LIKE ?
                 LIMIT ?
             """, (search_term, limit)).fetchall()
 
@@ -501,7 +501,7 @@ class SearchEngine(LoggerMixin):
         with self._index._lock:  # BUGSWEEP-30
             rows = self._index._conn.execute("""
                 SELECT DISTINCT name FROM tags
-                WHERE lower(name) LIKE ?
+                WHERE casefold(name) LIKE ?
                 LIMIT ?
             """, (search_term, limit)).fetchall()
         

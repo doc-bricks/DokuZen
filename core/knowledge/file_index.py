@@ -204,6 +204,12 @@ class FileIndex(LoggerMixin):
         self._conn = sqlite3.connect(self._db_path, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("PRAGMA foreign_keys = ON")
+        # SQLite-lower()/LIKE falten nur ASCII; die Suche nutzt casefold(), damit
+        # „Übersicht“/„übersicht“ auch „Übersicht.pdf“ findet.
+        self._conn.create_function(
+            "casefold", 1, lambda value: value.casefold() if isinstance(value, str) else value,
+            deterministic=True,
+        )
         
         # Tabellen erstellen
         self._conn.executescript("""
