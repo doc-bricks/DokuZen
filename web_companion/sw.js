@@ -1,5 +1,8 @@
 // Service Worker für DokuZen Web Companion (Offline Cache)
 const CACHE_NAME = 'dokuzen-companion-v2';
+// Inhalts-Hash aller ASSETS-Dateien inkl. Manifest und Icons (web_companion/tests/sw_asset_hash.test.mjs prueft ihn):
+// aendert sich eine davon, CACHE_NAME erhoehen, sonst behalten installierte PWAs den alten Code.
+const ASSET_HASH = '8db11a3a9bcd'; // eslint-disable-line no-unused-vars
 const ASSETS = [
   './',
   './index.html',

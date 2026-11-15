@@ -91,7 +91,7 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
         run: |
-          python -m pytest tests/test_third_party_licenses.py tests/test_security_license_contract.py tests/test_metadata.py -v
+          python -m pytest tests/test_third_party_licenses.py tests/test_security_license_contract.py tests/test_metadata.py tests/test_sw_asset_hash.py -v
 
       - name: Compileall byte-compilation validation
         run: |
