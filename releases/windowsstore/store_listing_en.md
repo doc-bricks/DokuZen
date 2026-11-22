@@ -1,5 +1,5 @@
 Short Description:
-Local PDF workstation: edit, OCR, redact, convert. No cloud, no accounts — everything on your device.
+Local PDF workstation: OCR, redaction & conversion. 100% local and offline.
 
 Description:
 DokuZen is a local document workstation for the Windows desktop. All processing runs exclusively on your device — no cloud, no accounts, no data transmission.
@@ -14,8 +14,7 @@ Core features:
 
 Privacy: No network connections, no telemetry, no hidden background processes. Full AGPL-3.0-or-later open-source code available for inspection.
 
-Target Audience:
-Users, freelancers, and teams looking to process documents securely and privately on their Windows PC without cloud dependency.
+System requirements: Windows 10/11 (64-bit)
 
 Keywords:
-PDF, OCR, document management, redaction, conversion, privacy, offline
+PDF, OCR, Document Management, Redaction, Conversion, Privacy, Offline

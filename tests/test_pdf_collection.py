@@ -20,6 +20,34 @@ from core.pdf.collection import (
 )
 
 
+@pytest.fixture(scope="session")
+def collection_app():
+    """Keep Qt alive until every collection dialog has been destroyed."""
+    from PySide6.QtWidgets import QApplication
+
+    return QApplication.instance() or QApplication([])
+
+
+@pytest.fixture
+def collection_dialog_factory(collection_app):
+    from PySide6.QtCore import QCoreApplication, QEvent
+    from gui.dialogs.collection_export_dialog import CollectionExportDialog
+
+    dialogs = []
+
+    def create(**kwargs):
+        dialog = CollectionExportDialog(None, **kwargs)
+        dialogs.append(dialog)
+        return dialog
+
+    yield create
+    for dialog in dialogs:
+        dialog.close()
+        dialog.deleteLater()
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    collection_app.processEvents()
+
+
 @pytest.fixture
 def make_pdf(tmp_path):
     """Erzeugt eine Test-PDF mit angegebener Seitenzahl."""
@@ -176,17 +204,13 @@ def test_export_collection_all_files_missing(tmp_path):
     assert not out_pdf.exists()
 
 
-def test_dialog_reorder_and_filter(make_pdf):
+def test_dialog_reorder_and_filter(make_pdf, collection_dialog_factory):
     from PySide6.QtCore import Qt
-    from PySide6.QtWidgets import QApplication
-    from gui.dialogs.collection_export_dialog import CollectionExportDialog
-
-    _ = QApplication.instance() or QApplication([])
 
     pdf1 = make_pdf("alpha.pdf", pages=1)
     pdf2 = make_pdf("beta.pdf", pages=1)
 
-    dialog = CollectionExportDialog(None, initial_documents=[pdf1, pdf2])
+    dialog = collection_dialog_factory(initial_documents=[pdf1, pdf2])
     assert dialog._list_widget.count() == 2
 
     # Zweites Item auswählen und nach oben schieben
@@ -207,17 +231,14 @@ def test_dialog_reorder_and_filter(make_pdf):
     dialog.close()
 
 
-def test_dialog_export_execution(monkeypatch, tmp_path, make_pdf):
-    from PySide6.QtWidgets import QApplication, QFileDialog, QMessageBox
-    from gui.dialogs.collection_export_dialog import CollectionExportDialog
-
-    _ = QApplication.instance() or QApplication([])
+def test_dialog_export_execution(monkeypatch, tmp_path, make_pdf, collection_dialog_factory):
+    from PySide6.QtWidgets import QFileDialog, QMessageBox
 
     p1 = make_pdf("part1.pdf", pages=2)
     p2 = make_pdf("part2.pdf", pages=2)
     out_target = tmp_path / "gui_sammel.pdf"
 
-    dialog = CollectionExportDialog(None, initial_documents=[p1, p2], current_theme="Projekt")
+    dialog = collection_dialog_factory(initial_documents=[p1, p2], current_theme="Projekt")
 
     # Mocke Dateidialog und Nachfrage zum Öffnen
     monkeypatch.setattr(

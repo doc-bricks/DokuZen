@@ -178,6 +178,10 @@ def test_all_tools_menu_actions_dispatch_cleanly(main_window, tmp_path):
     with patch("gui.dialogs.pyinstaller_dialog.PyInstallerDialog.exec", return_value=0):
         main_window._action_pyinstaller.trigger()
 
+    # 16. PDF-Wasserzeichen
+    with patch("gui.dialogs.watermark_dialog.WatermarkDialog.exec", return_value=0):
+        main_window._action_watermark.trigger()
+
 
 def test_file_menu_actions_dispatch(main_window, tmp_path):
     """Testet alle Datei-Menü-Aktionen (Import, Smart Ingest, Sammel-PDF, Workspace, Einstellungen, Über)."""
@@ -304,6 +308,7 @@ def test_panels_buttons_and_interactions(main_window, tmp_path):
     assert any("schwärzen" in t for t in action_texts)
     assert any("OCR" in t for t in action_texts)
     assert any("Signatur" in t for t in action_texts)
+    assert any("Wasserzeichen" in t for t in action_texts)
     assert any("gelesen" in t for t in action_texts)
 
     # Einzelne Aktionen auslösen (mit Mocks)
@@ -321,6 +326,9 @@ def test_panels_buttons_and_interactions(main_window, tmp_path):
 
     with patch("gui.dialogs.ocr_dialog.OCRDialog.exec", return_value=0):
         doc_panel._ocr_pdf(str(pdf_file))
+
+    with patch("gui.dialogs.watermark_dialog.WatermarkDialog.exec", return_value=0):
+        doc_panel._watermark_pdf(str(pdf_file))
 
     # Gelesen / Ungelesen markieren (Filter auf ALL zurücksetzen, um alle Dokumente zu prüfen)
     doc_panel._filter_combo.setCurrentIndex(0)

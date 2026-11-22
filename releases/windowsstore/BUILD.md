@@ -8,7 +8,7 @@
 4. Lokaler Schreibpfad außerhalb synchronisierter Cloud-Ordner für MSIX-Artefakte, z. B. `C:\_Local_DEV\codex_build\dokuzen-store`
 
 Die Befehle verwenden relative bzw. kanonische Pfade.
-Setze `$projectRoot` auf den lokalen Checkout `C:\_Local_DEV\repos\DokuZen` und `$softwareRoot` auf den lokalen Pipeline-Ordner `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE`.
+Setze `$projectRoot` auf den lokalen Checkout `C:\_Local_DEV\repos\DokuZen` und `$softwareRoot` auf den lokalen Pipeline-Ordner `$env:USERPROFILE\OneDrive\.TOPICS\.SOFTWARE`.
 
 ---
 
@@ -74,7 +74,7 @@ Erwartetes MSIX-Paket:
 In einer PowerShell-Konsole mit Administratorrechten:
 
 ```powershell
-$softwareRoot = "C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE"
+$softwareRoot = "$env:USERPROFILE\OneDrive\.TOPICS\.SOFTWARE"
 $msixPath = "C:\_Local_DEV\codex_build\dokuzen-store\DokuZen.msix"
 $reportDir = Join-Path $projectRoot "releases\windowsstore\test_reports"
 

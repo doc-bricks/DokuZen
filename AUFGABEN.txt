@@ -321,7 +321,7 @@ DEV_TextBrain/AUFGABEN.txt dokumentiert.
 
 ## TASKWRITER-BÜNDEL 2026-07-18 — Selektor deep
 
-Der Selektor lieferte `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DEV_DokuZen`; dieser Pfad existiert nicht. Root-Register (`PROJECT_STATUS.md`, `releases.json`) und Dateisystem belegen den kanonischen Pfad `C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE\DOCS\DEV_DokuZen`. Das Routing wurde für diesen Lauf korrigiert; Selektor-/Registercode wurde nicht geändert.
+Der Selektor lieferte `<OneDrive>/.TOPICS/.SOFTWARE\DEV_DokuZen`; dieser Pfad existiert nicht. Root-Register (`PROJECT_STATUS.md`, `releases.json`) und Dateisystem belegen den kanonischen Pfad `<OneDrive>/.TOPICS/.SOFTWARE\DOCS\DEV_DokuZen`. Das Routing wurde für diesen Lauf korrigiert; Selektor-/Registercode wurde nicht geändert.
 
 Nachzertifizierung 2026-07-27: Der aktive OfficeHub-Katalog verwendet inzwischen `DOCS/DEV_DokuZen` als `project_path` und ersten `detection.default_paths`-Eintrag; `DOCS/DEV_DokuZentrum_SUITE` bleibt nur ein kompatibler Fallback. Der kanonische Pfad ist außerdem in `PROJECT_STATUS.md`, `releases.json` und `_tools/software_maintenance_audit.json` bestätigt. Der ursprünglich offene Selektorpunkt ist damit erfüllt; es war keine Produktcode-, Git- oder externe Änderung nötig.
 
@@ -444,3 +444,102 @@ ihren Namen, sie ist in store_package.json als executable referenziert.
     - Source-Tree-Hygiene: 4 verwaiste Prefixbak-Dateien aus Juni 2026 sicher nach `_archive/` überführt.
     - Verifikation: `tests/test_document_list_context_menu.py` (9 Tests) neu angelegt; Gesamte Suite wächst auf 444 bestandene Tests, 1 übersprungen (100% grün, ruff 0 Fehler, compileall 0 Fehler).
 
+[x] TW-DZ-16: PDF-Wasserzeichen-Suite (Text- & Bild-Wasserzeichen, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N) -- DONE 2026-10-31
+    - Core-Modul `core/pdf/watermark.py`:
+        - `PDFWatermarker`, `WatermarkOptions`, `WatermarkResult`, `WatermarkType`, `WatermarkPosition`, `WatermarkLayer`, `add_watermark_to_pdf`, `add_watermark_to_document`.
+        - Text-Wasserzeichen mit beliebiger Rotation (-90° bis +90° via PyMuPDF Matrix-Morphing), Deckkraft (0.01 bis 1.0), Schriftgröße (Auto oder manuell 10..160 pt), Farb-Parser (Hex, Farbnamen, RGB) und Schnellvorlagen (ENTWURF, VERTRAULICH, KOPIE, GEHEIM, DRAFT).
+        - Gekachelte/wiederholende Wasserzeichen (`WatermarkPosition.TILED`) für vollflächige Markierungen.
+        - Bild-Wasserzeichen (PNG mit Alpha-Transparenz, skalierbar).
+        - Ebenen-Wahl: Vordergrund (`overlay=True`) oder Hintergrund (`overlay=False`).
+        - Seitenfilterung: 'all', 'first', 'even', 'odd', oder Bereichsnotation '1-3, 5'.
+        - Atomares und In-Place-Schreiben über temporäre Staging-Dateien (`dokuzen_wm_*.tmp`) mit leak-freier `doc.close()`-Garantie.
+    - Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):
+        - `batch_watermark()` mit Parametern und Unix-Exit-Codes (0 = Erfolg, 1 = Fehler, 2 = ungültige Parameter).
+        - CLI-Optionen: `--watermark <PDF>`, `--watermark-text`, `--watermark-image`, `--watermark-opacity`, `--watermark-angle`, `--watermark-pages`, `--watermark-color`, `--watermark-layer`, `--watermark-position`, `--watermark-font-size`, `--json`.
+        - GUI-Startbefehl `StartupCommand("watermark")` und `window.startup_watermark_path()`.
+    - GUI-Dialog (`gui/dialogs/watermark_dialog.py`):
+        - `WatermarkDialog` mit Dateiwahl, Speichermodus (In-Place vs. Neue Datei), Umschaltung Text/Bild, Preset-Buttons, Slider für Deckkraft mit Live-Prozentanzeige, Winkelschnellwahl (0°, 45°, -45°), Ebenen- und Seitenfilter.
+        - Barrierefreiheit nach WCAG 2.1 AA (accessibleName, accessibleDescription, Tooltips auf allen Bedienelementen).
+    - GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):
+        - Menü `Werkzeuge -> PDF-Wasserzeichen...` (`_on_pdf_watermark`).
+        - Kontextmenü bei Einzelauswahl einer PDF: `PDF-Wasserzeichen einfügen...` (`_watermark_pdf`).
+    - Lokalisierung (`locales/translations.json`):
+        - 49 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (506 Keys total).
+        - Alt-Einträge `Dateien` und `Größe:` repariert.
+    - Testsuite & Verifikation:
+        - 19 neue/erweiterte automatisierte Tests: `tests/test_pdf_watermark.py` (8 Tests), `tests/test_batch_cli_watermark.py` (4 Tests), `tests/test_watermark_dialog.py` (4 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test), `tests/test_gui_menu_and_actions_coverage.py` (+1 Test).
+        - Gesamttestsuite wächst von 527 auf 546 passed, 1 skipped (100% grün in 9.87s).
+        - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+[x] TW-DZ-17: PDF-Sicherheits- & Passwortschutz-Suite (Verschlüsselung, Berechtigungen, Entsperrung, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N) -- DONE 2026-11-02
+    - Core-Modul `core/pdf/security.py`:
+        - Erweiterung von `get_security_info()` zur präzisen Inspektion von PDF-Berechtigungen (print, print_highres, modify, copy, annotate, fill_forms, extract, assemble), Verschlüsselungserkennung mit PyMuPDF und pikepdf, sowie Passwort-Authentifizierung.
+        - In-Place-Unterstützung (`output_path=None`) mit atomarer temporärer Datei-Ersetzung (`dokuzen_sec_*.tmp` / `dokuzen_enc_*.tmp`) für `encrypt()`, `unlock()` und `remove_restrictions()`.
+        - Flexible String- und Enum-basierte Parameterübergabe für Methoden (AES-256, AES-128, RC4-128) und Berechtigungen.
+        - Bereinigung von Module-Poisoning im Alt-Test `tests/test_pdf_security_unlock.py` via sauberem `unittest.mock.patch.object`.
+    - Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):
+        - Neue CLI-Funktionen `batch_security_info()`, `batch_encrypt()`, `batch_unlock()`.
+        - Neue CLI-Optionen: `--security` / `--encrypt <PDF>`, `--unlock` / `--decrypt <PDF>`, `--security-info <PDF>`, `--user-password`, `--owner-password`, `--password`, `--encryption-method`, `--permissions`, `--json`.
+        - Integration in Startaktion `StartupCommand("security")` und `window.startup_security_path()`.
+    - Barrierefreier GUI-Dialog (`gui/dialogs/security_dialog.py`):
+        - Vollständiger, moderner `SecurityDialog` (WCAG 2.1 AA konform) mit AccessibleName, AccessibleDescription und Tooltips auf allen Controls.
+        - Dynamisches Sicherheitsstatus-Banner mit Farbcodierung (Grün = ungeschützt, Gelb = Eigentümer-Schutz, Rot = Passwortgeschützt).
+        - Speichermodus-Wahl: In-Place speichern (Quelldatei atomar überschreiben) oder Neue Datei speichern.
+        - Zwei spezialisierte Modi über Reiter:
+            - Reiter 1: "Verschlüsseln & Schützen" mit Benutzer- und Eigentümer-Passwörtern, Passwort-Sichtbarkeits-Umschaltern (👁), Wiederholungsprüfung, Methoden-Dropdown (AES-256, AES-128, RC4-128) und 8 Berechtigungs-Checkboxen mit Schnell-Buttons (Alle erlauben, Standardrechte, Alle sperren).
+            - Reiter 2: "Entsperren / Passwort entfernen" mit Passwort-Eingabe und Erläuterung.
+    - GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):
+        - Menü `Werkzeuge -> PDF-Sicherheit...` (`_on_pdf_security`).
+        - Kontextmenü bei Einzelauswahl einer PDF im Dokumentenlisten-Panel: `PDF-Sicherheit & Passwort...` (`_security_pdf`).
+    - Lokalisierung (`locales/translations.json`):
+        - 40 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (548 Keys total). Vollständige 6-Sprachen-Parität nachgewiesen.
+    - Testsuite & Qualitätssicherung:
+        - 28 neue und erweiterte automatisierte Tests: `tests/test_pdf_security_suite.py` (11 Tests), `tests/test_batch_cli_security.py` (6 Tests), `tests/test_security_dialog.py` (9 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test).
+        - Gesamttestsuite wächst von 546 auf 574 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 16.29s).
+        - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+[x] TW-DZ-18: Translation Management CLI Gate (manage_translations.py), atomare Übersetzungspersistenz in translator.py, Smoke-Gate & 16 neue Tests -- DONE 2026-11-03
+    - Translation Management CLI (`manage_translations.py`):
+        - Eigenständiges CLI- und Validierungs-Werkzeug im Projekt-Root mit `--check` (Exit 0 bei 100% Parität, Exit 1 bei Lücken), `--stats` (Formatierte Statistik-Tabelle je Sprache mit Abdeckungsgrad), `--scan` (Automatischer Quelltext-Scanner für UI- und Dialog-Texte), `--dir` (Projektverzeichnis) und `--json` nach Policy P-006 Tier-2 (DE, EN, ES, ZH, JA, RU).
+        - Modulare Fassaden-APIs: `load_translations`, `save_translations`, `validate_catalog`, `get_catalog_stats`, `print_catalog_stats`, `find_german_strings`, `scan_and_update`, `resolve_translation_file`.
+        - Defensives Windows UTF-8 Konsolen-Encoding via `sys.stdout.reconfigure` / `sys.stderr.reconfigure`.
+        - 100% lückenlose 6-Sprachen-Parität für alle 548 Schlüssel in `locales/translations.json` verifiziert.
+    - Atomare Persistenz in `translator.py` & `manage_translations.py`:
+        - Ersetzung unsicherer direkter Schreibzugriffe durch atomare Staging-Dateien (`.{target}.tmp.<pid>_<uuid>`), `f.flush()`, `os.fsync(f.fileno())`, `stat.S_IWRITE`-Rechtefreigabe und `os.replace` mit deterministischem `finally`-Cleanup.
+        - Neue öffentliche Fassade `save_translations()` in `TranslationSystem`.
+    - Smoke-Gate-Integration (`tests/test_source_platform_smoke.py`):
+        - Neuer Prüfschritt `test_translation_parity_gate` integriert die Tier-2-Paritätsvalidierung hermetisch in den Plattform-Smoke.
+    - Testsuite & Qualitätssicherung:
+        - 16 neue automatisierte Tests in `tests/test_manage_translations.py` (CLI-Optionen, Validierung, Fehler-Erkennung, Statistiken, JSON-Export, atomare Persistenz, Quellcode-Scan, Wortgrenzen-Heuristik).
+        - Gesamttestsuite wächst von 574 auf 591 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün via pytest in 15.87s).
+        - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+[x] TW-DZ-19: Windows Store Packaging & Web-Companion Tier-2 6-Sprachen-Harmonisierung nach Policy P-006 (DE, EN, ES, ZH, JA, RU), Manifeste, Store-Listings, Web-Companion PWA Lokalisierung, README_es.md und Qualitäts-Gating -- DONE 2026-11-05
+    - Windows Store Packaging & Manifest Harmonisierung (Teil 1):
+        - `store_package.json` und `releases/windowsstore/store_settings.json` mit allen 6 Tier-2-Sprachen (`de-DE`, `en-US`, `es-ES`, `zh-CN`, `ja-JP`, `ru-RU`), Kurzbeschreibungen (strikt <= 100 Zeichen) und exakt 7 markenrechtsfreien Keywords je Sprache synchronisiert.
+        - `store_package/DokuZen/AppxManifest.xml` <Resources>-Block deklariert alle 6 Sprachressourcen (`de-DE`, `en-US`, `es-ES`, `zh-CN`, `ja-JP`, `ru-RU`).
+        - `.gitignore` Whitelist für alle 6 Store-Listing Staging-Dateien (`!releases/windowsstore/store_listing_*.md`).
+    - 6-Sprachen Store Listings & Staging (Teil 2):
+        - `releases/windowsstore/`: 6 eigenständige Staging-Dateien (`store_listing_de.md`, `store_listing_en.md`, `store_listing_es.md`, `store_listing_zh.md`, `store_listing_ja.md`, `store_listing_ru.md`) mit <= 100 Zeichen Kurzbeschreibung und 7 Keywords angelegt/aktualisiert.
+        - `STORE_LISTING.md` vollständig mit dedizierten Abschnitten für Deutsch, English, Español, 简体中文, 日本語, Русский und synchronisierter Metadaten-Tabelle gepflegt.
+        - Tooling- und Test-Erweiterung in `tools/check_store_readiness.py`, `tests/test_store_materials.py`, `tests/test_store_readiness.py` (17 Tests grün).
+    - Web-Companion PWA Tier-2 I18N (Teil 3):
+        - `web_companion/app.js`: Vollständiger `TRANSLATIONS`-Katalog mit 26 Schlüsseln über alle 6 Sprachen (100% Parität), dynamische Sprachauswahl, Lokalisierungsmethoden `getTranslation`, `setLanguage`, `getLanguage`, `applyTranslations`, und Headless-DOM-Guards.
+        - `web_companion/index.html` & `style.css`: Sprachauswahl `<select id="lang-select">`, `data-i18n`-Attribute für alle Oberflächenelemente.
+        - `web_companion/sw.js`: ServiceWorker Cache auf `dokuzen-companion-v2` aktualisiert.
+        - Native Node.js Testsuite `web_companion/tests/companion_i18n.test.mjs` (4/4 passed) und Python-Integration `tests/test_web_companion.py` (7/7 passed).
+    - Spanische Gesamtdokumentation & Tier-2 Readme-Parität (Teil 4):
+        - `README_es.md` & `README.es.md`: Vollständige spanische Gesamtdokumentation mit 1:1 Abschnitts- und Anker-Parität (alle 18 `<a id="..."></a>`-Anker), Badges, Mermaid-Diagrammen und Vergleichsmatrix.
+        - `README.md` & `README_de.md`: Sprachleiste um `[Español](README_es.md)` erweitert.
+        - `llms.txt`: Dokumentations-Index um `README_es.md` ergänzt.
+        - Neuer Vertragstest `test_readme_es_tier2_parity()` in `tests/test_metadata.py` (27/27 passed).
+    - Qualitäts-Gating:
+        - `manage_translations.py --check` validiert 548/548 Schlüssel (100% Parität).
+        - `scripts/check_store_readiness.py` meldet 0 Befunde (PASS).
+        - Pytest-Suite: 598+ Tests (100% grün).
+        - `ruff check .` sauber, `compileall` fehlerfrei, `git diff --check` sauber.
+
+[x] TW-DZ-20: Wissenssuche Umlaut-Härtung (SQLite casefold() in FileIndex, PR #14) -- DONE 2026-11-14
+    - Wissenssuche fand Dateinamen und Tags mit großen Umlauten nicht, da SQLite-lower()/LIKE nur ASCII faltet („Übersicht“ fand „Übersicht_2026.pdf“ nicht, Tag-Filter „ärzte“ nicht „Ärzte“).
+    - Fix: casefold()-SQL-Funktion in FileIndex registriert und in allen Text-, Tag- und Vorschlagsabfragen verdrahtet (6b704a1, PR #14).
+    - Verifikation: Regressionstests gegen echten SQLite-Index (vorher rot, nachher grün); Gesamtsuite 601 passed.

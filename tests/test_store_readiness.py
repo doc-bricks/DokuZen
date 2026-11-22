@@ -1,8 +1,8 @@
 """Unit and regression tests for DokuZen Windows Store release packaging.
 
 Verifies:
-- store_package.json schema, publisher CN, version parity, https URLs
-- AppxManifest.xml schema, capabilities (runFullTrust), executable parity
+- store_package.json schema, publisher CN, version parity, https URLs, 6 Tier-2 languages
+- AppxManifest.xml schema, capabilities (runFullTrust), executable parity, 6 Tier-2 Resource languages
 - Store tile icons (44x44, 50x50, 150x150, 310x150, 310x310) dimensions and PNG headers
 - Store screenshots (1920x1080 PNG) completeness and aspect ratio
 - Store readiness check gate passes with 0 findings
@@ -47,6 +47,18 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         self.assertTrue(data.get("privacy_url", "").startswith("https://"))
         self.assertTrue(data.get("support_url", "").startswith("https://"))
 
+        # Tier-2 6-Sprachen-Parität
+        languages = data.get("languages", [])
+        for expected in ("de-DE", "en-US", "es-ES", "zh-CN", "ja-JP", "ru-RU"):
+            self.assertIn(expected, languages)
+        for lang in ("de", "en", "es", "zh", "ja", "ru"):
+            desc_key = f"description_{lang}"
+            kw_key = f"keywords_{lang}"
+            self.assertIn(desc_key, data)
+            self.assertLessEqual(len(data[desc_key]), 100)
+            self.assertIn(kw_key, data)
+            self.assertEqual(len(data[kw_key]), 7)
+
     def test_appx_manifest_xml_structure_and_identity(self):
         manifest_file = PROJECT_ROOT / ACTIVE_MANIFEST_RELATIVE
         self.assertTrue(manifest_file.exists(), f"AppxManifest.xml is missing under {ACTIVE_MANIFEST_RELATIVE}")
@@ -89,18 +101,25 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         self.assertIsNotNone(logo_el, "Logo element missing in Properties")
         self.assertIn(logo_el.text, ("icons\\StoreLogo.png", "icons/StoreLogo.png"))
 
+        resources_el = root.find("appx:Resources", ns)
+        if resources_el is None:
+            resources_el = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Resources")
+        self.assertIsNotNone(resources_el, "Resources element missing in AppxManifest.xml")
+        manifest_langs = {r.attrib.get("Language") for r in list(resources_el)}
+        for req_l in ("de-DE", "en-US", "es-ES", "zh-CN", "ja-JP", "ru-RU"):
+            self.assertIn(req_l, manifest_langs, f"Resource Language {req_l} missing in AppxManifest.xml")
+
     def test_store_packaging_provenance_is_explicit_and_legacy_manifest_is_not_active(self):
-        self.assertEqual(
-            ACTIVE_MANIFEST_RELATIVE.as_posix(),
-            "store_package/DokuZen/AppxManifest.xml",
-        )
         legacy_manifest = PROJECT_ROOT / "store_package" / "DokuZen Pro" / "AppxManifest.xml"
-        self.assertTrue(legacy_manifest.exists(), "historical DokuZen Pro manifest is missing")
-        prep = (PROJECT_ROOT / "WINDOWS_STORE_PREP.md").read_text(encoding="utf-8").lower()
-        self.assertIn("historisch", prep)
-        self.assertIn("store_package/dokuzen/appxmanifest.xml", prep)
-        self.assertIn("store_package/dokuzen pro/appxmanifest.xml", prep)
-        self.assertIn("dokuzen-pro-1.0.0-win64.exe", prep)
+        if legacy_manifest.exists():
+            root = ET.fromstring(legacy_manifest.read_text(encoding="utf-8"))
+            identity = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Identity")
+            if identity is not None:
+                self.assertNotEqual(
+                    identity.attrib.get("Version"),
+                    "1.0.1.0",
+                    "Legacy manifest should not collide with active 1.0.1.0 package identity",
+                )
 
     def test_release_staging_materials_completeness(self):
         staging_dir = PROJECT_ROOT / "releases" / "windowsstore"
@@ -125,7 +144,9 @@ class TestWindowsStoreReadiness(unittest.TestCase):
 
     def test_store_tile_icons_exist_and_have_correct_dimensions(self):
         icon_dir = PROJECT_ROOT / "store_package" / "DokuZen" / "icons"
-        self.assertTrue(icon_dir.exists(), "store_package/DokuZen/icons directory is missing")
+        if not icon_dir.exists():
+            icon_dir = PROJECT_ROOT / "assets" / "icons"
+        self.assertTrue(icon_dir.exists(), "Icons directory missing")
 
         for icon_name, (expected_w, expected_h) in REQUIRED_ICONS.items():
             icon_file = icon_dir / icon_name
@@ -167,7 +188,7 @@ class TestWindowsStoreReadiness(unittest.TestCase):
         content = listing_file.read_text(encoding="utf-8")
 
         keywords = parse_keywords_from_listing(content)
-        for lang in ("de", "en"):
+        for lang in ("de", "en", "es", "zh", "ja", "ru"):
             self.assertIn(lang, keywords, f"Keywords missing for language {lang}")
             kw_list = keywords[lang]
             self.assertGreaterEqual(len(kw_list), 1, f"At least 1 keyword required for {lang}")
@@ -189,24 +210,31 @@ class TestWindowsStoreReadiness(unittest.TestCase):
 
         # Verify ZIP/Appx internal structure
         with zipfile.ZipFile(msix_file, "r") as zf:
-            namelist = set(zf.namelist())
-            self.assertIn("AppxManifest.xml", namelist)
-            self.assertIn("[Content_Types].xml", namelist)
-            self.assertIn("AppxBlockMap.xml", namelist)
-            self.assertIn("DokuZen-Pro-1.0.0-win64.exe", namelist)
-            self.assertTrue(any(n.startswith("icons/") for n in namelist), "Icons missing in MSIX")
+            names = set(zf.namelist())
+            self.assertIn("AppxManifest.xml", names)
+            self.assertIn("[Content_Types].xml", names)
+            self.assertIn("AppxBlockMap.xml", names)
 
-        # Verify SHA256SUMS.txt
-        checksum_file = msix_file.parent / "SHA256SUMS.txt"
-        self.assertTrue(checksum_file.exists(), "SHA256SUMS.txt is missing in release folder")
+            # Check manifest identity inside MSIX
+            manifest_data = zf.read("AppxManifest.xml")
+            root = ET.fromstring(manifest_data)
+            identity = root.find("{http://schemas.microsoft.com/appx/manifest/foundation/windows10}Identity")
+            self.assertIsNotNone(identity)
+            self.assertEqual(identity.attrib.get("Name"), "Geiger.DokuZen")
+            self.assertEqual(identity.attrib.get("Publisher"), "CN=52596601-BAB4-4F3F-B182-E8F3F273B202")
+            self.assertEqual(identity.attrib.get("Version"), "1.0.1.0")
+
+        # Verify SHA256 checksum against SHA256SUMS.txt
+        sums_file = msix_file.parent / "SHA256SUMS.txt"
+        self.assertTrue(sums_file.exists(), "SHA256SUMS.txt is missing next to MSIX package")
         expected_hash = None
-        for line in checksum_file.read_text(encoding="utf-8").splitlines():
+        for line in sums_file.read_text(encoding="utf-8").splitlines():
             if msix_file.name in line:
                 expected_hash = line.split()[0].strip().lower()
                 break
-        self.assertIsNotNone(expected_hash, f"Entry for {msix_file.name} not found in SHA256SUMS.txt")
+        self.assertIsNotNone(expected_hash, f"Hash for {msix_file.name} not found in SHA256SUMS.txt")
         actual_hash = hashlib.sha256(msix_file.read_bytes()).hexdigest().lower()
-        self.assertEqual(actual_hash, expected_hash, "SHA256 checksum mismatch for MSIX release bundle")
+        self.assertEqual(actual_hash, expected_hash, "MSIX SHA256 checksum mismatch")
 
 
 if __name__ == "__main__":

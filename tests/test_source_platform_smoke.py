@@ -122,6 +122,13 @@ class SourcePlatformSmokeTest(unittest.TestCase):
                 self.window._on_document_open(str(self.text_path))
         subprocess_run.assert_called_once_with(["xdg-open", str(self.text_path)], check=False, timeout=30)
 
+    def test_translation_parity_gate(self):
+        from manage_translations import resolve_translation_file, validate_catalog
+
+        trans_file = resolve_translation_file(PROJECT_ROOT)
+        is_valid, findings = validate_catalog(trans_file)
+        self.assertTrue(is_valid, f"Translation parity check failed: {findings}")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,7 +10,7 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Tuple, Union, Sequence
 from dataclasses import dataclass
 from enum import Enum
 
@@ -86,12 +86,13 @@ class PDFSecurity(LoggerMixin):
         if not PIKEPDF_AVAILABLE:
             self.logger.warning("pikepdf nicht installiert (für erweiterte Unlock-Funktionen)")
     
-    def get_security_info(self, path: str) -> Optional[SecurityInfo]:
+    def get_security_info(self, path: Union[str, Path], password: str = "") -> Optional[SecurityInfo]:
         """
         Gibt Sicherheitsinformationen einer PDF zurück.
         
         Args:
             path: Pfad zur PDF
+            password: Optionales Passwort zur Authentifizierung bei geschützten PDFs
             
         Returns:
             SecurityInfo oder None
@@ -99,29 +100,100 @@ class PDFSecurity(LoggerMixin):
         if not PYMUPDF_AVAILABLE:
             return None
         
-        try:
-            doc = fitz.open(path)
-            try:
-                info = SecurityInfo(
-                    is_encrypted=doc.is_encrypted,
-                    needs_password=doc.needs_pass if doc.is_encrypted else False,
-                    user_password_set=False,
-                    owner_password_set=False
-                )
+        p = Path(path)
+        if not p.is_file():
+            return None
 
-                # Verschlüsselungsmethode ermitteln
-                if doc.is_encrypted:
-                    # PyMuPDF gibt nicht direkt die Methode zurück
-                    info.encryption_method = "Unbekannt"
-            finally:
-                doc.close()
-            return info
+        doc = None
+        try:
+            doc = fitz.open(str(p))
+            is_enc = bool(doc.is_encrypted)
+            needs_pass = bool(doc.needs_pass) if is_enc else False
+
+            # Authentifizierung versuchen wenn Passwort übergeben oder leeres Passwort möglich
+            if is_enc:
+                if password:
+                    doc.authenticate(password)
+                elif not needs_pass:
+                    doc.authenticate("")
+
+            # Berechtigungen ermitteln
+            permissions_dict = {
+                "print": True,
+                "print_highres": True,
+                "modify": True,
+                "copy": True,
+                "annotate": True,
+                "fill_forms": True,
+                "extract": True,
+                "assemble": True,
+            }
+
+            if is_enc:
+                perm_val = getattr(doc, "permissions", -4)
+                if perm_val != -4:
+                    permissions_dict = {
+                        "print": bool(perm_val & fitz.PDF_PERM_PRINT),
+                        "print_highres": bool(perm_val & getattr(fitz, "PDF_PERM_PRINT_HQ", 2048)),
+                        "modify": bool(perm_val & fitz.PDF_PERM_MODIFY),
+                        "copy": bool(perm_val & fitz.PDF_PERM_COPY),
+                        "annotate": bool(perm_val & fitz.PDF_PERM_ANNOTATE),
+                        "fill_forms": bool(perm_val & getattr(fitz, "PDF_PERM_FORM", 256)),
+                        "extract": bool(perm_val & getattr(fitz, "PDF_PERM_ACCESSIBILITY", 512)),
+                        "assemble": bool(perm_val & getattr(fitz, "PDF_PERM_ASSEMBLE", 1024)),
+                    }
+
+            user_pw_set = needs_pass
+            owner_pw_set = False
+            enc_method = "Keine" if not is_enc else "Unbekannt"
+
+            # pikepdf Erweiterung zur präzisen Erkennung
+            if PIKEPDF_AVAILABLE:
+                try:
+                    safe_pw = str(password or "")
+                    with pikepdf.open(str(p), password=safe_pw) as pdf:
+                        if pdf.is_encrypted:
+                            is_enc = True
+                            if getattr(pdf, "encryption", None):
+                                bits = getattr(pdf.encryption, "bits", None)
+                                if bits == 256:
+                                    enc_method = "AES-256"
+                                elif bits == 128:
+                                    enc_method = "AES-128"
+                                elif bits == 40:
+                                    enc_method = "RC4-40"
+                                else:
+                                    enc_method = "AES-256"
+                except pikepdf.PasswordError:
+                    is_enc = True
+                    needs_pass = True
+                    user_pw_set = True
+                    enc_method = "AES-256"
+                except Exception:
+                    pass
+
+            if is_enc and enc_method == "Unbekannt":
+                enc_method = "AES-256"
+            if is_enc and not user_pw_set:
+                owner_pw_set = True
+
+            return SecurityInfo(
+                is_encrypted=is_enc,
+                needs_password=needs_pass,
+                user_password_set=user_pw_set,
+                owner_password_set=owner_pw_set,
+                encryption_method=enc_method,
+                permissions=permissions_dict
+            )
 
         except Exception as e:
             self.logger.error(f"Fehler beim Lesen der Sicherheitsinfo: {e}")
             return None
+        finally:
+            if doc is not None and not getattr(doc, "is_closed", False):
+                doc.close()
     
-    def unlock(self, input_path: str, output_path: str,
+    def unlock(self, input_path: Union[str, Path], output_path: Optional[Union[str, Path]] = None,
                password: str = "") -> UnlockResult:
         """
         Entsperrt eine PDF (entfernt Passwortschutz).
@@ -132,27 +204,28 @@ class PDFSecurity(LoggerMixin):
         
         Args:
             input_path: Eingabe-PDF
-            output_path: Ausgabe-PDF
+            output_path: Ausgabe-PDF (None = in-place)
             password: Passwort (falls bekannt)
             
         Returns:
             UnlockResult
         """
+        dst = str(output_path if output_path is not None else input_path)
         if not Path(input_path).exists():
-            return UnlockResult(False, output_path, False, "Datei nicht gefunden")
+            return UnlockResult(False, dst, False, "Datei nicht gefunden")
         
         # Methode 1: PyMuPDF
-        result = self._unlock_pymupdf(input_path, output_path, password)
+        result = self._unlock_pymupdf(str(input_path), dst, password)
         if result.success:
             return result
         
         # Methode 2: pikepdf (für PDFs mit nur Owner-Passwort)
         if PIKEPDF_AVAILABLE:
-            result = self._unlock_pikepdf(input_path, output_path, password)
+            result = self._unlock_pikepdf(str(input_path), dst, password)
             if result.success:
                 return result
         
-        return UnlockResult(False, output_path, True, "Konnte PDF nicht entsperren")
+        return UnlockResult(False, dst, True, "Konnte PDF nicht entsperren")
     
     def _unlock_pymupdf(self, input_path: str, output_path: str,
                         password: str) -> UnlockResult:
@@ -281,39 +354,58 @@ class PDFSecurity(LoggerMixin):
                 except Exception:
                     pass
     
-    def encrypt(self, input_path: str, output_path: str,
+    def encrypt(self, input_path: Union[str, Path],
+                output_path: Optional[Union[str, Path]] = None,
                 user_password: str = "",
                 owner_password: str = "",
-                method: EncryptionMethod = EncryptionMethod.AES_256,
-                permissions: Optional[list] = None) -> UnlockResult:
+                method: Union[EncryptionMethod, str] = EncryptionMethod.AES_256,
+                permissions: Optional[Sequence[Union[Permission, str]]] = None) -> UnlockResult:
         """
         Verschlüsselt eine PDF.
         
         Args:
             input_path: Eingabe-PDF
-            output_path: Ausgabe-PDF
+            output_path: Ausgabe-PDF (None = in-place)
             user_password: Passwort zum Öffnen
             owner_password: Passwort für Berechtigungen
-            method: Verschlüsselungsmethode
-            permissions: Liste von Permission-Werten
+            method: Verschlüsselungsmethode (Enum oder String)
+            permissions: Liste von Permission-Werten oder String-Bezeichnern
             
         Returns:
             UnlockResult
         """
+        dst_str = str(output_path if output_path is not None else input_path)
+        if not Path(input_path).exists():
+            return UnlockResult(False, dst_str, False, "Datei nicht gefunden")
+
         if not PYMUPDF_AVAILABLE:
-            return UnlockResult(False, output_path, False, "PyMuPDF nicht verfügbar")
+            return UnlockResult(False, dst_str, False, "PyMuPDF nicht verfügbar")
         
         if not user_password and not owner_password:
-            return UnlockResult(False, output_path, False, "Mindestens ein Passwort erforderlich")
+            return UnlockResult(False, dst_str, False, "Mindestens ein Passwort erforderlich")
+
+        # String-Methode normalisieren
+        if isinstance(method, str):
+            norm = method.strip().upper().replace("_", "-")
+            if "256" in norm:
+                method = EncryptionMethod.AES_256
+            elif "128" in norm and "RC4" in norm:
+                method = EncryptionMethod.RC4_128
+            elif "128" in norm:
+                method = EncryptionMethod.AES_128
+            elif "40" in norm:
+                method = EncryptionMethod.RC4_40
+            else:
+                method = EncryptionMethod.AES_256
         
         doc = None
         temp_file = None
         try:
-            doc = fitz.open(input_path)
+            doc = fitz.open(str(input_path))
             # Wenn bereits verschlüsselt, erst entsperren
             if doc.is_encrypted:
                 if not doc.authenticate(""):
-                    return UnlockResult(False, output_path, True,
+                    return UnlockResult(False, dst_str, True,
                                        "Originaldatei ist passwortgeschützt")
 
             # Verschlüsselungsmethode wählen
@@ -326,13 +418,13 @@ class PDFSecurity(LoggerMixin):
 
             # Berechtigungen
             perm = fitz.PDF_PERM_PRINT | fitz.PDF_PERM_COPY  # Standard
-            if permissions:
+            if permissions is not None:
                 perm = 0
                 perm_items = set()
                 for p in permissions:
                     if isinstance(p, Permission):
                         perm_items.add(p)
-                        perm_items.add(p.value)
+                        perm_items.add(p.value.lower())
                     elif isinstance(p, str):
                         perm_items.add(p.strip().lower())
 
@@ -344,17 +436,17 @@ class PDFSecurity(LoggerMixin):
                     perm |= fitz.PDF_PERM_MODIFY
                 if Permission.ANNOTATE in perm_items or "annotate" in perm_items:
                     perm |= fitz.PDF_PERM_ANNOTATE
-                if Permission.FILL_FORMS in perm_items or "fill_forms" in perm_items:
+                if Permission.FILL_FORMS in perm_items or "fill_forms" in perm_items or "form" in perm_items:
                     perm |= getattr(fitz, "PDF_PERM_FORM", 256)
-                if Permission.EXTRACT in perm_items or "extract" in perm_items:
-                    perm |= getattr(fitz, "PDF_PERM_ACCESSIBILITY", 16)
+                if Permission.EXTRACT in perm_items or "extract" in perm_items or "accessibility" in perm_items:
+                    perm |= getattr(fitz, "PDF_PERM_ACCESSIBILITY", 512)
                 if Permission.ASSEMBLE in perm_items or "assemble" in perm_items:
                     perm |= getattr(fitz, "PDF_PERM_ASSEMBLE", 1024)
-                if Permission.PRINT_HIGH_QUALITY in perm_items or "print_highres" in perm_items:
+                if Permission.PRINT_HIGH_QUALITY in perm_items or "print_highres" in perm_items or "print_hq" in perm_items:
                     perm |= getattr(fitz, "PDF_PERM_PRINT_HQ", 2048)
 
             src = Path(input_path).resolve()
-            dst = Path(output_path).resolve()
+            dst = Path(dst_str).resolve()
             dst.parent.mkdir(parents=True, exist_ok=True)
 
             if src == dst:
@@ -389,8 +481,8 @@ class PDFSecurity(LoggerMixin):
                 shutil.move(str(temp_file), str(dst))
                 temp_file = None
 
-            self.logger.info(f"PDF verschlüsselt: {output_path}")
-            return UnlockResult(True, output_path, False)
+            self.logger.info(f"PDF verschlüsselt: {dst_str}")
+            return UnlockResult(True, dst_str, False)
 
         except Exception as e:
             self.logger.error(f"Verschlüsselungsfehler: {e}")
@@ -400,7 +492,7 @@ class PDFSecurity(LoggerMixin):
                 except Exception:
                     pass
             temp_file = None
-            return UnlockResult(False, output_path, False, str(e))
+            return UnlockResult(False, dst_str, False, str(e))
         finally:
             if doc is not None and not getattr(doc, "is_closed", False):
                 doc.close()
@@ -410,31 +502,33 @@ class PDFSecurity(LoggerMixin):
                 except Exception:
                     pass
     
-    def remove_restrictions(self, input_path: str, output_path: str,
-                           owner_password: str = "") -> UnlockResult:
+    def remove_restrictions(self, input_path: Union[str, Path],
+                            output_path: Optional[Union[str, Path]] = None,
+                            owner_password: str = "") -> UnlockResult:
         """
         Entfernt nur Einschränkungen (nicht das User-Passwort).
 
         Args:
             input_path: Eingabe-PDF
-            output_path: Ausgabe-PDF
+            output_path: Ausgabe-PDF (None = in-place)
             owner_password: Owner-Passwort
 
         Returns:
             UnlockResult
         """
+        dst_str = str(output_path if output_path is not None else input_path)
         if not PIKEPDF_AVAILABLE:
-            return UnlockResult(False, output_path, False, "pikepdf erforderlich")
+            return UnlockResult(False, dst_str, False, "pikepdf erforderlich")
 
         pdf = None
         temp_file = None
         try:
             src = Path(input_path).resolve()
-            dst = Path(output_path).resolve()
+            dst = Path(dst_str).resolve()
             dst.parent.mkdir(parents=True, exist_ok=True)
 
             safe_pw = str(owner_password or "")
-            pdf = pikepdf.open(input_path, password=safe_pw, allow_overwriting_input=True)
+            pdf = pikepdf.open(str(input_path), password=safe_pw, allow_overwriting_input=True)
 
             if src == dst:
                 with tempfile.NamedTemporaryFile(
@@ -456,7 +550,7 @@ class PDFSecurity(LoggerMixin):
                 shutil.move(str(temp_file), str(dst))
                 temp_file = None
 
-            return UnlockResult(True, output_path, True)
+            return UnlockResult(True, dst_str, True)
 
         except Exception as e:
             if temp_file and temp_file.exists():
@@ -465,7 +559,7 @@ class PDFSecurity(LoggerMixin):
                 except Exception:
                     pass
             temp_file = None
-            return UnlockResult(False, output_path, True, str(e))
+            return UnlockResult(False, dst_str, True, str(e))
         finally:
             if pdf is not None:
                 pdf.close()
@@ -478,10 +572,10 @@ class PDFSecurity(LoggerMixin):
 
 # === Hilfsfunktionen ===
 
-def unlock_pdf(input_path: str, output_path: str, password: str = "") -> bool:
+def unlock_pdf(input_path: str, output_path: Optional[str] = None, password: str = "") -> bool:
     """Schnelle Funktion zum Entsperren."""
     security = PDFSecurity()
-    result = security.unlock(input_path, output_path, password)
+    result = security.unlock(input_path, output_path or input_path, password)
     return result.success
 
 
@@ -492,8 +586,11 @@ def is_pdf_locked(path: str) -> bool:
     return info.needs_password if info else False
 
 
-def encrypt_pdf(input_path: str, output_path: str, password: str) -> bool:
+def encrypt_pdf(input_path: str, output_path: Optional[str] = None, password: str = "",
+                owner_password: str = "", method: Union[EncryptionMethod, str] = EncryptionMethod.AES_256,
+                permissions: Optional[Sequence[Union[Permission, str]]] = None) -> bool:
     """Schnelle Funktion zum Verschlüsseln."""
     security = PDFSecurity()
-    result = security.encrypt(input_path, output_path, user_password=password)
+    result = security.encrypt(input_path, output_path or input_path, user_password=password,
+                             owner_password=owner_password, method=method, permissions=permissions)
     return result.success

@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import json
 import re
-import tomllib
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from PIL import Image
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10
+    import tomli as tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -285,8 +289,8 @@ def test_ci_workflow_integrity():
     assert "ubuntu-latest" in content
     assert "macos-latest" in content
     assert "windows-latest" in content
-    assert "actions/checkout@v4" in content
-    assert "actions/setup-python@v5" in content
+    assert re.search(r"actions/checkout@v\d+", content)
+    assert re.search(r"actions/setup-python@v\d+", content)
     assert "pytest" in content
     assert "concurrency:" in content
     assert "cancel-in-progress: true" in content
@@ -420,7 +424,8 @@ def test_ci_lifecycle_and_hardening_workflows():
     stale_path = workflows_dir / "stale.yml"
     assert stale_path.exists(), "stale.yml must exist"
     s_content = stale_path.read_text(encoding="utf-8")
-    assert "actions/stale@v9" in s_content
+    # Major-Tag oder 40-stelliger Commit-Pin; keine feste Version, damit Dependabot-Updates nicht brechen.
+    assert re.search(r"actions/stale@(?:v\d+|[0-9a-f]{40})\b", s_content)
     assert 'cron: "30 1 * * *"' in s_content
     assert "timeout-minutes: 10" in s_content
     assert "cancel-in-progress: true" in s_content
@@ -617,3 +622,48 @@ def test_marketing_log_section_9_pfad_a_20261018():
     content = marketing_log.read_text(encoding="utf-8")
     assert "9. Pfad A Repository Hygiene" in content or "9. PFAD A" in content
     assert "2026-10-18" in content
+
+
+def test_readme_es_tier2_parity():
+    """Verify Spanish documentation README_es.md and README.es.md maintain complete parity."""
+    readme_es = ROOT / "README_es.md"
+    readme_dot_es = ROOT / "README.es.md"
+    assert readme_es.exists(), "README_es.md must exist"
+    assert readme_dot_es.exists(), "README.es.md must exist"
+
+    content_es = readme_es.read_text(encoding="utf-8")
+    assert "doc-bricks" in content_es
+    assert "open-bricks" in content_es
+    assert "AGPL-3.0" in content_es
+    assert "llms.txt" in content_es
+    assert "assets/banner.png" in content_es
+    assert "SECURITY.md" in content_es
+    assert "NOTICE" in content_es
+
+    # Language switcher
+    assert "[English](README.md)" in content_es
+    assert "[Deutsch](README_de.md)" in content_es
+
+    expected_anchors = [
+        "visual-showcase",
+        "architecture",
+        "lifecycle",
+        "core-features",
+        "target-personas",
+        "comparative-matrix",
+        "installation",
+        "cli-entry-points",
+        "ecosystem",
+        "privacy-security",
+        "verification-testing",
+        "keyboard-shortcuts",
+        "windows-store",
+        "linux-bundle",
+        "workspace-export",
+        "audit-transparency",
+        "statutory-notice",
+        "license-third-party",
+    ]
+    for anchor in expected_anchors:
+        assert f'<a id="{anchor}"></a>' in content_es, f"Missing anchor in README_es.md: {anchor}"
+        assert f"(#{anchor})" in content_es, f"Missing nav link in README_es.md: {anchor}"

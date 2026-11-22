@@ -12,7 +12,7 @@
 - **License:** AGPL-3.0-or-later (GNU Affero General Public License v3.0 or later)
 - **Runtime Environment:** Python 3.10+, PySide6 >= 6.5, PyMuPDF (fitz), Pillow, pikepdf, pytesseract
 - **Test Suite Status:** Pytest test suite 100% green (527 unit, integration, accessibility, batch CLI & security contract tests passed)
-- **Last-checked:** 2026-10-18 (Prior audits: 2026-10-11, 2026-10-08, 2026-10-03, 2026-10-01, 2026-09-24, 2026-09-19, 2026-09-07)
+- **Last-checked:** 2026-10-30 (Prior audits: 2026-10-18, 2026-10-11, 2026-10-08, 2026-10-03, 2026-10-01, 2026-09-24, 2026-09-19, 2026-09-07)
 
 ---
 
@@ -109,6 +109,7 @@ python -m ruff check .
 
 - [`README.md`](README.md) — English Documentation & Visual Showcase
 - [`README_de.md`](README_de.md) — Deutsche Hauptdokumentation & Systemübersicht
+- [`README_es.md`](README_es.md) — Documentación completa en español (18 secciones en paridad)
 - [`NOTICE`](NOTICE) — Kanonische Open-Source-Urheberrechts- und Attributionsdatei
 - [`SECURITY.md`](SECURITY.md) — Zweisprachige Sicherheitsrichtlinie & Zero-Egress Invarianten
 - [`CHANGELOG.md`](CHANGELOG.md) — Version History & Release Entries

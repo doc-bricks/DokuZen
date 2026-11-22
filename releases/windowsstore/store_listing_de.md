@@ -1,5 +1,5 @@
 Kurzbeschreibung:
-Lokale PDF-Werkstatt: Bearbeiten, OCR, Schwärzung, Konvertierung. Keine Cloud, keine Konten — alles auf Ihrem Gerät.
+Lokale PDF-Werkstatt: OCR, Schwärzung & Konvertierung. 100% lokal & offline.
 
 Beschreibung:
 DokuZen ist eine lokale Dokumenten-Werkstatt für den Windows-Desktop. Alle Verarbeitungsschritte laufen ausschließlich auf Ihrem Gerät — keine Cloud, keine Konten, keine Datenübertragung.
@@ -14,8 +14,7 @@ Kernfunktionen:
 
 Datenschutz: Keine Netzwerkverbindungen, keine Telemetrie, keine versteckten Hintergrundprozesse. Vollständiger AGPL-3.0-or-later-Open-Source-Quellcode einsehbar.
 
-Zielgruppe:
-Anwender, Freiberufler und Teams, die Dokumente sicher und datenschutzkonform ohne Cloud-Zwang auf ihrem Windows-PC bearbeiten wollen.
+Systemanforderungen: Windows 10/11 (64-bit)
 
 Schlüsselwörter:
-PDF, OCR, Dokumentenverwaltung, Schwärzung, Konvertierung, Datenschutz, Offline
+PDF, OCR, Dokumente, Schwärzung, Konvertierung, Datenschutz, Offline

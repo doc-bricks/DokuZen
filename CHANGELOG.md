@@ -5,6 +5,119 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed (2026-11-13, CI: Action-Annotationen und Bundle-Validierung, Port von #9)
+- **Workflows (`linux-bundle.yml`, `source-platform-smoke.yml`):** Die Kommentare an den SHA-Pins nennen jetzt die tatsächlich gepinnten Releases (`actions/checkout@v7.0.1`, `actions/setup-python@v7.0.0`, `actions/upload-artifact@v7.0.2`) statt der alten `v4`/`v5`-Angaben. Die SHAs selbst sind unverändert.
+- **`linux-bundle.yml`:** Der Workflow steht in seinem eigenen Pull-Request-Pfadfilter und der Build-Job läuft auch bei Pull Requests. Änderungen am Workflow werden damit vor dem Merge geprüft.
+- **`tests/test_metadata.py`:** Die Prüfung von `stale.yml` akzeptiert einen Major-Tag oder einen Commit-Pin von `actions/stale` (wie bei `checkout` und `setup-python`; Fassung aus #12).
+
+### Added (2026-11-05, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — TW-DZ-19: Windows Store Packaging & Web-Companion Tier-2 6-Sprachen-Harmonisierung nach Policy P-006 [G 2026-11-05])
+- **Windows Store Packaging & Manifest-Harmonisierung (`store_package.json`, `AppxManifest.xml`, `store_settings.json`):**
+  - Synchronisation von `store_package.json` und `releases/windowsstore/store_settings.json` mit allen 6 Tier-2-Sprachen (`de-DE`, `en-US`, `es-ES`, `zh-CN`, `ja-JP`, `ru-RU`).
+  - Kurzbeschreibungen für alle Sprachen normiert auf strikt <= 100 Zeichen (Partner Center Constraint).
+  - Exakt 7 markenrechtsfreie Suchbegriffe je Sprache definiert (Policy 10.1.3).
+  - Deklaration aller 6 Sprachressourcen im `<Resources>`-Block von `store_package/DokuZen/AppxManifest.xml`.
+  - `.gitignore` Whitelist für Store-Listing Staging-Dateien aller 6 Sprachen.
+- **6-Sprachen Store Listings & Staging (`releases/windowsstore/`, `STORE_LISTING.md`):**
+  - Vollständige Staging-Dateien für Deutsch, Englisch, Spanisch, Chinesisch (vereinfacht), Japanisch und Russisch unter `releases/windowsstore/store_listing_<lang>.md`.
+  - `STORE_LISTING.md` um alle 6 Sprachen und aktualisierte Store-Metadaten-Tabelle erweitert.
+  - Automatisiertes Staging- & Format-Gate in `tools/check_store_readiness.py`, `tests/test_store_materials.py` und `tests/test_store_readiness.py` (17 Tests grün).
+- **Web-Companion PWA Tier-2 I18N (`web_companion/`):**
+  - Vollständiges Lokalisierungsmodul in `web_companion/app.js` mit `TRANSLATIONS`-Katalog (26 Keys in 6 Sprachen, 100% Parität), `getTranslation`, `setLanguage`, `getLanguage`, `applyTranslations` und DOM-Guards für Headless-Ausführung.
+  - Sprachauswahl `<select id="lang-select">` und `data-i18n`-Attribute in `web_companion/index.html` und Styling in `style.css`.
+  - Offline-Cache-Erneuerung auf `dokuzen-companion-v2` in `web_companion/sw.js`.
+  - Native Node.js Testsuite `web_companion/tests/companion_i18n.test.mjs` (4 Tests) und Python Test-Suite `tests/test_web_companion.py` (7 Tests).
+- **Spanische Gesamtdokumentation & Tier-2 Readme-Parität (`README_es.md`, `README.es.md`):**
+  - Vollständige spanische Gesamtdokumentation mit 1:1 Abschnitts- und Anker-Parität (alle 18 `<a id="..."></a>`-Anker), Architektur- und Lifecycle-Mermaid-Diagrammen und Feature-Matrix.
+  - GitHub-Viewer Parität `README.es.md` und Sprachleisten-Aktualisierung in `README.md` und `README_de.md`.
+  - Aufnahme in `llms.txt` und neuer Vertragstest in `tests/test_metadata.py`.
+- **Testsuite & Qualitätssicherung:**
+  - Alle Testsuiten grün (Pytest 598+ passed, 1 skipped, Node.js 4/4 passed).
+  - `manage_translations.py --check` validiert 548/548 Schlüssel (100% Parität).
+  - `scripts/check_store_readiness.py` meldet 0 Fehler.
+  - `ruff check .` sauber, `compileall` fehlerfrei, `git diff --check` sauber.
+
+### Added (2026-11-03, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — TW-DZ-18: Translation Management CLI Gate, atomare Übersetzungspersistenz in translator.py, Smoke-Gate & 16 neue Tests [G 2026-11-03])
+- **Translation Management CLI Gate (`manage_translations.py`):**
+  - Eigenständiges CLI- und Validierungs-Werkzeug im Projekt-Root mit `--check` (Exit 0/1 CI-Gate), `--stats` (Formatierte Statistik-Tabelle je Sprache mit Abdeckungsgrad), `--scan` (Automatischer Quelltext-Scanner für UI- und Dialog-Texte), `--dir` (Projektverzeichnis) und `--json` nach Policy P-006 Tier-2 (DE, EN, ES, ZH, JA, RU).
+  - Modulare Fassaden-APIs: `load_translations`, `save_translations`, `validate_catalog`, `get_catalog_stats`, `print_catalog_stats`, `find_german_strings`, `scan_and_update`, `resolve_translation_file`.
+  - Defensives Windows UTF-8 Konsolen-Encoding via `sys.stdout.reconfigure` / `sys.stderr.reconfigure`.
+  - 100% lückenlose 6-Sprachen-Parität für alle 548 Schlüssel in `locales/translations.json` verifiziert.
+- **Atomare Persistenz in `translator.py` & `manage_translations.py`:**
+  - Ersetzung unsicherer direkter Schreibzugriffe durch atomare Staging-Dateien (`.{target}.tmp.<pid>_<uuid>`), `f.flush()`, `os.fsync(f.fileno())`, `stat.S_IWRITE`-Rechtefreigabe und `os.replace` mit deterministischem `finally`-Cleanup.
+  - Neue öffentliche Fassade `save_translations()` in `TranslationSystem`.
+- **Smoke-Gate-Integration (`tests/test_source_platform_smoke.py`):**
+  - Neuer Prüfschritt `test_translation_parity_gate` integriert die Tier-2-Paritätsvalidierung hermetisch in den Plattform-Smoke.
+- **Testsuite & Qualitätssicherung:**
+  - 16 neue automatisierte Tests in `tests/test_manage_translations.py` (CLI-Optionen, Validierung, Fehler-Erkennung, Statistiken, JSON-Export, atomare Persistenz, Quellcode-Scan, Wortgrenzen-Heuristik).
+  - Gesamttestsuite wächst von 574 auf 591 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 15.87s).
+  - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+### Added (2026-11-02, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Sicherheits- & Passwortschutz-Suite: Verschlüsselung, Berechtigungen, Entsperrung, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-11-02])
+- **PDF-Sicherheits-Engine & Berechtigungs-Parsing (`core/pdf/security.py`):**
+  - Erweiterung von `get_security_info()` zur präzisen Inspektion von PDF-Berechtigungen (print, print_highres, modify, copy, annotate, fill_forms, extract, assemble), Verschlüsselungserkennung mit PyMuPDF und pikepdf, sowie Passwort-Authentifizierung.
+  - In-Place-Unterstützung (`output_path=None`) mit atomarer temporärer Datei-Ersetzung (`dokuzen_sec_*.tmp` / `dokuzen_enc_*.tmp`) für `encrypt()`, `unlock()` und `remove_restrictions()`.
+  - Flexible String- und Enum-basierte Parameterübergabe für Methoden (AES-256, AES-128, RC4-128) und Berechtigungen.
+  - Bereinigung von Module-Poisoning im Alt-Test `tests/test_pdf_security_unlock.py` via sauberem `unittest.mock.patch.object`.
+- **Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):**
+  - Neue CLI-Funktionen `batch_security_info()`, `batch_encrypt()`, `batch_unlock()`.
+  - Neue CLI-Optionen: `--security` / `--encrypt <PDF>`, `--unlock` / `--decrypt <PDF>`, `--security-info <PDF>`, `--user-password`, `--owner-password`, `--password`, `--encryption-method`, `--permissions`, `--json`.
+  - Integration in Startaktion `StartupCommand("security")` und `window.startup_security_path()`.
+- **Barrierefreier GUI-Dialog (`gui/dialogs/security_dialog.py`):**
+  - Vollständiger, moderner `SecurityDialog` (WCAG 2.1 AA konform) mit AccessibleName, AccessibleDescription und Tooltips auf allen Controls.
+  - Dynamisches Sicherheitsstatus-Banner mit Farbcodierung (Grün = ungeschützt, Gelb = Eigentümer-Schutz, Rot = Passwortgeschützt).
+  - Speichermodus-Wahl: In-Place speichern (Quelldatei atomar überschreiben) oder Neue Datei speichern.
+  - Zwei spezialisierte Modi über Reiter:
+    - Reiter 1: "Verschlüsseln & Schützen" mit Benutzer- und Eigentümer-Passwörtern, Passwort-Sichtbarkeits-Umschaltern (👁), Wiederholungsprüfung, Methoden-Dropdown (AES-256, AES-128, RC4-128) und 8 Berechtigungs-Checkboxen mit Schnell-Buttons (Alle erlauben, Standardrechte, Alle sperren).
+    - Reiter 2: "Entsperren / Passwort entfernen" mit Passwort-Eingabe und Erläuterung.
+- **GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menü `Werkzeuge -> PDF-Sicherheit...` (`_on_pdf_security`).
+  - Kontextmenü bei Einzelauswahl einer PDF im Dokumentenlisten-Panel: `PDF-Sicherheit & Passwort...` (`_security_pdf`).
+- **Lokalisierung (`locales/translations.json`):**
+  - 40 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (548 Keys total). Vollständige 6-Sprachen-Parität nachgewiesen.
+- **Testsuite & Qualitätssicherung:**
+  - 28 neue und erweiterte automatisierte Tests: `tests/test_pdf_security_suite.py` (11 Tests), `tests/test_batch_cli_security.py` (6 Tests), `tests/test_security_dialog.py` (9 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test).
+  - Gesamttestsuite wächst von 546 auf 574 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 16.29s).
+  - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+
+### Added (2026-10-31, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Wasserzeichen-Suite: Text- & Bild-Wasserzeichen, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-10-31])
+- **PDF-Wasserzeichen Core-Engine (`core/pdf/watermark.py`):**
+  - Neues Kernmodul `PDFWatermarker` mit `WatermarkOptions`, `WatermarkResult`, `WatermarkType`, `WatermarkPosition` und `WatermarkLayer`.
+  - Flexible Text-Wasserzeichen mit beliebiger Rotation (-90° bis +90° via PyMuPDF Matrix-Morphing), Deckkraft (0.01 bis 1.0), dynamischer Schriftgröße (Auto oder 10..160 pt), Farb-Parser (Hex, Farbnamen, RGB) und Schnellvorlagen (ENTWURF, VERTRAULICH, KOPIE, GEHEIM, DRAFT).
+  - Gekachelte/wiederholende Wasserzeichen (`WatermarkPosition.TILED`) für vollflächige Markierungen.
+  - Bild-Wasserzeichen (PNG mit Alpha-Transparenz, JPG) mit skalierbarer Breitenanpassung.
+  - Ebenen-Wahl: Vordergrund (`overlay=True`) oder Hintergrund (`overlay=False`).
+  - Seitenfilterung: 'all', 'first', 'even', 'odd', oder Bereichsnotation wie '1-3, 5'.
+  - Atomares und In-Place-Schreiben über temporäre Staging-Dateien (`dokuzen_wm_*.tmp`) mit leak-freier `doc.close()`-Garantie.
+- **Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):**
+  - `batch_watermark()` mit voller Parameterunterstützung und Unix-Exit-Codes (0 = Erfolg, 1 = Fehler, 2 = ungültige Parameter).
+  - CLI-Optionen: `--watermark <PDF>`, `--watermark-text`, `--watermark-image`, `--watermark-opacity`, `--watermark-angle`, `--watermark-pages`, `--watermark-color`, `--watermark-layer`, `--watermark-position`, `--watermark-font-size` sowie strukturierte JSON-Rückgabe via `--json`.
+  - GUI-Startbefehl `StartupCommand("watermark")` und `window.startup_watermark_path()`.
+- **GUI-Dialog (`gui/dialogs/watermark_dialog.py`):**
+  - Moderner, barrierefreier `WatermarkDialog` (WCAG 2.1 AA konform) mit Dateiwahl, Speichermodus (In-Place vs. Neue Datei), Umschaltung Text/Bild, Preset-Buttons, Slider für Deckkraft mit Prozentanzeige, Winkelschnellwahl (0°, 45°, -45°), Ebenen- und Seitenfilter.
+- **GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menü `Werkzeuge -> PDF-Wasserzeichen...` (`_on_pdf_watermark`).
+  - Kontextmenü bei Einzelauswahl einer PDF: `PDF-Wasserzeichen einfügen...` (`_watermark_pdf`).
+- **Lokalisierung (`locales/translations.json`):**
+  - 49 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (506 Keys total). Alt-Einträge `Dateien` und `Größe:` repariert.
+- **Testsuite & Verifikation:**
+  - 19 neue/erweiterte Tests: `tests/test_pdf_watermark.py` (8 Tests), `tests/test_batch_cli_watermark.py` (4 Tests), `tests/test_watermark_dialog.py` (4 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test), `tests/test_gui_menu_and_actions_coverage.py` (+1 Test).
+  - Gesamttestsuite wächst von 527 auf 546 passed, 1 skipped (100% grün in 9.87s). Ruff, Compileall und Git-Diff sauber.
+
+### Fixed / Changed (2026-10-30, Turnusgemäßer Lauf [SOFTWARE_GITHUB] — Fast-Forward Sync, Privacy- & Pfadhärtung, Gitignore-Hygiene [G 2026-10-30])
+- **Upstream Fast-Forward & Remote-Sync:**
+  - Upstream-Commits #3 (Fix für Collection-Test-Lifecycle / QApplication-Isolierung) und #7 (Aktualisierung der Linux-Bundle Upload-Action auf v7.0.2) via git pull --ff-only sauber integriert.
+- **Privacy- & Secret-Audit (Zero-Leakage):**
+  - Härtung von Test-Mock-Pfaden in 	ests/test_workspace_export.py (C:\\Users\\lukas\\... durch generisches C:\\Users\\TestUser\\... ersetzt; verhindert die Offenlegung lokaler Benutzernamen im öffentlichen GitHub-Repository).
+  - Bereinigung von Entwicklerpfaden in Store-Anleitungen (
+eleases/windowsstore/BUILD.md,
+eleases/windowsstore/WACK_PROTOCOL.md) und AUFGABEN.txt auf portable Umgebungsvariablen ($env:USERPROFILE\\..., <OneDrive>/...).
+- **Repository-Hygiene & Gitignore:**
+  - Veraltete interne Taskplan-Protokolldateien (TASKPLAN_STATUS_*.md) aus dem Repo entfernt und in .gitignore dauerhaft ausgeschlossen.
+- **Dokumentations- & Metadaten-Synchronisation:**
+  - README.md, README_de.md und llms.txt auf den Verifikationsstand 2026-10-30 synchronisiert.
+  - Vollständige Testsuite mit 527 bestandenen Tests (100% grün) und Ruff-Validierung bestätigt.
+
 ### Changed (2026-10-18, Pfad A Repository-Hygiene & CI-Matrix-Härtung [G 2026-10-18])
 - **CI-Matrix-Härtung (`.github/workflows/source-platform-smoke.yml`):**
   - Erweiterung der Testmatrix um Python 3.10 (Matrix: `["3.10", "3.11", "3.12"]`) für alle drei Zielplattformen (Ubuntu, macOS, Windows) zur vollständigen Abdeckung der Spezifikation `requires-python = ">=3.10"`.
@@ -256,6 +369,48 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
   `releases/windowsstore/v1.0.1/DokuZen-1.0.1.0.msix`.
 
 ## [Unreleased]
+
+### Added (2026-11-02, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — PDF-Sicherheits- & Passwortschutz-Suite: Verschlüsselung, Berechtigungen, Entsperrung, Batch-CLI, Dialog, Kontextmenü & Tier-2 I18N [G 2026-11-02])
+- **PDF-Sicherheits-Engine & Berechtigungs-Parsing (`core/pdf/security.py`):**
+  - Erweiterung von `get_security_info()` zur präzisen Inspektion von PDF-Berechtigungen (print, print_highres, modify, copy, annotate, fill_forms, extract, assemble), Verschlüsselungserkennung mit PyMuPDF und pikepdf, sowie Passwort-Authentifizierung.
+  - In-Place-Unterstützung (`output_path=None`) mit atomarer temporärer Datei-Ersetzung (`dokuzen_sec_*.tmp` / `dokuzen_enc_*.tmp`) für `encrypt()`, `unlock()` und `remove_restrictions()`.
+  - Flexible String- und Enum-basierte Parameterübergabe für Methoden (AES-256, AES-128, RC4-128) und Berechtigungen.
+  - Bereinigung von Module-Poisoning im Alt-Test `tests/test_pdf_security_unlock.py` via sauberem `unittest.mock.patch.object`.
+- **Headless Batch-CLI & Startoptionen (`core/batch_cli.py`, `main.py`):**
+  - Neue CLI-Funktionen `batch_security_info()`, `batch_encrypt()`, `batch_unlock()`.
+  - Neue CLI-Optionen: `--security` / `--encrypt <PDF>`, `--unlock` / `--decrypt <PDF>`, `--security-info <PDF>`, `--user-password`, `--owner-password`, `--password`, `--encryption-method`, `--permissions`, `--json`.
+  - Integration in Startaktion `StartupCommand("security")` und `window.startup_security_path()`.
+- **Barrierefreier GUI-Dialog (`gui/dialogs/security_dialog.py`):**
+  - Vollständiger, moderner `SecurityDialog` (WCAG 2.1 AA konform) mit AccessibleName, AccessibleDescription und Tooltips auf allen Controls.
+  - Dynamisches Sicherheitsstatus-Banner mit Farbcodierung (Grün = ungeschützt, Gelb = Eigentümer-Schutz, Rot = Passwortgeschützt).
+  - Speichermodus-Wahl: In-Place speichern (Quelldatei atomar überschreiben) oder Neue Datei speichern.
+  - Zwei spezialisierte Modi über Reiter:
+    - Reiter 1: "Verschlüsseln & Schützen" mit Benutzer- und Eigentümer-Passwörtern, Passwort-Sichtbarkeits-Umschaltern (👁), Wiederholungsprüfung, Methoden-Dropdown (AES-256, AES-128, RC4-128) und 8 Berechtigungs-Checkboxen mit Schnell-Buttons (Alle erlauben, Standardrechte, Alle sperren).
+    - Reiter 2: "Entsperren / Passwort entfernen" mit Passwort-Eingabe und Erläuterung.
+- **GUI- & Kontextmenü-Integration (`gui/main_window.py`, `gui/panels/document_list.py`):**
+  - Menü `Werkzeuge -> PDF-Sicherheit...` (`_on_pdf_security`).
+  - Kontextmenü bei Einzelauswahl einer PDF im Dokumentenlisten-Panel: `PDF-Sicherheit & Passwort...` (`_security_pdf`).
+- **Lokalisierung (`locales/translations.json`):**
+  - 40 neue Übersetzungsschlüssel lückenlos in allen 6 Sprachen (DE, EN, ES, ZH, JA, RU) gepflegt (548 Keys total). Vollständige 6-Sprachen-Parität nachgewiesen.
+- **Testsuite & Qualitätssicherung:**
+  - 28 neue und erweiterte automatisierte Tests: `tests/test_pdf_security_suite.py` (11 Tests), `tests/test_batch_cli_security.py` (6 Tests), `tests/test_security_dialog.py` (9 Tests), `tests/test_document_list_context_menu.py` (+1 Test), `tests/test_dialog_smoke.py` (+1 Test).
+  - Gesamttestsuite wächst von 546 auf 574 bestandene Tests, 1 übersprungen, 26 Subtests (100% grün in 16.29s).
+  - `ruff check .` sauber (0 Fehler), `python -m compileall -q .` fehlerfrei, `git diff --check` sauber.
+
+
+### Fixed / Changed (2026-10-30, Turnusgemäßer Lauf [SOFTWARE_GITHUB] — Fast-Forward Sync, Privacy- & Pfadhärtung, Gitignore-Hygiene [G 2026-10-30])
+- **Upstream Fast-Forward & Remote-Sync:**
+  - Upstream-Commits #3 (Fix für Collection-Test-Lifecycle / QApplication-Isolierung) und #7 (Aktualisierung der Linux-Bundle Upload-Action auf v7.0.2) via git pull --ff-only sauber integriert.
+- **Privacy- & Secret-Audit (Zero-Leakage):**
+  - Härtung von Test-Mock-Pfaden in 	ests/test_workspace_export.py (C:\\Users\\lukas\\... durch generisches C:\\Users\\TestUser\\... ersetzt; verhindert die Offenlegung lokaler Benutzernamen im öffentlichen GitHub-Repository).
+  - Bereinigung von Entwicklerpfaden in Store-Anleitungen (
+eleases/windowsstore/BUILD.md,
+eleases/windowsstore/WACK_PROTOCOL.md) und AUFGABEN.txt auf portable Umgebungsvariablen ($env:USERPROFILE\\..., <OneDrive>/...).
+- **Repository-Hygiene & Gitignore:**
+  - Veraltete interne Taskplan-Protokolldateien (TASKPLAN_STATUS_*.md) aus dem Repo entfernt und in .gitignore dauerhaft ausgeschlossen.
+- **Dokumentations- & Metadaten-Synchronisation:**
+  - README.md, README_de.md und llms.txt auf den Verifikationsstand 2026-10-30 synchronisiert.
+  - Vollständige Testsuite mit 527 bestandenen Tests (100% grün) und Ruff-Validierung bestätigt.
 
 ### Behoben / Fixed (2026-09-20, Bugsweep: Multi-Format Routing, PDF-Konvertierung & Pfadnormalisierung)
 - **Multi-Format Ingest Routing (`core/ingest/detector.py`, `core/library/manager.py`):**

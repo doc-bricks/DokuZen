@@ -491,7 +491,7 @@ python -m pytest tests/ -v
 
 ## 13. Lizenz
 
-**MIT License**
+**GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)** – maßgeblich sind `LICENSE` und `NOTICE`. Die frühere Angabe „MIT License“ in dieser Datei (Stand 2026-01-09) war nicht der Lizenzstand des veröffentlichten Projekts.
 
 ---
 

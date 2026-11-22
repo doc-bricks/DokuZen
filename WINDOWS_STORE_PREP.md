@@ -1,6 +1,6 @@
 # Windows Store — Vorbereitung DokuZen
 
-Stand: 2026-09-20
+Stand: 2026-11-05
 
 ---
 
@@ -44,7 +44,8 @@ Hash-/Provenienz-Dokumentation gemeinsam aktualisieren.
 ### Pflichtartefakte
 
 - [x] `store_package.json` erstellt (2026-06-07)
-- [x] `STORE_LISTING.md` erstellt — DE + EN Beschreibung (2026-06-07)
+- [x] `STORE_LISTING.md` erstellt & auf 6 Tier-2-Sprachen (DE, EN, ES, ZH, JA, RU) harmonisiert (2026-11-05)
+- [x] Store-Listing Staging-Dateien (`releases/windowsstore/store_listing_<lang>.md`) für alle 6 Sprachen erstellt & im Readiness-Gate verankert (2026-11-05)
 - [x] `PRIVACY_POLICY.md` erstellt (2026-06-07)
 - [x] `SUPPORT.md` erstellt (2026-06-07)
 - [x] `THIRD_PARTY_LICENSES.txt` als direkte Runtime-Inventur aus

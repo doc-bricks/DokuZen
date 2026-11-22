@@ -449,6 +449,331 @@ def batch_info(input_file: str | Path) -> BatchResult:
     )
 
 
+def batch_watermark(
+    input_file: str | Path,
+    output_file: str | Path,
+    text: Optional[str] = "ENTWURF",
+    image_path: Optional[str | Path] = None,
+    opacity: float = 0.25,
+    angle: float = 45.0,
+    pages: str = "all",
+    color: Any = (0.7, 0.7, 0.7),
+    layer: str = "foreground",
+    position: str = "center",
+    font_size: Optional[float] = 48.0,
+) -> BatchResult:
+    """Bettet ein Text- oder Bild-Wasserzeichen headlessly in eine PDF ein."""
+    src = str(Path(input_file).resolve())
+    dst = str(Path(output_file).resolve())
+
+    if not os.path.exists(src):
+        return BatchResult(
+            success=False,
+            action="watermark",
+            input_files=[src],
+            output_file=dst,
+            error=f"Eingabedatei nicht gefunden: {src}",
+        )
+
+    if not src.lower().endswith(".pdf"):
+        return BatchResult(
+            success=False,
+            action="watermark",
+            input_files=[src],
+            output_file=dst,
+            error="Wasserzeichen unterstützt ausschließlich PDF-Dateien.",
+        )
+
+    try:
+        from core.pdf.watermark import (
+            PDFWatermarker,
+            WatermarkOptions,
+            WatermarkType,
+            WatermarkPosition,
+            WatermarkLayer,
+            parse_color,
+            PYMUPDF_AVAILABLE,
+        )
+    except ImportError as e:
+        return BatchResult(
+            success=False,
+            action="watermark",
+            input_files=[src],
+            output_file=dst,
+            error=f"Wasserzeichen-Modul konnte nicht geladen werden: {e}",
+        )
+
+    if not PYMUPDF_AVAILABLE:
+        return BatchResult(
+            success=False,
+            action="watermark",
+            input_files=[src],
+            output_file=dst,
+            error="PyMuPDF (fitz) ist nicht installiert.",
+        )
+
+    wm_type = WatermarkType.IMAGE if image_path else WatermarkType.TEXT
+    parsed_color = parse_color(color)
+    wm_layer = (
+        WatermarkLayer.BACKGROUND
+        if str(layer).lower() in ("background", "back", "hintergrund")
+        else WatermarkLayer.FOREGROUND
+    )
+
+    pos_map = {
+        "center": WatermarkPosition.CENTER,
+        "zentriert": WatermarkPosition.CENTER,
+        "top_left": WatermarkPosition.TOP_LEFT,
+        "top_right": WatermarkPosition.TOP_RIGHT,
+        "bottom_left": WatermarkPosition.BOTTOM_LEFT,
+        "bottom_right": WatermarkPosition.BOTTOM_RIGHT,
+        "top_center": WatermarkPosition.TOP_CENTER,
+        "bottom_center": WatermarkPosition.BOTTOM_CENTER,
+        "tiled": WatermarkPosition.TILED,
+        "gekachelt": WatermarkPosition.TILED,
+    }
+    wm_pos = pos_map.get(str(position).lower(), WatermarkPosition.CENTER)
+
+    options = WatermarkOptions(
+        watermark_type=wm_type,
+        text=text or "ENTWURF",
+        image_path=str(Path(image_path).resolve()) if image_path else None,
+        font_size=font_size,
+        color=parsed_color,
+        opacity=opacity,
+        angle=angle,
+        position=wm_pos,
+        layer=wm_layer,
+        pages=pages or "all",
+    )
+
+    watermarker = PDFWatermarker()
+    res = watermarker.apply_to_pdf(src, dst, options)
+
+    if res.success:
+        return BatchResult(
+            success=True,
+            action="watermark",
+            input_files=[src],
+            output_file=dst,
+            details={
+                "type": wm_type.value,
+                "pages_watermarked": res.pages_watermarked,
+                "total_pages": res.total_pages,
+                "layer": wm_layer.value,
+                "position": wm_pos.value,
+            },
+        )
+    return BatchResult(
+        success=False,
+        action="watermark",
+        input_files=[src],
+        output_file=dst,
+        error=res.error or "Wasserzeichen konnte nicht angewendet werden.",
+    )
+
+
+def batch_security_info(
+    input_file: str | Path,
+    password: str = "",
+) -> BatchResult:
+    """Ermittelt Sicherheitsstatus, Verschlüsselungsmethode und Berechtigungen einer PDF."""
+    src = str(Path(input_file).resolve())
+    if not os.path.exists(src):
+        return BatchResult(
+            success=False,
+            action="security_info",
+            input_files=[src],
+            error=f"Eingabedatei nicht gefunden: {src}",
+        )
+
+    try:
+        from core.pdf.security import PDFSecurity, PYMUPDF_AVAILABLE
+    except ImportError as e:
+        return BatchResult(
+            success=False,
+            action="security_info",
+            input_files=[src],
+            error=f"PDF-Security-Modul konnte nicht geladen werden: {e}",
+        )
+
+    if not PYMUPDF_AVAILABLE:
+        return BatchResult(
+            success=False,
+            action="security_info",
+            input_files=[src],
+            error="PyMuPDF (fitz) ist nicht installiert.",
+        )
+
+    security = PDFSecurity()
+    info = security.get_security_info(src, password=password)
+    if info is None:
+        return BatchResult(
+            success=False,
+            action="security_info",
+            input_files=[src],
+            error="Sicherheitsinformationen konnten nicht gelesen werden.",
+        )
+
+    return BatchResult(
+        success=True,
+        action="security_info",
+        input_files=[src],
+        details={
+            "is_encrypted": info.is_encrypted,
+            "needs_password": info.needs_password,
+            "user_password_set": info.user_password_set,
+            "owner_password_set": info.owner_password_set,
+            "encryption_method": info.encryption_method,
+            "permissions": info.permissions,
+        },
+    )
+
+
+def batch_encrypt(
+    input_file: str | Path,
+    output_file: Optional[str | Path] = None,
+    user_password: str = "",
+    owner_password: str = "",
+    method: str = "AES-256",
+    permissions: Optional[Sequence[str]] = None,
+) -> BatchResult:
+    """Verschlüsselt eine PDF headless mit Passwort und optionalen Berechtigungen."""
+    src = str(Path(input_file).resolve())
+    dst = str(Path(output_file).resolve()) if output_file else src
+
+    if not os.path.exists(src):
+        return BatchResult(
+            success=False,
+            action="encrypt",
+            input_files=[src],
+            output_file=dst,
+            error=f"Eingabedatei nicht gefunden: {src}",
+        )
+
+    if not user_password and not owner_password:
+        return BatchResult(
+            success=False,
+            action="encrypt",
+            input_files=[src],
+            output_file=dst,
+            error="Mindestens ein Passwort (Benutzer- oder Eigentümer-Passwort) ist erforderlich.",
+        )
+
+    try:
+        from core.pdf.security import PDFSecurity, PYMUPDF_AVAILABLE
+    except ImportError as e:
+        return BatchResult(
+            success=False,
+            action="encrypt",
+            input_files=[src],
+            output_file=dst,
+            error=f"PDF-Security-Modul konnte nicht geladen werden: {e}",
+        )
+
+    if not PYMUPDF_AVAILABLE:
+        return BatchResult(
+            success=False,
+            action="encrypt",
+            input_files=[src],
+            output_file=dst,
+            error="PyMuPDF (fitz) ist nicht installiert.",
+        )
+
+    security = PDFSecurity()
+    res = security.encrypt(
+        src,
+        dst,
+        user_password=user_password,
+        owner_password=owner_password,
+        method=method,
+        permissions=permissions,
+    )
+
+    if res.success:
+        return BatchResult(
+            success=True,
+            action="encrypt",
+            input_files=[src],
+            output_file=dst,
+            details={
+                "method": method,
+                "has_user_password": bool(user_password),
+                "has_owner_password": bool(owner_password),
+                "permissions": list(permissions) if permissions else ["print", "copy"],
+                "in_place": (src == dst),
+            },
+        )
+    return BatchResult(
+        success=False,
+        action="encrypt",
+        input_files=[src],
+        output_file=dst,
+        error=res.error or "Verschlüsselung fehlgeschlagen.",
+    )
+
+
+def batch_unlock(
+    input_file: str | Path,
+    output_file: Optional[str | Path] = None,
+    password: str = "",
+) -> BatchResult:
+    """Entsperrt eine passwortgeschützte PDF headless."""
+    src = str(Path(input_file).resolve())
+    dst = str(Path(output_file).resolve()) if output_file else src
+
+    if not os.path.exists(src):
+        return BatchResult(
+            success=False,
+            action="unlock",
+            input_files=[src],
+            output_file=dst,
+            error=f"Eingabedatei nicht gefunden: {src}",
+        )
+
+    try:
+        from core.pdf.security import PDFSecurity, PYMUPDF_AVAILABLE
+    except ImportError as e:
+        return BatchResult(
+            success=False,
+            action="unlock",
+            input_files=[src],
+            output_file=dst,
+            error=f"PDF-Security-Modul konnte nicht geladen werden: {e}",
+        )
+
+    if not PYMUPDF_AVAILABLE:
+        return BatchResult(
+            success=False,
+            action="unlock",
+            input_files=[src],
+            output_file=dst,
+            error="PyMuPDF (fitz) ist nicht installiert.",
+        )
+
+    security = PDFSecurity()
+    res = security.unlock(src, dst, password=password)
+
+    if res.success:
+        return BatchResult(
+            success=True,
+            action="unlock",
+            input_files=[src],
+            output_file=dst,
+            details={
+                "was_encrypted": res.was_encrypted,
+                "in_place": (src == dst),
+            },
+        )
+    return BatchResult(
+        success=False,
+        action="unlock",
+        input_files=[src],
+        output_file=dst,
+        error=res.error or "Entsperren fehlgeschlagen.",
+    )
+
+
 def execute_headless_cli(args: argparse.Namespace) -> int:
     """Führt eine Headless-CLI-Aktion aus und steuert Exit-Codes."""
     result: Optional[BatchResult] = None
@@ -494,8 +819,62 @@ def execute_headless_cli(args: argparse.Namespace) -> int:
     elif getattr(args, "info_path", None):
         result = batch_info(input_file=args.info_path)
 
+    # Security Info
+    elif getattr(args, "security_info_path", None):
+        pw = getattr(args, "password", "") or getattr(args, "user_password", "")
+        result = batch_security_info(args.security_info_path, password=pw)
+
+    # Encrypt / Security
+    elif getattr(args, "security_path", None) or getattr(args, "encrypt_path", None):
+        target_path = getattr(args, "security_path", None) or getattr(args, "encrypt_path", None)
+        u_pw = getattr(args, "user_password", "") or getattr(args, "password", "")
+        o_pw = getattr(args, "owner_password", "")
+        method = getattr(args, "encryption_method", "AES-256")
+        perms = getattr(args, "permissions", None)
+        result = batch_encrypt(
+            input_file=target_path,
+            output_file=getattr(args, "output_path", None),
+            user_password=u_pw,
+            owner_password=o_pw,
+            method=method,
+            permissions=perms,
+        )
+
+    # Unlock / Decrypt
+    elif getattr(args, "unlock_path", None) or getattr(args, "decrypt_path", None):
+        target_path = getattr(args, "unlock_path", None) or getattr(args, "decrypt_path", None)
+        pw = getattr(args, "password", "") or getattr(args, "user_password", "") or getattr(args, "owner_password", "")
+        result = batch_unlock(
+            input_file=target_path,
+            output_file=getattr(args, "output_path", None),
+            password=pw,
+        )
+
+    # Watermark
+    elif getattr(args, "watermark_path", None):
+        if not getattr(args, "output_path", None):
+            err_msg = "Für das Headless-Wasserzeichen muss eine Ausgabedatei (-o / --output) angegeben werden."
+            if getattr(args, "json_output", False):
+                print(json.dumps({"success": False, "error": err_msg}, indent=2, ensure_ascii=False))
+            else:
+                print(f"FEHLER: {err_msg}", file=sys.stderr)
+            return 2
+        result = batch_watermark(
+            input_file=args.watermark_path,
+            output_file=args.output_path,
+            text=getattr(args, "watermark_text", "ENTWURF"),
+            image_path=getattr(args, "watermark_image", None),
+            opacity=getattr(args, "watermark_opacity", 0.25),
+            angle=getattr(args, "watermark_angle", 45.0),
+            pages=getattr(args, "watermark_pages", "all"),
+            color=getattr(args, "watermark_color", "gray"),
+            layer=getattr(args, "watermark_layer", "foreground"),
+            position=getattr(args, "watermark_position", "center"),
+            font_size=getattr(args, "watermark_font_size", 48.0),
+        )
+
     else:
-        err_msg = "Keine gültige Headless-Aktion angegeben (--merge, --ocr, --redact oder --info erforderlich)."
+        err_msg = "Keine gültige Headless-Aktion angegeben (--merge, --ocr, --redact, --watermark, --security, --unlock oder --info erforderlich)."
         if getattr(args, "json_output", False):
             print(json.dumps({"success": False, "error": err_msg}, indent=2, ensure_ascii=False))
         else:

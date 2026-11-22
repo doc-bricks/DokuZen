@@ -8,7 +8,7 @@ Nach dem lokalen MSIX-Build soll der Windows App Certification Kit (WACK)-Lauf d
 
 ```powershell
 $projectRoot = "C:\_Local_DEV\repos\DokuZen"
-$softwareRoot = "C:\Users\lukas\OneDrive\.TOPICS\.SOFTWARE"
+$softwareRoot = "$env:USERPROFILE\OneDrive\.TOPICS\.SOFTWARE"
 $outputRoot = "C:\_Local_DEV\codex_build\dokuzen-store"
 $reportRoot = Join-Path $projectRoot "releases\windowsstore\test_reports"
 Start-Process powershell -Verb RunAs -ArgumentList @(

@@ -15,10 +15,13 @@ label.setText(tr('Datei öffnen'))
 translator.set_language('en')
 """
 
+import contextlib
 import json
 import os
 import re
+import stat
 import sys
+import uuid
 from pathlib import Path
 from typing import Dict, List, Optional, Set
 
@@ -106,10 +109,30 @@ class TranslationSystem:
             self.translations = {}
 
     def _save_translations(self):
-        """Speichert die Übersetzungstabelle."""
+        """Speichert die Übersetzungstabelle atomar via Staging-Datei (.tmp.<pid>_<uuid>), flush() und fsync()."""
         self.translations_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.translations_file, 'w', encoding='utf-8') as f:
-            json.dump(self.translations, f, indent=2, ensure_ascii=False)
+        nonce = f"{os.getpid()}_{uuid.uuid4().hex[:8]}"
+        tmp_file = self.translations_file.parent / f".{self.translations_file.name}.tmp.{nonce}"
+        try:
+            with open(tmp_file, "w", encoding="utf-8") as f:
+                json.dump(self.translations, f, indent=2, ensure_ascii=False)
+                f.write("\n")
+                f.flush()
+                os.fsync(f.fileno())
+
+            if self.translations_file.exists():
+                with contextlib.suppress(OSError):
+                    os.chmod(self.translations_file, stat.S_IWRITE | stat.S_IREAD)
+
+            os.replace(tmp_file, self.translations_file)
+        finally:
+            if tmp_file.exists():
+                with contextlib.suppress(OSError):
+                    tmp_file.unlink()
+
+    def save_translations(self):
+        """Öffentliche Methode zum atomaren Speichern der Übersetzungen."""
+        self._save_translations()
 
     def t(self, key: str) -> str:
         """
