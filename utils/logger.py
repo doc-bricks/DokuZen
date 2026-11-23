@@ -106,7 +106,7 @@ def get_logger(name: str) -> logging.Logger:
     """
     # Kürze den Namen für bessere Lesbarkeit
     if name.startswith("DokuZen."):
-        short_name = name[12:]  # Entferne "DokuZen."
+        short_name = name[len("DokuZen."):]  # Entferne "DokuZen."
     elif "." in name:
         parts = name.split(".")
         short_name = ".".join(parts[-2:]) if len(parts) > 1 else parts[-1]

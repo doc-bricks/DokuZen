@@ -5,6 +5,11 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+### Added / Fixed (2026-11-23, Turnusgemäßer Lauf [SOFTWARE_ENTWICKLUNG] — Testausbau & Logger-Fix [G 2026-11-23])
+- **Neue Testsuiten (`tests/test_code_splitter.py`, `tests/test_knowledge_watcher_and_encoding_fixer.py`, `tests/test_library_manager_and_logger.py`):** 16 hermetische Tests für `CodeSplitter`, `DebouncedQueue`/`FileWatchHandler`/`FileWatcher`/`KnowledgeWatcher`, `EncodingFixer`, `LibraryManager`/`ThemeManager` und `utils.logger`.
+- **Logger-Fix (`utils/logger.py`):** `get_logger()` kürzt Namen mit Präfix `"DokuZen."` nun um `len("DokuZen.")` (8 Zeichen) statt fest `12` (Altrest von `"DokuZen Pro."`), sodass z. B. `"DokuZen.reader"` nicht mehr zu `"DokuZen.er"` abgeschnitten wird.
+- **Folgeaufgaben (`AUFGABEN.txt`):** `TW-DZ-21..25` dokumentiert (u. a. `CodeSplitter`-`from ... import ...`-Header, `EncodingFixer`-`U+FFFD`-Schutz vor In-Place-Überschreiben, PySide6-Teardown-Abbruch `-1073740791` nach grüner Gesamtsuite & `--basetemp`-Migration, sowie `tools/`-Tests).
+
 ### Fixed (2026-11-13, CI: Action-Annotationen und Bundle-Validierung, Port von #9)
 - **Workflows (`linux-bundle.yml`, `source-platform-smoke.yml`):** Die Kommentare an den SHA-Pins nennen jetzt die tatsächlich gepinnten Releases (`actions/checkout@v7.0.1`, `actions/setup-python@v7.0.0`, `actions/upload-artifact@v7.0.2`) statt der alten `v4`/`v5`-Angaben. Die SHAs selbst sind unverändert.
 - **`linux-bundle.yml`:** Der Workflow steht in seinem eigenen Pull-Request-Pfadfilter und der Build-Job läuft auch bei Pull Requests. Änderungen am Workflow werden damit vor dem Merge geprüft.
