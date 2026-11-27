@@ -543,3 +543,12 @@ ihren Namen, sie ist in store_package.json als executable referenziert.
     - Wissenssuche fand Dateinamen und Tags mit großen Umlauten nicht, da SQLite-lower()/LIKE nur ASCII faltet („Übersicht“ fand „Übersicht_2026.pdf“ nicht, Tag-Filter „ärzte“ nicht „Ärzte“).
     - Fix: casefold()-SQL-Funktion in FileIndex registriert und in allen Text-, Tag- und Vorschlagsabfragen verdrahtet (6b704a1, PR #14).
     - Verifikation: Regressionstests gegen echten SQLite-Index (vorher rot, nachher grün); Gesamtsuite 601 passed.
+
+
+## TEST-ENTWICKLUNG & FOLGEAUFGABEN (2026-11-23 / SOFTWARE_ENTWICKLUNG)
+
+- [x] TW-DZ-21: Hermetische Testsuiten für un-/untergetestete Kern- und Plugin-Module (`tests/test_code_splitter.py`, `tests/test_knowledge_watcher_and_encoding_fixer.py`, `tests/test_library_manager_and_logger.py`) + Bugfix `utils/logger.py` (`name[len("DokuZen."):]` statt `name[12:]`; Red `15 passed, 1 failed` -> Green `16/16 passed`).
+- [ ] TW-DZ-22 (`CodeSplitter`): `_extract_imports()` und `_generate_imports_header()` in `plugins/special_text/code_splitter.py` so erweitern, dass `from ... import ...` und relative Imports gültige Import-Statements statt ungültigem `import <modul>.<symbol>` (z. B. `import os.path.join`, `import helper.foo`) erzeugen.
+- [ ] TW-DZ-23 (`EncodingFixer`): Offene `BUGSWEEP-31 REVIEW-NOTIZ` in `plugins/special_text/encoding_fixer.py` auflösen — In-Place-Überschreiben in `convert_file()` bei niedriger Erkennungssicherheit oder `chars_fixed > 0` (`U+FFFD`) per explizitem Opt-In bzw. Fail-Closed-Guard schützen.
+- [ ] TW-DZ-24 (`PySide6` Windows-Teardown & `--basetemp`): Sporadischen PySide6-`6.11.1`-Prozessteardown unter `QT_QPA_PLATFORM=offscreen` nach grüner Gesamtsuite (Baseline `602 passed` mit Exitcode `-1073740791` / `0xC0000409`, Folgelauf `618 passed` mit `RC=0`) isolieren und gemeinsam mit der Migration von `--basetemp=.pytest_temp` aus `pyproject.toml` (`addopts`) in `conftest.py` (`T-20261114-932985855`, `tests/test_metadata.py:508`) beheben.
+- [ ] TW-DZ-25 (`tools/`-Testabdeckung): Automatisierte Vertragstests für `tools/build_translations.py` und `tools/extract_i18n_strings.py` ergänzen.
