@@ -112,3 +112,4 @@ pytest*.txt
 
 # Agent-internal task plan status logs
 TASKPLAN_STATUS_*.md
+/REPO.pointer.json
